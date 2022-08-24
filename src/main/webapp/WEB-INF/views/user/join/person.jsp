@@ -8,7 +8,7 @@
 <body class="hold-transition register-page">
 <div class="register-box">
 	<div class="register-logo">
-		<a href="/"><b>EROWM</b></a>
+		<a href="/"><b>JEO</b></a>
 	</div>
 
 	<div class="card">

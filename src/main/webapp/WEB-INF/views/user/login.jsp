@@ -8,7 +8,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="/"><b>EROWM</b></a>
+        <a href="/"><b>JEO</b></a>
     </div>
 
     <div class="card">

@@ -172,7 +172,7 @@
 	<aside class="main-sidebar sidebar-dark-info elevation-2">
 		<!-- Brand Logo -->
 		<a href="/" class="brand-link text-center">
-			<span class="brand-text font-weight-bold">EROWM</span>
+			<span class="brand-text font-weight-bold">JEO</span>
 		</a>
 
 		<!-- Sidebar -->
