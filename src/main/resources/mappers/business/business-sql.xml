@@ -69,10 +69,10 @@
 				AND DBA.BSNS_CODE = DBI.BSNS_CODE
 				AND DBA.USER_ID = #{user_id}
 		WHERE DBI.COMP_CODE = #{comp_code}
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bsns_cate)">
 			AND BSNS_CATE = #{bsns_cate}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(keyword)">
 			AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
 		</if>
 		<if test='!ceo_yn.equals("Y")'>
@@ -113,17 +113,17 @@
 			LEFT JOIN DF_BSNS_AUTH DBA
 				ON DBA.COMP_CODE = DBI.COMP_CODE
 					AND DBA.BSNS_CODE = DBI.BSNS_CODE
-				<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(user_id)">
+				<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(user_id)">
 					AND DBA.USER_ID = #{user_id}
 				</if>
 		WHERE DBI.COMP_CODE = #{comp_code}
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bsns_code)">
 			AND DBI.BSNS_CODE = #{bsns_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(exclude_bsns_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(exclude_bsns_code)">
 			AND DBI.BSNS_CODE != #{exclude_bsns_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(auth_user)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(auth_user)">
 			AND DBA.USER_ID = #{auth_user}
 		</if>
 	</select>

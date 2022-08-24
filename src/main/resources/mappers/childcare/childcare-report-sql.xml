@@ -29,7 +29,7 @@
 			) AS REPO_MOD_USER_NAME
 		FROM DC_REPO_INFO
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(repo_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(repo_code)">
 				AND REPO_CODE = #{repo_code}
 			</if>
 		</where>

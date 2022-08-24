@@ -1,5 +1,5 @@
-<%@ page import="com.erowm.webapp.accounting.child.domain.EnrollmentStatus" %>
-<%@ page import="com.erowm.webapp.accounting.parent.domain.ParentType" %>
+<%@ page import="com.jeo.webapp.accounting.child.domain.EnrollmentStatus" %>
+<%@ page import="com.jeo.webapp.accounting.parent.domain.ParentType" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="content">
 	<div class="container-fluid">

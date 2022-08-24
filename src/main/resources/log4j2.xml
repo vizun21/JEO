@@ -9,7 +9,7 @@
     <Loggers>
 
         <!-- Application Logger -->
-        <Logger name="com.erowm" level="DEBUG" additivity="false">	<!-- DEBUG -->
+        <Logger name="com.jeo" level="DEBUG" additivity="false">	<!-- DEBUG -->
             <AppenderRef ref="console" />
         </Logger>
 

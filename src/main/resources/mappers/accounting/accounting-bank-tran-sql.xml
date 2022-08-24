@@ -64,13 +64,13 @@
 		LEFT JOIN AC_TRAN_LIST ATL USING (COMP_CODE, BSNS_CODE, BKTR_CODE)
 		WHERE COMP_CODE = #{comp_code}
 			AND BSNS_CODE = #{bsns_code}
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(acnt_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(acnt_code)">
 			AND ACNT_CODE = #{acnt_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bktr_year)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bktr_year)">
 			AND YEAR(BKTR_DATE) = #{bktr_year}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bktr_month)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bktr_month)">
 			AND MONTH(BKTR_DATE) = #{bktr_month}
 		</if>
 		ORDER BY BKTR_CODE DESC, TRAN_CODE DESC
@@ -109,7 +109,7 @@
 		JOIN AC_ACNT_INFO AAI USING (COMP_CODE, BSNS_CODE, ACNT_CODE)
 		WHERE COMP_CODE = #{comp_code}
 			AND BSNS_CODE = #{bsns_code}
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bktr_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bktr_code)">
 			AND BKTR_CODE = #{bktr_code}
 		</if>
 		ORDER BY BKTR_CODE DESC

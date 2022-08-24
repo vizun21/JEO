@@ -26,26 +26,26 @@
 			) AS BSNS_CATE_NAME
 		FROM DF_PAGE_INFO
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(page_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(page_code)">
 				AND PAGE_CODE = #{page_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(page_yn)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(page_yn)">
 				AND PAGE_YN = #{page_yn}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(page_url)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(page_url)">
 				AND PAGE_URL = #{page_url}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(keyword)">
 				AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(menu_level)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(menu_level)">
 				AND PAGE_CODE NOT IN (
 					SELECT MENU_CODE
 					FROM DF_MENU_INFO
 					WHERE MENU_LEVEL = #{menu_level}
 				)
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bsns_cate)">
 				AND (BSNS_CATE = #{bsns_cate} OR BSNS_CATE IS NULL OR BSNS_CATE = '')
 			</if>
 		</where>

@@ -24,7 +24,7 @@
 		FROM AC_BUDG_INFO
 		WHERE COMP_CODE = #{comp_code}
 			AND BSNS_CODE = #{bsns_code}
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(budg_year)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(budg_year)">
 			AND BUDG_YEAR = #{budg_year}
 		</if>
 		ORDER BY BUDG_TYPE ASC
@@ -52,7 +52,7 @@
 		FROM AC_BUDG_INFO
 		WHERE COMP_CODE = #{comp_code}
 			AND BSNS_CODE = #{bsns_code}
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(budg_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(budg_code)">
 			AND BUDG_CODE = #{budg_code}
 		</if>
 		ORDER BY BUDG_TYPE ASC
@@ -147,7 +147,7 @@
 		WHERE BSNS_CATE = #{bsns_cate}
 			AND GHM_ACTIVE_YN = 'Y'
 			AND GHM_YEAR = #{budg_year}
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(budg_io_type)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(budg_io_type)">
 			AND GWAN_IO_TYPE = #{budg_io_type}
 		</if>
 		ORDER BY GWAN_IO_TYPE, CAST(GWAN_NUMB AS UNSIGNED), CAST(HANG_NUMB AS UNSIGNED), CAST(MOCK_NUMB AS UNSIGNED), BGDT_CODE
@@ -170,7 +170,7 @@
 			 , BGDT_MOD_USER
 		FROM AC_BUDG_DETAIL
 	<where>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(mock_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(mock_code)">
 			AND MOCK_CODE = #{mock_code}
 		</if>
 	</where>

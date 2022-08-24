@@ -5,11 +5,11 @@
 <configuration>
 	<typeAliases>
 		<typeAlias alias="hmap" type="java.util.LinkedHashMap"/>
-		<typeAlias alias="rmap" type="com.erowm.common.domain.RMap"/>
-		<typeAlias alias="loginVO" type="com.erowm.common.domain.LoginVO"/>
-		<typeAlias alias="businessVO" type="com.erowm.common.domain.BusinessVO"/>
-		<typeAlias alias="Room" type="com.erowm.webapp.accounting.room.domain.Room"/>
-		<typeAlias alias="Child" type="com.erowm.webapp.accounting.child.domain.Child"/>
-		<typeAlias alias="GeneralLedger" type="com.erowm.webapp.accounting.budgetSettlement.domain.GeneralLedger"/>
+		<typeAlias alias="rmap" type="com.jeo.common.domain.RMap"/>
+		<typeAlias alias="loginVO" type="com.jeo.common.domain.LoginVO"/>
+		<typeAlias alias="businessVO" type="com.jeo.common.domain.BusinessVO"/>
+		<typeAlias alias="Room" type="com.jeo.webapp.accounting.room.domain.Room"/>
+		<typeAlias alias="Child" type="com.jeo.webapp.accounting.child.domain.Child"/>
+		<typeAlias alias="GeneralLedger" type="com.jeo.webapp.accounting.budgetSettlement.domain.GeneralLedger"/>
 	</typeAliases>
 </configuration>

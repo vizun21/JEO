@@ -26,7 +26,7 @@
 			 , CODE_NAME
 		FROM SYS_CODE_INFO
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(code_id)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(code_id)">
 				AND CODE_ID = #{code_id}
 			</if>
 		</where>
@@ -47,13 +47,13 @@
 			) AS CDDT_MOD_USER_NAME
 		FROM SYS_CODE_DETAIL
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(code_id)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(code_id)">
 				AND CODE_ID = #{code_id}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(cddt_val)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(cddt_val)">
 				AND CDDT_VAL = #{cddt_val}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(cddt_name)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(cddt_name)">
 				AND CDDT_NAME = #{cddt_name}
 			</if>
 		</where>

@@ -20,10 +20,10 @@
 			) AS BANK_MOD_USER_NAME
 		FROM SYS_BANK_INFO
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bank_yn)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bank_yn)">
 				AND BANK_YN = #{bank_yn}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(keyword)">
 				AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
 			</if>
 		</where>
@@ -47,7 +47,7 @@
 			) AS BANK_MOD_USER_NAME
 		FROM SYS_BANK_INFO
 		WHERE BANK_YN = 'Y'
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bank_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bank_code)">
 			AND BANK_CODE = #{bank_code}
 		</if>
 	</select>

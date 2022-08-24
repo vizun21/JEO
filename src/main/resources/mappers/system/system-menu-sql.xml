@@ -49,19 +49,19 @@
 		FROM DF_MENU_INFO DMI
 			JOIN DF_PAGE_INFO DPI ON DPI.PAGE_CODE = MENU_CODE
 	<where>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(page_yn)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(page_yn)">
 			AND PAGE_YN = #{page_yn}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(menu_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(menu_code)">
 			AND MENU_CODE = #{menu_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(high_menu_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(high_menu_code)">
 			AND HIGH_MENU_CODE = #{high_menu_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(menu_level)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(menu_level)">
 			AND MENU_LEVEL = #{menu_level}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(menu_depth)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(menu_depth)">
 			AND MENU_DEPTH = #{menu_depth}
 		</if>
 	</where>

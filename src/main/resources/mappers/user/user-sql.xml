@@ -75,13 +75,13 @@
 			, USER_MOD_USER
 		FROM DF_USER_INFO
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(user_id)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(user_id)">
 				AND USER_ID = #{user_id}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(comp_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(comp_code)">
 				AND COMP_CODE = #{comp_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(user_reg_numb_1) and @com.erowm.common.util.CommonUtils@isNotEmpty(user_reg_numb_2)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(user_reg_numb_1) and @com.jeo.common.util.CommonUtils@isNotEmpty(user_reg_numb_2)">
 				AND USER_REG_NUMB_1 = #{user_reg_numb_1}
 				AND USER_REG_NUMB_2 = #{user_reg_numb_2}
 			</if>
@@ -226,13 +226,13 @@
 			, USER_MOD_USER
 		FROM DF_USER_INFO DUI
 		WHERE COMP_CODE = #{comp_code}
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(user_appr_yn)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(user_appr_yn)">
 			AND USER_APPR_YN = #{user_appr_yn}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(user_yn)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(user_yn)">
 			AND USER_YN = #{user_yn}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(keyword)">
 			AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
 		</if>
 	</select>

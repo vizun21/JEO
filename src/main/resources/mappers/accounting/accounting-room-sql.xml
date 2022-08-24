@@ -21,7 +21,7 @@
 		FROM AC_ROOM_INFO
 		WHERE COMP_CODE = #{comp_code}
 			AND BSNS_CODE = #{bsns_code}
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(keyword)">
 			AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
 		</if>
 	</select>
@@ -45,7 +45,7 @@
 		FROM AC_ROOM_INFO
 		WHERE COMP_CODE = #{comp_code}
 			AND BSNS_CODE = #{bsns_code}
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(room_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(room_code)">
 			AND ROOM_CODE = #{room_code}
 		</if>
 	</select>

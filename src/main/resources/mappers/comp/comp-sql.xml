@@ -64,22 +64,22 @@
 			LEFT JOIN DF_COMP_CEO USING (COMP_CODE)
 			LEFT JOIN DF_USER_INFO DUI USING (COMP_CODE, USER_ID)
 		WHERE COMP_CODE != 'ESOFT'
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(comp_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(comp_code)">
 			AND COMP_CODE = #{comp_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(comp_reg_numb_1) and @com.erowm.common.util.CommonUtils@isNotEmpty(comp_reg_numb_2)
-						and @com.erowm.common.util.CommonUtils@isNotEmpty(comp_reg_numb_3)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(comp_reg_numb_1) and @com.jeo.common.util.CommonUtils@isNotEmpty(comp_reg_numb_2)
+						and @com.jeo.common.util.CommonUtils@isNotEmpty(comp_reg_numb_3)">
 			AND COMP_REG_NUMB_1 = #{comp_reg_numb_1}
 			AND COMP_REG_NUMB_2 = #{comp_reg_numb_2}
 			AND COMP_REG_NUMB_3 = #{comp_reg_numb_3}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(comp_type)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(comp_type)">
 			AND COMP_TYPE = #{comp_type}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(comp_appr_yn)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(comp_appr_yn)">
 			AND COMP_APPR_YN = #{comp_appr_yn}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(keyword)">
 			AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
 		</if>
 	</select>

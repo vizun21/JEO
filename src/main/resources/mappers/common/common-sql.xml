@@ -52,13 +52,13 @@
 		FROM DF_MENU_INFO DMI
 			JOIN DF_PAGE_INFO DPI ON DPI.PAGE_CODE = DMI.MENU_CODE
 		WHERE PAGE_YN  = 'Y'
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(menu_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(menu_code)">
 			AND DMI.MENU_CODE = #{menu_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(high_menu_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(high_menu_code)">
 			AND HIGH_MENU_CODE = #{high_menu_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(user_level)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(user_level)">
 			AND MENU_LEVEL = #{user_level}
 		</if>
 		ORDER BY MENU_SEQ

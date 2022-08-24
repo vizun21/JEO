@@ -22,13 +22,13 @@
 			) AS GHM_MOD_USER_NAME
 		FROM SYS_GHM_INFO
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_active_yn)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(ghm_active_yn)">
 				AND GHM_ACTIVE_YN = #{ghm_active_yn}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bsns_cate)">
 				AND BSNS_CATE = #{bsns_cate}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_year)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(ghm_year)">
 				AND GHM_YEAR = #{ghm_year}
 			</if>
 		</where>
@@ -54,13 +54,13 @@
 			) AS GHM_MOD_USER_NAME
 		FROM SYS_GHM_INFO
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(ghm_code)">
 				AND GHM_CODE = #{ghm_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bsns_cate)">
 				AND BSNS_CATE = #{bsns_cate}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_year)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(ghm_year)">
 				AND GHM_YEAR = #{ghm_year}
 			</if>
 		</where>
@@ -89,7 +89,7 @@
 		SELECT DISTINCT(GHM_YEAR)
 		FROM SYS_GHM_INFO
 		WHERE GHM_ACTIVE_YN = 'Y'
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bsns_cate)">
 			AND BSNS_CATE = #{bsns_cate}
 		</if>
 		ORDER BY GHM_YEAR DESC
@@ -117,13 +117,13 @@
 			LEFT JOIN SYS_MOCK_INFO SMI USING (HANG_CODE)
 			JOIN SYS_GHM_INFO USING (GHM_CODE)
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(ghm_code)">
 				AND GHM_CODE = #{ghm_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bsns_cate)">
 				AND BSNS_CATE = #{bsns_cate}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_year)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(ghm_year)">
 				AND GHM_YEAR = #{ghm_year}
 			</if>
 		</where>
@@ -158,25 +158,25 @@
 		FROM SYS_GWAN_INFO
 			JOIN SYS_GHM_INFO USING (GHM_CODE)
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(gwan_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(gwan_code)">
 				AND GWAN_CODE = #{gwan_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(ghm_code)">
 				AND GHM_CODE = #{ghm_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bsns_cate)">
 				AND BSNS_CATE = #{bsns_cate}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_year)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(ghm_year)">
 				AND GHM_YEAR = #{ghm_year}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(gwan_io_type)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(gwan_io_type)">
 				AND GWAN_IO_TYPE = #{gwan_io_type}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(gwan_numb)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(gwan_numb)">
 				AND GWAN_NUMB = #{gwan_numb}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_active_yn)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(ghm_active_yn)">
 				AND GHM_ACTIVE_YN = #{ghm_active_yn}
 			</if>
 		</where>
@@ -247,16 +247,16 @@
 		FROM SYS_HANG_INFO
 			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(hang_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(hang_code)">
 				AND HANG_CODE = #{hang_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(gwan_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(gwan_code)">
 				AND GWAN_CODE = #{gwan_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(hang_numb)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(hang_numb)">
 				AND HANG_NUMB = #{hang_numb}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(ghm_code)">
 				AND GHM_CODE = #{ghm_code}
 			</if>
 		</where>
@@ -328,31 +328,31 @@
 			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
 			JOIN SYS_GHM_INFO USING (GHM_CODE)
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(mock_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(mock_code)">
 				AND MOCK_CODE = #{mock_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(hang_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(hang_code)">
 				AND HANG_CODE = #{hang_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(mock_numb)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(mock_numb)">
 				AND MOCK_NUMB = #{mock_numb}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(ghm_code)">
 				AND GHM_CODE = #{ghm_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_year)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(ghm_year)">
 				AND GHM_YEAR = #{ghm_year}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bsns_cate)">
 				AND BSNS_CATE = #{bsns_cate}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(gwan_io_type)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(gwan_io_type)">
 				AND GWAN_IO_TYPE = #{gwan_io_type}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(gwan_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(gwan_code)">
 				AND GWAN_CODE = #{gwan_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_active_yn)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(ghm_active_yn)">
 				AND GHM_ACTIVE_YN = #{ghm_active_yn}
 			</if>
 		</where>

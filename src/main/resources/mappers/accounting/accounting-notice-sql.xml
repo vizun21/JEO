@@ -23,10 +23,10 @@
 			) AS NOTI_MOD_USER_NAME
 		FROM SYS_NOTI_INFO
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bsns_cate)">
 				AND (BSNS_CATE = #{bsns_cate} OR BSNS_CATE IS NULL OR BSNS_CATE = '')
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(keyword)">
 				AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
 			</if>
 		</where>
@@ -52,7 +52,7 @@
 			) AS NOTI_MOD_USER_NAME
 		FROM SYS_NOTI_INFO
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(noti_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(noti_code)">
 				AND NOTI_CODE = #{noti_code}
 			</if>
 		</where>

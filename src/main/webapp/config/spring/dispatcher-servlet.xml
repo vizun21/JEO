@@ -24,27 +24,27 @@
 			<mvc:exclude-mapping path="/user/login**"/>
 			<mvc:exclude-mapping path="/user/logout"/>
 			<mvc:exclude-mapping path="/resources/**"/>
-			<bean id="authInterceptor" class="com.erowm.common.interceptor.AuthInterceptor"/>
+			<bean id="authInterceptor" class="com.jeo.common.interceptor.AuthInterceptor"/>
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/home"/>
 			<mvc:mapping path="/accounting/**"/>
 			<mvc:mapping path="/business/**"/>
 			<mvc:mapping path="/admin/**"/>
-			<bean id="menuInterceptor" class="com.erowm.common.interceptor.MenuInterceptor"/>
+			<bean id="menuInterceptor" class="com.jeo.common.interceptor.MenuInterceptor"/>
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/home"/>
 			<mvc:mapping path="/accounting/**"/>
 			<mvc:mapping path="/business/**"/>
-			<bean id="businessInterceptor" class="com.erowm.common.interceptor.BusinessInterceptor"/>
+			<bean id="businessInterceptor" class="com.jeo.common.interceptor.BusinessInterceptor"/>
 		</mvc:interceptor>
 	</mvc:interceptors>
 
 	<!-- ArgumentResolver 설정 -->
 	<mvc:annotation-driven>
 		<mvc:argument-resolvers>
-			<bean class="com.erowm.common.resolver.HMapArgumentResolver"/>
+			<bean class="com.jeo.common.resolver.HMapArgumentResolver"/>
 		</mvc:argument-resolvers>
 	</mvc:annotation-driven>
 
@@ -60,7 +60,7 @@
 	</beans:bean>
 
 	<!-- 기본패키지 설정 -->
-	<context:component-scan base-package="com.erowm">
+	<context:component-scan base-package="com.jeo">
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>

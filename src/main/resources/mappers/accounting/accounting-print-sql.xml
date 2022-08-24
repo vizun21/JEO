@@ -103,7 +103,7 @@
 			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
 		WHERE COMP_CODE = #{comp_code}
 			AND BSNS_CODE = #{bsns_code}
-<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(return_voucher)">
+<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(return_voucher)">
 			AND (TRAN_DATE >= #{start_date} AND TRAN_DATE <![CDATA[<]]> #{end_date})
 			AND TRAN_IO_TYPE = #{tran_io_type}
 	<choose>
@@ -115,7 +115,7 @@
 		</when>
 	</choose>
 </if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(tran_code_list)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(tran_code_list)">
 			AND TRAN_CODE IN
 			<foreach collection="tran_code_list" item="item" index="index" separator="," open="(" close=")">
 				#{item}

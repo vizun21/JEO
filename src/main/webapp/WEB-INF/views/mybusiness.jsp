@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.erowm.common.config.TypeVal" %>
+<%@ page import="com.jeo.common.config.TypeVal" %>
 <div class="content">
 	<div class="container-fluid">
 		<div class="row">

@@ -23,7 +23,7 @@
 		FROM AC_PARENT_INFO
 		WHERE COMP_CODE = #{comp_code}
 			AND BSNS_CODE = #{bsns_code}
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(child_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(child_code)">
 			AND CHILD_CODE = #{child_code}
 		</if>
 	</select>

@@ -132,47 +132,47 @@
 			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
 			LEFT JOIN DF_SMOK_INFO USING (COMP_CODE, BSNS_CODE, MOCK_CODE, SMOK_CODE)
 		<where>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(comp_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(comp_code)">
 				AND COMP_CODE = #{comp_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bsns_code)">
 				AND BSNS_CODE = #{bsns_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bktr_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bktr_code)">
 				AND BKTR_CODE = #{bktr_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(tran_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(tran_code)">
 				AND TRAN_CODE = #{tran_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(tran_io_type)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(tran_io_type)">
 				AND TRAN_IO_TYPE = #{tran_io_type}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(gwan_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(gwan_code)">
 				AND GWAN_CODE = #{gwan_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(hang_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(hang_code)">
 				AND HANG_CODE = #{hang_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(mock_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(mock_code)">
 				AND MOCK_CODE = #{mock_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(smok_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(smok_code)">
 				AND SMOK_CODE = #{smok_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(rel_mock_code)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(rel_mock_code)">
 				AND REL_MOCK_CODE = #{rel_mock_code}
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(keyword)">
 				AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_name)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(ghm_name)">
 				AND (
 					GWAN_NAME LIKE CONCAT('%', #{ghm_name}, '%')
 					OR HANG_NAME LIKE CONCAT('%', #{ghm_name}, '%')
 					OR MOCK_NAME LIKE CONCAT('%', #{ghm_name}, '%')
 				)
 			</if>
-			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(start_date) and @com.erowm.common.util.CommonUtils@isNotEmpty(end_date)">
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(start_date) and @com.jeo.common.util.CommonUtils@isNotEmpty(end_date)">
 			  <![CDATA[
 				AND (TRAN_DATE >= #{start_date} AND TRAN_DATE <= #{end_date})
 			  ]]>
@@ -267,13 +267,13 @@
 		DELETE FROM AC_TRAN_LIST
 		WHERE COMP_CODE = #{comp_code}
 			AND BSNS_CODE = #{bsns_code}
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(tran_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(tran_code)">
 			AND TRAN_CODE = #{tran_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bktr_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bktr_code)">
 			AND BKTR_CODE = #{bktr_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(acnt_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(acnt_code)">
 			AND BKTR_CODE IN (
 				SELECT BKTR_CODE
 				FROM AC_BANK_TRAN_LIST

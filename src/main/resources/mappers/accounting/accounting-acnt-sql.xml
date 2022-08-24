@@ -27,10 +27,10 @@
 		FROM AC_ACNT_INFO AAI
 		WHERE COMP_CODE = #{comp_code}
 			AND BSNS_CODE = #{bsns_code}
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bank_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bank_code)">
 			AND BANK_CODE = #{bank_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(keyword)">
 			AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
 		</if>
 	</select>
@@ -71,22 +71,22 @@
 			JOIN DF_BSNS_INFO USING (COMP_CODE, BSNS_CODE)
 			JOIN DF_COMP_INFO USING (COMP_CODE)
 	<where>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(comp_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(comp_code)">
 			AND COMP_CODE = #{comp_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bsns_code)">
 			AND BSNS_CODE = #{bsns_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(acnt_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(acnt_code)">
 			AND ACNT_CODE = #{acnt_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(acnt_numb)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(acnt_numb)">
 			AND ACNT_NUMB = #{acnt_numb}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bank_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(bank_code)">
 			AND BANK_CODE = #{bank_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(keyword)">
 			AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
 		</if>
 	</where>

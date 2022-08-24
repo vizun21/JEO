@@ -61,13 +61,13 @@
 		FROM AC_DEAD_INFO
 		WHERE COMP_CODE = #{comp_code}
 			AND BSNS_CODE = #{bsns_code}
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(dead_code)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(dead_code)">
 			AND DEAD_CODE = #{dead_code}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(year)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(year)">
 			AND DEAD_YEAR = #{year}
 		</if>
-		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(month)">
+		<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(month)">
 			AND DEAD_MONTH = #{month}
 		</if>
 	</select>
