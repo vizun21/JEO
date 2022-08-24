@@ -1,5 +1,8 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
 	<style>
+        .register-box {width: 500px;}
+        .register-logo {font-size: 2rem;margin-top: 0.9rem;font-weight: bold;}
 		.icheck-info {font-size: 14px;}
 		.icheck-info a {color: #17a2b8!important;}
 	</style>
@@ -8,17 +11,17 @@
 <body class="hold-transition register-page">
 <div class="register-box">
 	<div class="register-logo">
-		<a href="/"><b>JEO</b></a>
+		<a href="/"><b>전주환경사업소 시설관리시스템</b></a>
 	</div>
 
 	<div class="card">
 		<div class="card-body register-card-body">
 			<form id="joinForm" action="/user/join/person" method="POST">
 				<div class="form-group mb-3">
-					<label for="user_id">아이디 <small>(6-32자 이내, 영문/숫자 사용가능)</small></label>
+					<label for="user_id">사원번호 <small>(8자리. 숫자만 사용가능)</small></label>
 					<div class="input-group">
-						<input type="text" class="form-control" id="user_id" name="user_id" placeholder="아이디" title="아이디"
-							   data-parsley-required="true" data-parsley-length="[6,32]">
+						<input type="text" class="form-control" id="user_id" name="user_id" placeholder="사원번호" title="사원번호"
+							   data-parsley-required="true" data-parsley-length="[8,8]">
 						<div class="input-group-append">
 							<div class="input-group-text">
 								<span class="fas fa-user"></span>
@@ -50,15 +53,11 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="user_email">이메일</label>
-					<div class="input-group mb-3">
-						<input type="email" class="form-control" id="user_email" name="user_email" placeholder="이메일" title="이메일"
-							   data-parsley-required="true" data-parsley-maxlength="320">
-						<div class="input-group-append">
-							<div class="input-group-text">
-								<span class="fas fa-envelope"></span>
-							</div>
-						</div>
+					<label for="user_name">직책</label>
+					<div class="input-group mb-3 input-group-append">
+						<select class="select2 form-control" id="user_position" data-minimum-results-for-search="Infinity" style="width: 100%;">
+							<option value="">[직책선택]</option>
+						</select>
 					</div>
 				</div>
 				<div class="form-group">
@@ -69,17 +68,6 @@
 						<div class="input-group-append">
 							<div class="input-group-text">
 								<span class="fas fa-user"></span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="user_tel">전화번호(선택)</label>
-					<div class="input-group mb-3">
-						<input type="text" class="form-control" id="user_tel" name="user_tel" placeholder="전화번호" title="전화번호">
-						<div class="input-group-append" data-parsley-maxlength="20">
-							<div class="input-group-text">
-								<span class="fas fa-phone"></span>
 							</div>
 						</div>
 					</div>
@@ -99,17 +87,6 @@
 
 				<hr>
 
-				<div class="form-group clearfix mb-0">
-					<label>사업자</label>
-					<input type="hidden" id="comp_code" name="comp_code">
-					<div class="input-group mb-3">
-						<input type="text" class="form-control" id="comp_name" name="comp_name" placeholder="사업자" title="사업자"
-							   data-parsley-required="true" readonly style="background-color: white;">
-						<div class="input-group-append">
-							<div class="input-group-text"></div>
-						</div>
-					</div>
-				</div>
 				<div class="form-group">
 					<label>약관동의</label>
 					<div class="input-group mb-3">
@@ -175,63 +152,12 @@
 	</div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-md" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="searchModalLabel">사업자검색</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<i class="fas fa-times"></i>
-				</button>
-			</div>
-			<div class="modal-body">
-				<table class="table-form table table-sm table-bordered mb-1">
-					<colgroup>
-						<col width="30%">
-						<col width="70%">
-					</colgroup>
-					<tr>
-						<th>사업자명</th>
-						<td>
-							<div class="form-inline">
-								<div class="form-group">
-									<input type="text" class="form-control form-control-sm" id="keyword">
-									<button type="button" class="btn btn-sm btn-info ml-1" id="btnCompSearch">검색</button>
-								</div>
-							</div>
-						</td>
-					</tr>
-				</table>
-
-				<table id="listTable" class="table-list table table-sm table-bordered table-hover">
-					<thead>
-					<tr>
-						<th>사업자명</th>
-						<th>대표자명</th>
-						<th>사업자번호</th>
-						<th></th>
-					</tr>
-					</thead>
-					<tbody></tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-</div>
-
 <script type="text/javascript">
 	$(function () {
-		var args = {
-			responsive: false
-			, ordering: false
-			, info: false
-		}
-		setDatatables("listTable", args);
 	});
 
 	$("#user_id").on("keyup focusout", function () {
-		$(this).val(formatID($(this).val()));
+		$(this).val(formatNumber($(this).val()));
 		overlapCheck($(this));
 	});
 
@@ -284,63 +210,6 @@
 				alertAjaxError(request, status, error);
 			}
 		});
-	}
-
-	$("#comp_name").on("click", function () {
-		$("#searchModal").modal("show");
-		$("#searchModal").on('shown.bs.modal', function() {
-			$('#keyword').focus()
-		});
-	});
-
-	$("#keyword").on("keypress", function (e) {
-		if (e.keyCode == 13) getCompList();
-	});
-
-	$("#btnCompSearch").on("click", function () {
-		getCompList();
-	});
-
-	function getCompList() {
-		$(".overlay").show();
-
-		$.ajax({
-			type: "POST"
-			, url: "/user/join/comp/list"
-			, headers: {"Content-Type": "application/json"}
-			, dataType: "json"
-			, data: JSON.stringify({
-				keyword: $("#keyword").val()
-			})
-			, success: function (data) {
-				if($.fn.DataTable.isDataTable("#listTable")) {
-					$("#listTable").DataTable().clear();
-				}
-
-				$.each(data, function(index, item) {
-					var html = [];
-					html.push(item.comp_name);
-					html.push(item.ceo_name);
-					html.push(item.comp_reg_numb);
-					html.push("<button type='button' class='btn btn-sm btn-info ml-1' onclick=\"selectComp('" + item.comp_code + "', '" + item.comp_name + "')\">선택</button>");
-
-					$("#listTable").DataTable().row.add(html).node();
-				});
-
-				$("#listTable").DataTable().draw(false);
-				$("#listTable").DataTable().columns.adjust().draw();	// 테이블 컬럼 사이즈 조절
-				$(".overlay").hide();
-			}
-			, error: function (request, status, error) {
-				alertAjaxError(request, status, error);
-			}
-		});
-	}
-
-	function selectComp(comp_code, comp_name) {
-		$("#comp_code").val(comp_code);
-		$("#comp_name").val(comp_name);
-		$("#searchModal").modal("hide");
 	}
 </script>
 </body>
