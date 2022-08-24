@@ -28,5 +28,9 @@ public class UserJoinController {
 		param.put(Define.CODE_ID, Define.USER_POSITION);
 		List<?> positionList =  codeService.codeDetailList(param);
 		model.addAttribute("positionList", positionList);
+
+		param.put(Define.CODE_ID, Define.PASSWORD_HINT);
+		List<?> passwordHintList =  codeService.codeDetailList(param);
+		model.addAttribute("passwordHintList", passwordHintList);
 	}
 }

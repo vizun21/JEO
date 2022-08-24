@@ -19,6 +19,8 @@
 			,USER_LEVEL
 			,USER_APPR_YN
 			,USER_YN
+			,PASSWORD_HINT
+			,PASSWORD_HINT_ANSWER
 			,USER_LOGIN_DATE
 			,USER_REG_DATE
 			,USER_MOD_DATE
@@ -40,6 +42,8 @@
 			,#{user_level}
 			,'N'
 			,'Y'
+		    ,#{password_hint}
+		    ,#{password_hint_answer}
 			,NULL
 			,NOW()
 			,NOW()

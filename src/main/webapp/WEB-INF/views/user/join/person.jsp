@@ -55,7 +55,8 @@
 				<div class="form-group">
 					<label for="user_name">직책</label>
 					<div class="input-group mb-3 input-group-append">
-						<select class="select2 form-control" id="user_position" name="user_position" data-minimum-results-for-search="Infinity" style="width: 100%;">
+						<select class="select2 form-control" id="user_position" name="user_position" title="직책"
+								data-parsley-required="true" data-minimum-results-for-search="Infinity" style="width: 100%;">
 							<option value="">[직책선택]</option>
 							<c:forEach var="position" items="${positionList}" varStatus="status">
 								<option value="${position.cddt_val}">${position.cddt_name}</option>
@@ -84,6 +85,28 @@
 							<div class="input-group-text">
 								<span class="fas fa-mobile-alt"></span>
 							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="user_name">비밀번호 확인질문</label>
+					<div class="input-group mb-3 input-group-append">
+						<select class="select2 form-control" id="password_hint" name="password_hint" title="비밀번호 확인질문"
+								data-parsley-required="true" data-minimum-results-for-search="Infinity" style="width: 100%;">
+							<option value="">[비밀번호 확인질문 선택]</option>
+							<c:forEach var="passwordHint" items="${passwordHintList}" varStatus="status">
+								<option value="${passwordHint.cddt_val}">${passwordHint.cddt_name}</option>
+							</c:forEach>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="user_mobile">비밀번호 확인질문 답변</label>
+					<div class="input-group mb-3">
+						<input type="text" class="form-control" id="password_hint_answer" name="password_hint_answer" placeholder="비밀번호 확인질문 답변" title="비밀번호 확인질문 답변"
+							   data-parsley-required="true" data-parsley-maxlength="20">
+						<div class="input-group-append">
+							<div class="input-group-text"></div>
 						</div>
 					</div>
 				</div>
@@ -190,7 +213,7 @@
 	});
 
 	function overlapCheck(obj) {
-		var minLength = obj.data("parsley-length") ? obj.data("parsley-length")[0] : 0;
+		var minLength = obj.data("parsley-length") ? 1 : 0;
 		if (obj.val().length < minLength) return false;
 
 		$.ajax({
