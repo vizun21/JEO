@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="accounting.bank.tran">
+	<select id="bankTranPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, BKTR_CODE
+			, ACNT_CODE
+			, DATE_FORMAT(BKTR_DATE, '%Y-%m-%d') AS BKTR_DATE
+			, BKTR_IO_TYPE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'IO_TYPE'
+					AND CDDT_VAL = BKTR_IO_TYPE
+			) AS BKTR_IO_TYPE_NAME
+			, BKTR_JUKYO
+			, BKTR_PRICE
+			, IF(BKTR_IO_TYPE = "I", BKTR_PRICE, "") AS BKTR_INPUT_PRICE
+			, IF(BKTR_IO_TYPE = "O", BKTR_PRICE, "") AS BKTR_OUTPUT_PRICE
+			, BKTR_BALANCE
+			, BKTR_CONTENT
+			, BKTR_ETC
+			, IF(
+				(SELECT COUNT(BKTR_CODE)
+					FROM AC_TRAN_LIST
+					WHERE BKTR_CODE = ABTL.BKTR_CODE) > 0, 'Y', 'N'
+			) AS IS_REGIST
+			, TRAN_CODE
+			, DATE_FORMAT(TRAN_DATE, '%Y-%m-%d') AS TRAN_DATE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'IO_TYPE'
+					AND CDDT_VAL = TRAN_IO_TYPE
+			) AS TRAN_IO_TYPE_NAME
+			, TRAN_JUKYO
+			, TRAN_PRICE
+			, IF(TRAN_IO_TYPE = "I", TRAN_PRICE, "") AS TRAN_INPUT_PRICE
+			, IF(TRAN_IO_TYPE = "O", TRAN_PRICE, "") AS TRAN_OUTPUT_PRICE
+			, (SELECT MOCK_NAME
+				FROM SYS_MOCK_INFO
+				WHERE MOCK_CODE = ATL.MOCK_CODE
+			) AS MOCK_NAME
+			, IFNULL(
+				(SELECT SMOK_NAME
+					FROM DF_SMOK_INFO
+					WHERE COMP_CODE = ATL.COMP_CODE
+						AND BSNS_CODE = ATL.BSNS_CODE
+						AND SMOK_CODE = ATL.SMOK_CODE
+				), ''
+			) AS SMOK_NAME
+			, IFNULL(
+			(SELECT GWAN_NAME
+				FROM SYS_GWAN_INFO
+				WHERE GWAN_CODE = ATL.REL_GWAN_CODE), ''
+			) AS REL_GWAN_NAME
+			, IFNULL(
+			(SELECT MOCK_NAME
+				FROM SYS_MOCK_INFO
+				WHERE MOCK_CODE = ATL.REL_MOCK_CODE), ''
+			) AS REL_MOCK_NAME
+		FROM AC_BANK_TRAN_LIST ABTL
+		LEFT JOIN AC_TRAN_LIST ATL USING (COMP_CODE, BSNS_CODE, BKTR_CODE)
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(acnt_code)">
+			AND ACNT_CODE = #{acnt_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bktr_year)">
+			AND YEAR(BKTR_DATE) = #{bktr_year}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bktr_month)">
+			AND MONTH(BKTR_DATE) = #{bktr_month}
+		</if>
+		ORDER BY BKTR_CODE DESC, TRAN_CODE DESC
+	</select>
+
+	<select id="bankTranList" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, BKTR_CODE
+			, ACNT_CODE
+			, IFNULL(
+				(SELECT MAX(DATE_FORMAT(TRAN_DATE, '%Y-%m-%d %H:%i'))
+					FROM AC_TRAN_LIST
+					WHERE BKTR_CODE = ABTL.BKTR_CODE),
+				DATE_FORMAT(BKTR_DATE, '%Y-%m-%d %H:%i')
+			) AS BKTR_DATETIME
+			, BKTR_IO_TYPE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'IO_TYPE'
+					AND CDDT_VAL = BKTR_IO_TYPE
+			) AS BKTR_IO_TYPE_NAME
+			, BKTR_JUKYO
+			, BKTR_PRICE
+			, BKTR_BALANCE
+			, BKTR_CONTENT
+			, BKTR_ETC
+			, ACNT_CODE
+			, ACNT_NUMB
+			, (SELECT BANK_NAME
+				FROM SYS_BANK_INFO
+				WHERE BANK_CODE = AAI.BANK_CODE
+			) AS BANK_NAME
+		FROM AC_BANK_TRAN_LIST ABTL
+		JOIN AC_ACNT_INFO AAI USING (COMP_CODE, BSNS_CODE, ACNT_CODE)
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bktr_code)">
+			AND BKTR_CODE = #{bktr_code}
+		</if>
+		ORDER BY BKTR_CODE DESC
+	</select>
+
+	<select id="bankTranBalance" parameterType="hmap" resultType="java.math.BigInteger">
+		SELECT IFNULL(SUM(BKTR_BALANCE), 0)
+		FROM AC_BANK_TRAN_LIST
+		WHERE BKTR_CODE IN (
+			SELECT MAX(BKTR_CODE)
+			FROM AC_BANK_TRAN_LIST
+			WHERE COMP_CODE = #{comp_code}
+				AND BSNS_CODE = #{bsns_code}
+				AND YEAR(BKTR_DATE) = #{year}
+				AND MONTH(BKTR_DATE) = #{month}
+			GROUP BY ACNT_CODE)
+	</select>
+
+	<select id="bankTranCount" parameterType="hmap" resultType="java.math.BigInteger">
+		SELECT COUNT(*)
+		FROM AC_BANK_TRAN_LIST
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND YEAR(BKTR_DATE) = #{year}
+		  	AND MONTH(BKTR_DATE) = #{month}
+	</select>
+</mapper>

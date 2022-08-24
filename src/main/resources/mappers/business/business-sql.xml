@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="business.business">
+	<select id="businessVO" resultType="businessVO">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, BSNS_NAME
+			, BSNS_CATE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CDDT_VAL = BSNS_CATE
+			) AS BSNS_CATE_NAME
+			, BSNS_COND
+			, BSNS_SECT
+			, BSNS_ZIPCODE
+			, BSNS_ADDR
+			, BSNS_DETAIL_ADDR
+			, BSNS_TEL
+			, BSNS_FAX
+			, BSNS_SESS_START_MONTH
+			, S_AUTH_KEY
+			, REPLACE(BSNS_DIRECTOR_STAMP, '\\', '/') AS BSNS_DIRECTOR_STAMP
+			, REPLACE(BSNS_MANAGER_STAMP, '\\', '/') AS BSNS_MANAGER_STAMP
+			, REPLACE(BSNS_SEAL, '\\', '/') AS BSNS_SEAL
+			, DATE_FORMAT(BSNS_REG_DATE, '%Y-%m-%d') AS BSNS_REG_DATE
+			, DATE_FORMAT(BSNS_MOD_DATE, '%Y-%m-%d') AS BSNS_MOD_DATE
+			, BSNS_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = BSNS_MOD_USER
+			) AS BSNS_MOD_USER_NAME
+		FROM DF_BSNS_INFO DBI
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+	</select>
+
+	<select id="businessPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			DBI.COMP_CODE
+			, DBI.BSNS_CODE
+			, BSNS_NAME
+			, BSNS_CATE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CDDT_VAL = BSNS_CATE
+			) AS BSNS_CATE_NAME
+			, BSNS_COND
+			, BSNS_SECT
+			, BSNS_ZIPCODE
+			, BSNS_ADDR
+			, BSNS_DETAIL_ADDR
+			, BSNS_TEL
+			, BSNS_FAX
+			, BSNS_SESS_START_MONTH
+			, S_AUTH_KEY
+			, DATE_FORMAT(BSNS_REG_DATE, '%Y-%m-%d') AS BSNS_REG_DATE
+			, DATE_FORMAT(BSNS_MOD_DATE, '%Y-%m-%d') AS BSNS_MOD_DATE
+			, BSNS_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = BSNS_MOD_USER
+			) AS BSNS_MOD_USER_NAME
+			, DBA.USER_ID
+		FROM DF_BSNS_INFO DBI
+			LEFT JOIN DF_BSNS_AUTH DBA
+				ON DBA.COMP_CODE = DBI.COMP_CODE
+				AND DBA.BSNS_CODE = DBI.BSNS_CODE
+				AND DBA.USER_ID = #{user_id}
+		WHERE DBI.COMP_CODE = #{comp_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+			AND BSNS_CATE = #{bsns_cate}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+			AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test='!ceo_yn.equals("Y")'>
+			AND DBA.USER_ID = #{user_id}
+		</if>
+	</select>
+
+	<select id="businessList" parameterType="hmap" resultType="rmap">
+		SELECT
+			DBI.COMP_CODE
+			, DBI.BSNS_CODE
+			, BSNS_NAME
+			, BSNS_CATE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CDDT_VAL = BSNS_CATE
+			) AS BSNS_CATE_NAME
+			, BSNS_COND
+			, BSNS_SECT
+			, BSNS_ZIPCODE
+			, BSNS_ADDR
+			, BSNS_DETAIL_ADDR
+			, BSNS_TEL
+			, BSNS_FAX
+			, BSNS_SESS_START_MONTH
+			, S_AUTH_KEY
+		    , BSNS_DIRECTOR_STAMP
+		    , BSNS_MANAGER_STAMP
+		    , BSNS_SEAL
+			, DATE_FORMAT(BSNS_REG_DATE, '%Y-%m-%d') AS BSNS_REG_DATE
+			, DATE_FORMAT(BSNS_MOD_DATE, '%Y-%m-%d') AS BSNS_MOD_DATE
+			, BSNS_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = BSNS_MOD_USER
+			) AS BSNS_MOD_USER_NAME
+		FROM DF_BSNS_INFO DBI
+			LEFT JOIN DF_BSNS_AUTH DBA
+				ON DBA.COMP_CODE = DBI.COMP_CODE
+					AND DBA.BSNS_CODE = DBI.BSNS_CODE
+				<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(user_id)">
+					AND DBA.USER_ID = #{user_id}
+				</if>
+		WHERE DBI.COMP_CODE = #{comp_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_code)">
+			AND DBI.BSNS_CODE = #{bsns_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(exclude_bsns_code)">
+			AND DBI.BSNS_CODE != #{exclude_bsns_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(auth_user)">
+			AND DBA.USER_ID = #{auth_user}
+		</if>
+	</select>
+
+	<insert id="businessRegist" parameterType="hmap">
+		INSERT INTO DF_BSNS_INFO (
+			COMP_CODE
+			, BSNS_CODE
+			, BSNS_NAME
+			, BSNS_CATE
+			, BSNS_COND
+			, BSNS_SECT
+			, BSNS_ZIPCODE
+			, BSNS_ADDR
+			, BSNS_DETAIL_ADDR
+			, BSNS_TEL
+			, BSNS_FAX
+			, BSNS_SESS_START_MONTH
+			, S_AUTH_KEY
+		 	, BSNS_DIRECTOR_STAMP
+		 	, BSNS_MANAGER_STAMP
+		 	, BSNS_SEAL
+			, BSNS_REG_DATE
+			, BSNS_MOD_DATE
+			, BSNS_MOD_USER
+		)
+		VALUES (
+			#{comp_code}
+			, sfUniqueKey()
+			, #{bsns_name}
+			, #{bsns_cate}
+			, #{bsns_cond}
+			, #{bsns_sect}
+			, #{bsns_zipcode}
+			, #{bsns_addr}
+			, #{bsns_detail_addr}
+			, #{bsns_tel}
+			, #{bsns_fax}
+			, #{bsns_sess_start_month}
+			, #{s_auth_key}
+			, #{bsns_director_stamp}
+			, #{bsns_manager_stamp}
+			, #{bsns_seal}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<update id="businessModify" parameterType="hmap">
+		UPDATE DF_BSNS_INFO
+		SET
+			BSNS_NAME = #{bsns_name}
+			, BSNS_COND = #{bsns_cond}
+			, BSNS_SECT = #{bsns_sect}
+			, BSNS_ZIPCODE = #{bsns_zipcode}
+			, BSNS_ADDR = #{bsns_addr}
+			, BSNS_DETAIL_ADDR = #{bsns_detail_addr}
+			, BSNS_TEL = #{bsns_tel}
+			, BSNS_FAX = #{bsns_fax}
+			, S_AUTH_KEY = #{s_auth_key}
+			, BSNS_DIRECTOR_STAMP = IFNULL(#{bsns_director_stamp}, BSNS_DIRECTOR_STAMP)
+			, BSNS_MANAGER_STAMP = IFNULL(#{bsns_manager_stamp}, BSNS_MANAGER_STAMP)
+			, BSNS_SEAL = IFNULL(#{bsns_seal}, BSNS_SEAL)
+			, BSNS_MOD_DATE = NOW()
+			, BSNS_MOD_USER = #{user_id}
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+	</update>
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="common.common">
+	<insert id="indexCheck" parameterType="hashMap">
+		INSERT INTO SYS_INDEX_INFO (
+			 INDEX_TYPE
+			,INDEX_DATE
+			,INDEX_NUMB
+			,INDEX_REG_DATE
+			,INDEX_MOD_DATE
+			,INDEX_MOD_USER
+		)
+		VALUES (
+			 #{index_type}
+			,#{index_date}
+			,'1'
+			,NOW()
+			,NOW()
+			,#{user_id}
+		)
+		ON DUPLICATE KEY UPDATE
+			 INDEX_NUMB = INDEX_NUMB + 1
+			,INDEX_MOD_DATE = NOW()
+			,INDEX_MOD_USER = #{user_id}
+
+		<selectKey keyProperty="index_numb" resultType="java.lang.Integer" order="AFTER">
+			SELECT INDEX_NUMB
+			FROM SYS_INDEX_INFO
+			WHERE INDEX_TYPE = #{index_type}
+				AND INDEX_DATE = #{index_date}
+		</selectKey>
+	</insert>
+
+	<select id="menuList" parameterType="hmap" resultType="rmap">
+		SELECT
+			DMI.MENU_LEVEL
+			, DMI.HIGH_MENU_CODE
+			, DMI.MENU_CODE
+			, DPI.PAGE_NAME AS MENU_NAME
+			, DPI.PAGE_URL AS MENU_URL
+			, DPI.PAGE_ICON AS MENU_ICON
+			, DMI.MENU_DEPTH
+			, DMI.MENU_SEQ
+			, DPI.PAGE_YN AS MENU_YN
+			, IF(
+				(SELECT COUNT(HIGH_MENU_CODE)
+					FROM DF_MENU_INFO
+					WHERE HIGH_MENU_CODE = DMI.MENU_CODE
+				) > 0, TRUE, FALSE
+			) AS HAS_CHILD
+		FROM DF_MENU_INFO DMI
+			JOIN DF_PAGE_INFO DPI ON DPI.PAGE_CODE = DMI.MENU_CODE
+		WHERE PAGE_YN  = 'Y'
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(menu_code)">
+			AND DMI.MENU_CODE = #{menu_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(high_menu_code)">
+			AND HIGH_MENU_CODE = #{high_menu_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(user_level)">
+			AND MENU_LEVEL = #{user_level}
+		</if>
+		ORDER BY MENU_SEQ
+	</select>
+</mapper>

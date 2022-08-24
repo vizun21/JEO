@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+	<!-- Database -->
+	<entry key="database.driverClassName">org.mariadb.jdbc.Driver</entry>
+	<entry key="database.url">jdbc:mariadb://</entry>
+	<entry key="database.username"></entry>
+	<entry key="database.password"></entry>
+
+	<!-- BankdaAccount -->
+	<entry key="bankdaAccount.SERVICE_TYPE"></entry>
+	<entry key="bankdaAccount.PARTNER_ID"></entry>
+	<entry key="bankdaAccount.PARTNER_PW"></entry>
+	<entry key="bankdaAccount.PARTNER_NAME"></entry>
+
+	<!-- ChildcareAccount -->
+	<entry key="childcareAccount.COMMON_URL">https://api.childcare.go.kr/route/soap/acntRpt/</entry>
+	<entry key="childcareAccount.C_AUTH_KEY"></entry>
+
+	<!-- Resource Path -->
+	<entry key="resourcePath"></entry>
+	<entry key="resourceUploadImgPath"></entry>
+</properties>

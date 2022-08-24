@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="accounting.smok">
+	<select id="smokPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, SMOK_CODE
+			, SMOK_NUMB
+			, SMOK_NAME
+			, SMOK_NOTE
+			, MOCK_CODE
+			, MOCK_NUMB
+			, MOCK_NAME
+			, HANG_CODE
+			, HANG_NUMB
+			, HANG_NAME
+			, GWAN_CODE
+			, IF(GWAN_IO_TYPE='I', '수입', '지출') AS GWAN_IO_TYPE_NAME
+			, GWAN_NUMB
+			, GWAN_NAME
+			, GHM_YEAR
+			, DATE_FORMAT(SMOK_REG_DATE, '%Y-%m-%d') AS SMOK_REG_DATE
+			, DATE_FORMAT(SMOK_MOD_DATE, '%Y-%m-%d') AS SMOK_MOD_DATE
+			, SMOK_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = SMOK_MOD_USER
+			) AS SMOK_MOD_USER_NAME
+		FROM DF_SMOK_INFO
+			JOIN SYS_MOCK_INFO USING (MOCK_CODE)
+			JOIN SYS_HANG_INFO USING (HANG_CODE)
+			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+			JOIN SYS_GHM_INFO USING (GHM_CODE)
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_year)">
+			AND GHM_YEAR = #{ghm_year}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+			AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+	</select>
+
+	<select id="smokList" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, SMOK_CODE
+			, SMOK_NUMB
+			, SMOK_NAME
+			, SMOK_NOTE
+			, MOCK_CODE
+			, MOCK_NUMB
+			, MOCK_NAME
+			, HANG_CODE
+			, HANG_NUMB
+			, HANG_NAME
+			, GWAN_CODE
+			, IF(GWAN_IO_TYPE='I', '수입', '지출') AS GWAN_IO_TYPE_NAME
+			, GWAN_NUMB
+			, GWAN_NAME
+			, GHM_YEAR
+			, DATE_FORMAT(SMOK_REG_DATE, '%Y-%m-%d') AS SMOK_REG_DATE
+			, DATE_FORMAT(SMOK_MOD_DATE, '%Y-%m-%d') AS SMOK_MOD_DATE
+			, SMOK_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = SMOK_MOD_USER
+			) AS SMOK_MOD_USER_NAME
+		FROM DF_SMOK_INFO
+			JOIN SYS_MOCK_INFO USING (MOCK_CODE)
+			JOIN SYS_HANG_INFO USING (HANG_CODE)
+			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+			JOIN SYS_GHM_INFO USING (GHM_CODE)
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(smok_code)">
+			AND SMOK_CODE = #{smok_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(mock_code)">
+			AND MOCK_CODE = #{mock_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(smok_numb)">
+			AND SMOK_NUMB = #{smok_numb}
+		</if>
+	</select>
+
+	<insert id="smokRegist" parameterType="hmap">
+		INSERT INTO DF_SMOK_INFO (
+			COMP_CODE
+			, BSNS_CODE
+			, SMOK_CODE
+			, MOCK_CODE
+			, SMOK_NUMB
+			, SMOK_NAME
+			, SMOK_NOTE
+			, SMOK_REG_DATE
+			, SMOK_MOD_DATE
+			, SMOK_MOD_USER
+		)
+		VALUES (
+			#{comp_code}
+			, #{bsns_code}
+			, #{smok_code}
+			, #{mock_code}
+			, #{smok_numb}
+			, #{smok_name}
+			, #{smok_note}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<update id="smokModify" parameterType="hmap">
+		UPDATE DF_SMOK_INFO
+		SET
+			SMOK_NAME = #{smok_name}
+			, SMOK_NOTE = #{smok_note}
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND SMOK_CODE = #{smok_code}
+	</update>
+
+	<delete id="smokDelete" parameterType="hmap">
+		DELETE FROM DF_SMOK_INFO
+		WHERE COMP_CODE = #{comp_code}
+		  AND BSNS_CODE = #{bsns_code}
+		  AND SMOK_CODE = #{smok_code}
+	</delete>
+</mapper>

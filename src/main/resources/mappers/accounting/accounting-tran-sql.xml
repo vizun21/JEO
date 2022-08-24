@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="accounting.tran">
+	<select id="tranPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, TRAN_CODE
+			, BKTR_CODE
+			, DATE_FORMAT(TRAN_DATE, '%Y-%m-%d') AS TRAN_DATE
+			, DATE_FORMAT(TRAN_DATE, '%Y-%m-%d %H:%i') AS TRAN_DATETIME
+			, TRAN_IO_TYPE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'IO_TYPE'
+					AND CDDT_VAL = TRAN_IO_TYPE
+			) AS TRAN_IO_TYPE_NAME
+			, TRAN_JUKYO
+			, TRAN_PRICE
+			, IF(TRAN_IO_TYPE = "I", TRAN_PRICE, "") AS TRAN_INPUT_PRICE
+			, IF(TRAN_IO_TYPE = "O", TRAN_PRICE, "") AS TRAN_OUTPUT_PRICE
+			, MOCK_CODE
+			, (SELECT MOCK_NAME
+				FROM SYS_MOCK_INFO
+				WHERE MOCK_CODE = ATL.MOCK_CODE
+			) AS MOCK_NAME
+			, SMOK_CODE
+			, IFNULL(
+				(SELECT SMOK_NAME
+					FROM DF_SMOK_INFO
+					WHERE COMP_CODE = ATL.COMP_CODE
+						AND BSNS_CODE = ATL.BSNS_CODE
+						AND SMOK_CODE = ATL.SMOK_CODE
+				), ''
+			) AS SMOK_NAME
+			, REL_GWAN_CODE
+			, IFNULL(
+				(SELECT GWAN_NAME
+					FROM SYS_GWAN_INFO
+					WHERE GWAN_CODE = ATL.REL_GWAN_CODE
+			    ), ''
+			) AS REL_GWAN_NAME
+			, REL_MOCK_CODE
+			, IFNULL(
+			(SELECT MOCK_NAME
+				FROM SYS_MOCK_INFO
+				WHERE MOCK_CODE = ATL.REL_MOCK_CODE), ''
+			) AS REL_MOCK_NAME
+			, sfProofNumberFormat(TRAN_DATE, TRAN_IO_TYPE, TRAN_PROOF_NUMB) AS TRAN_PROOF_NUMB
+			, TRAN_NOTE
+			, DATE_FORMAT(TRAN_REG_DATE, '%Y-%m-%d') AS TRAN_REG_DATE
+			, DATE_FORMAT(TRAN_MOD_DATE, '%Y-%m-%d') AS TRAN_MOD_DATE
+			, TRAN_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = TRAN_MOD_USER
+			) AS TRAN_MOD_USER_NAME
+			, CAST(TRAN_BALANCE AS DECIMAL(20)) AS TRAN_BALANCE
+		FROM (
+			SELECT
+				TEMP.*
+				, @balance := @balance + IF(TRAN_IO_TYPE = 'I', TRAN_PRICE, TRAN_PRICE * -1) TRAN_BALANCE
+			FROM
+				(SELECT @balance := IF(#{bsns_sess_start_month} = #{month}, 0, IFNULL(
+					(SELECT DEAD_BALANCE
+						FROM AC_DEAD_INFO
+						WHERE COMP_CODE = #{comp_code}
+							AND BSNS_CODE = #{bsns_code}
+							AND DEAD_YEAR = #{balance_year}
+							AND DEAD_MONTH = #{balance_month}
+					), 0)
+				)) B,
+				(SELECT *
+					FROM AC_TRAN_LIST
+					WHERE COMP_CODE = #{comp_code}
+						AND BSNS_CODE = #{bsns_code}
+						AND YEAR(TRAN_DATE) = #{year}
+						AND MONTH(TRAN_DATE) = #{month}
+					ORDER BY TRAN_DATE ASC, BKTR_CODE ASC, TRAN_CODE ASC
+				) TEMP
+		) ATL
+		ORDER BY TRAN_DATETIME DESC, BKTR_CODE DESC, TRAN_CODE DESC
+	</select>
+
+	<select id="tranList" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, TRAN_CODE
+			, BKTR_CODE
+			, DATE_FORMAT(TRAN_DATE, '%Y-%m-%d') AS TRAN_DATE
+			, DATE_FORMAT(TRAN_DATE, '%Y-%m-%d %H:%i') AS TRAN_DATETIME
+			, TRAN_IO_TYPE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'IO_TYPE'
+					AND CDDT_VAL = TRAN_IO_TYPE
+			) AS TRAN_IO_TYPE_NAME
+			, TRAN_JUKYO
+			, TRAN_PRICE
+			, GWAN_NUMB
+			, HANG_NUMB
+			, MOCK_CODE
+			, MOCK_NAME
+			, MOCK_NUMB
+			, SMOK_CODE
+			, IFNULL(SMOK_NAME, '') AS SMOK_NAME
+			, REL_GWAN_CODE
+			, IFNULL(
+				(SELECT GWAN_NAME
+					FROM SYS_GWAN_INFO
+					WHERE GWAN_CODE = ATL.REL_GWAN_CODE), ''
+				) AS REL_GWAN_NAME
+			, REL_MOCK_CODE
+			, IFNULL(
+				(SELECT MOCK_NAME
+					FROM SYS_MOCK_INFO
+					WHERE MOCK_CODE = ATL.REL_MOCK_CODE), ''
+				) AS REL_MOCK_NAME
+			, IFNULL(TRAN_NOTE, '') AS TRAN_NOTE
+			, DATE_FORMAT(TRAN_REG_DATE, '%Y-%m-%d') AS TRAN_REG_DATE
+			, DATE_FORMAT(TRAN_MOD_DATE, '%Y-%m-%d') AS TRAN_MOD_DATE
+			, TRAN_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = TRAN_MOD_USER
+			) AS TRAN_MOD_USER_NAME
+		FROM AC_TRAN_LIST ATL
+			JOIN SYS_MOCK_INFO USING (MOCK_CODE)
+			JOIN SYS_HANG_INFO USING (HANG_CODE)
+			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+			LEFT JOIN DF_SMOK_INFO USING (COMP_CODE, BSNS_CODE, MOCK_CODE, SMOK_CODE)
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(comp_code)">
+				AND COMP_CODE = #{comp_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_code)">
+				AND BSNS_CODE = #{bsns_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bktr_code)">
+				AND BKTR_CODE = #{bktr_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(tran_code)">
+				AND TRAN_CODE = #{tran_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(tran_io_type)">
+				AND TRAN_IO_TYPE = #{tran_io_type}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(gwan_code)">
+				AND GWAN_CODE = #{gwan_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(hang_code)">
+				AND HANG_CODE = #{hang_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(mock_code)">
+				AND MOCK_CODE = #{mock_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(smok_code)">
+				AND SMOK_CODE = #{smok_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(rel_mock_code)">
+				AND REL_MOCK_CODE = #{rel_mock_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+				AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_name)">
+				AND (
+					GWAN_NAME LIKE CONCAT('%', #{ghm_name}, '%')
+					OR HANG_NAME LIKE CONCAT('%', #{ghm_name}, '%')
+					OR MOCK_NAME LIKE CONCAT('%', #{ghm_name}, '%')
+				)
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(start_date) and @com.erowm.common.util.CommonUtils@isNotEmpty(end_date)">
+			  <![CDATA[
+				AND (TRAN_DATE >= #{start_date} AND TRAN_DATE <= #{end_date})
+			  ]]>
+			</if>
+		</where>
+		ORDER BY TRAN_DATETIME DESC, BKTR_CODE DESC, TRAN_CODE ASC
+	</select>
+
+	<insert id="tranRegist" parameterType="hmap">
+		<selectKey keyProperty="tran_proof_numb" resultType="rmap" order="BEFORE">
+			SELECT IFNULL(MAX(TRAN_PROOF_NUMB) + 1, 1) AS TRAN_PROOF_NUMB
+			FROM AC_TRAN_LIST
+			WHERE COMP_CODE = #{comp_code}
+				AND BSNS_CODE = #{bsns_code}
+				AND TRAN_IO_TYPE = #{tran_io_type}
+				AND YEAR(TRAN_DATE) = YEAR(#{tran_date})
+				AND MONTH(TRAN_DATE) = MONTH(#{tran_date})
+		</selectKey>
+
+		INSERT INTO AC_TRAN_LIST (
+			COMP_CODE
+			, BSNS_CODE
+			, TRAN_CODE
+			, BKTR_CODE
+			, TRAN_DATE
+			, TRAN_IO_TYPE
+			, TRAN_JUKYO
+			, TRAN_PRICE
+			, MOCK_CODE
+			, SMOK_CODE
+			, REL_GWAN_CODE
+			, REL_MOCK_CODE
+			, TRAN_PROOF_NUMB
+			, TRAN_NOTE
+			, TRAN_REG_DATE
+			, TRAN_MOD_DATE
+			, TRAN_MOD_USER
+		)
+		VALUES (
+			#{comp_code}
+			, #{bsns_code}
+			, sfUniqueKey()
+			, #{bktr_code}
+			, #{tran_date}
+			, #{tran_io_type}
+			, #{tran_jukyo}
+			, #{tran_price}
+			, #{mock_code}
+			, #{smok_code}
+			, #{rel_gwan_code}
+			, #{rel_mock_code}
+			, #{tran_proof_numb}
+			, #{tran_note}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<update id="tranModify" parameterType="hmap">
+		<selectKey keyProperty="tran_proof_numb" resultType="rmap" order="BEFORE">
+			SELECT IFNULL(MAX(TRAN_PROOF_NUMB) + 1, 1) AS TRAN_PROOF_NUMB
+			FROM AC_TRAN_LIST
+			WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND TRAN_IO_TYPE = #{tran_io_type}
+			AND YEAR(TRAN_DATE) = YEAR(#{tran_date})
+			AND MONTH(TRAN_DATE) = MONTH(#{tran_date})
+		</selectKey>
+
+		UPDATE AC_TRAN_LIST
+		SET
+			TRAN_DATE = #{tran_date}
+			, TRAN_IO_TYPE = #{tran_io_type}
+			, TRAN_JUKYO = #{tran_jukyo}
+			, TRAN_PRICE = #{tran_price}
+			, MOCK_CODE = #{mock_code}
+			, SMOK_CODE = #{smok_code}
+			, REL_GWAN_CODE = #{rel_gwan_code}
+			, REL_MOCK_CODE = #{rel_mock_code}
+			, TRAN_PROOF_NUMB = IF(TRAN_IO_TYPE = #{tran_io_type}, TRAN_PROOF_NUMB, #{tran_io_type})
+			, TRAN_NOTE = #{tran_note}
+			, TRAN_REG_DATE = NOW()
+			, TRAN_MOD_DATE = NOW()
+			, TRAN_MOD_USER = #{user_id}
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND TRAN_CODE = #{tran_code}
+	</update>
+
+	<delete id="tranDelete" parameterType="hmap">
+		DELETE FROM AC_TRAN_LIST
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(tran_code)">
+			AND TRAN_CODE = #{tran_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bktr_code)">
+			AND BKTR_CODE = #{bktr_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(acnt_code)">
+			AND BKTR_CODE IN (
+				SELECT BKTR_CODE
+				FROM AC_BANK_TRAN_LIST
+				WHERE ACNT_CODE = #{acnt_code}
+			)
+		</if>
+	</delete>
+
+	<update id="tranBktrSetNull" parameterType="hmap">
+		UPDATE AC_TRAN_LIST
+		SET BKTR_CODE = NULL
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND BKTR_CODE IN (
+				SELECT BKTR_CODE
+				FROM AC_BANK_TRAN_LIST
+				WHERE ACNT_CODE = #{acnt_code}
+			)
+	</update>
+
+	<select id="tranAmount" parameterType="hmap" resultType="java.math.BigInteger">
+		SELECT IFNULL(SUM(TRAN_PRICE), 0) AS TRAN_PRICE
+		FROM AC_TRAN_LIST
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND TRAN_IO_TYPE = #{io_type}
+			AND YEAR(TRAN_DATE) = #{year}
+			AND MONTH(TRAN_DATE) = #{month}
+	</select>
+
+	<select id="tranDuplicateList" parameterType="hmap" resultType="rmap">
+		SELECT
+			DATE_FORMAT(TRAN_DATE, '%Y-%m-%d') AS TRAN_DATE
+			, TRAN_IO_TYPE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'IO_TYPE'
+					AND CDDT_VAL = TRAN_IO_TYPE
+			) AS TRAN_IO_TYPE_NAME
+			, TRAN_JUKYO
+			, TRAN_PRICE
+			, MOCK_CODE
+			, MOCK_NAME
+			, SMOK_CODE
+			, IFNULL(SMOK_NAME, '') AS SMOK_NAME
+			, TRAN_DUP_COUNT
+		FROM (
+			SELECT *, COUNT(*) AS TRAN_DUP_COUNT
+			FROM AC_TRAN_LIST
+				JOIN SYS_MOCK_INFO USING (MOCK_CODE)
+				LEFT JOIN DF_SMOK_INFO USING (COMP_CODE, BSNS_CODE, MOCK_CODE, SMOK_CODE)
+			WHERE COMP_CODE = #{comp_code}
+				AND BSNS_CODE = #{bsns_code}
+				AND YEAR(TRAN_DATE) = #{tran_year}
+				AND MONTH(TRAN_DATE) = #{tran_month}
+			GROUP BY TRAN_DATE, TRAN_IO_TYPE, MOCK_CODE, SMOK_CODE, TRAN_JUKYO, TRAN_PRICE
+		) T
+		WHERE TRAN_DUP_COUNT > 1
+	</select>
+
+	<select id="ghmReportList" parameterType="hmap" resultType="rmap">
+		SELECT
+			GHM_CODE
+			, GHMR_CODE
+			, GHMR_NAME
+			, I_MOCK_CODE
+			, (SELECT MOCK_NAME
+				FROM SYS_MOCK_INFO
+				WHERE MOCK_CODE = I_MOCK_CODE
+			) AS I_MOCK_NAME
+			, ROUND(IFNULL(
+				(SELECT SUM(CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER/100)) AS SIGNED INTEGER))
+					FROM AC_BUDG_DETAIL
+					JOIN AC_BUDG_INFO USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+					WHERE COMP_CODE = #{comp_code}
+						AND BSNS_CODE = #{bsns_code}
+						AND MOCK_CODE = I_MOCK_CODE
+						AND BUDG_TYPE = (SELECT MAX(BUDG_TYPE)
+											FROM AC_BUDG_INFO
+											WHERE COMP_CODE = #{comp_code}
+												AND BSNS_CODE = #{bsns_code}
+											  	AND BUDG_YEAR = #{session_year})
+				), 0
+			)/12) AS I_MONTH_BUDG_AMOUNT
+			, IFNULL(
+				(SELECT SUM(TRAN_PRICE)
+					FROM AC_TRAN_LIST
+					WHERE COMP_CODE = #{comp_code}
+						AND BSNS_CODE = #{bsns_code}
+						AND MOCK_CODE = I_MOCK_CODE
+					  <![CDATA[
+						AND TRAN_DATE >= #{start_date}
+						AND TRAN_DATE < #{end_date}
+					  ]]>
+				), 0
+			) AS I_TRAN_AMOUNT
+			, O_MOCK_CODE
+			, ROUND(IFNULL(
+				(SELECT SUM(CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER/100)) AS SIGNED INTEGER))
+					FROM AC_BUDG_DETAIL
+					JOIN AC_BUDG_INFO USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+					WHERE COMP_CODE = #{comp_code}
+						AND BSNS_CODE = #{bsns_code}
+						AND MOCK_CODE = O_MOCK_CODE
+						AND BUDG_TYPE = (SELECT MAX(BUDG_TYPE)
+											FROM AC_BUDG_INFO
+											WHERE COMP_CODE = #{comp_code}
+												AND BSNS_CODE = #{bsns_code}
+											  	AND BUDG_YEAR = #{session_year})
+				), 0
+			)/12) AS O_MONTH_BUDG_AMOUNT
+			, (SELECT MOCK_NAME
+				FROM SYS_MOCK_INFO
+				WHERE MOCK_CODE = O_MOCK_CODE
+			) AS O_MOCK_NAME
+			, IFNULL(
+				(SELECT SUM(TRAN_PRICE)
+					FROM AC_TRAN_LIST
+					WHERE COMP_CODE = #{comp_code}
+						AND BSNS_CODE = #{bsns_code}
+						AND MOCK_CODE = O_MOCK_CODE
+					  <![CDATA[
+						AND TRAN_DATE >= #{start_date}
+						AND TRAN_DATE < #{end_date}
+					  ]]>
+				), 0
+			) AS O_TRAN_AMOUNT
+		FROM SYS_GHM_REPORT
+		WHERE GHM_CODE = #{ghm_code}
+	</select>
+</mapper>

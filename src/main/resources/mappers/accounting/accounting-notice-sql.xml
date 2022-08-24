@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="accounting.notice">
+	<select id="noticePage" parameterType="hmap" resultType="rmap">
+		SELECT
+			NOTI_CODE
+			, NOTI_NAME
+			, NOTI_CONTENT
+			, BSNS_CATE
+			, IFNULL(
+			    (SELECT CDDT_NAME
+					FROM SYS_CODE_DETAIL
+					WHERE CDDT_VAL = BSNS_CATE
+				), '전체'
+			) AS BSNS_CATE_NAME
+			, DATE_FORMAT(NOTI_REG_DATE, '%Y-%m-%d') AS NOTI_REG_DATE
+			, DATE_FORMAT(NOTI_MOD_DATE, '%Y-%m-%d') AS NOTI_MOD_DATE
+			, NOTI_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = NOTI_MOD_USER
+			) AS NOTI_MOD_USER_NAME
+		FROM SYS_NOTI_INFO
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+				AND (BSNS_CATE = #{bsns_cate} OR BSNS_CATE IS NULL OR BSNS_CATE = '')
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+				AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+		</where>
+		ORDER BY NOTI_REG_DATE DESC
+	</select>
+
+	<select id="noticeList" parameterType="hmap" resultType="rmap">
+		SELECT
+			NOTI_CODE
+			, NOTI_NAME
+			, NOTI_CONTENT
+			, BSNS_CATE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CDDT_VAL = BSNS_CATE
+			) AS BSNS_CATE_NAME
+			, DATE_FORMAT(NOTI_REG_DATE, '%Y-%m-%d') AS NOTI_REG_DATE
+			, DATE_FORMAT(NOTI_MOD_DATE, '%Y-%m-%d') AS NOTI_MOD_DATE
+			, NOTI_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = NOTI_MOD_USER
+			) AS NOTI_MOD_USER_NAME
+		FROM SYS_NOTI_INFO
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(noti_code)">
+				AND NOTI_CODE = #{noti_code}
+			</if>
+		</where>
+	</select>
+
+	<insert id="noticeRegist" parameterType="hmap">
+		INSERT INTO SYS_NOTI_INFO (
+			NOTI_CODE
+			, NOTI_NAME
+			, NOTI_CONTENT
+			, BSNS_CATE
+			, NOTI_REG_DATE
+			, NOTI_MOD_DATE
+			, NOTI_MOD_USER
+		)
+		VALUES(
+			sfUniqueKey()
+			, #{noti_name}
+			, #{noti_content}
+			, #{bsns_cate}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<update id="noticeModify" parameterType="hmap">
+		UPDATE sys_noti_info
+		SET
+			NOTI_NAME = #{noti_name}
+		  , NOTI_CONTENT = #{noti_content}
+		  , BSNS_CATE = #{bsns_cate}
+		  , NOTI_MOD_DATE = NOW()
+		  , NOTI_MOD_USER = #{user_id}
+		WHERE NOTI_CODE = #{noti_code}
+	</update>
+</mapper>

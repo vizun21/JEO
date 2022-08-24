@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="accounting.room">
+	<select id="roomPage" parameterType="hmap" resultType="Room">
+		SELECT
+			COMP_CODE
+			 , BSNS_CODE
+			 , ROOM_CODE
+			 , ROOM_NAME
+			 , ROOM_LIMIT
+			 , ROOM_TEACHER_NAME
+			 , ROOM_SUB_TEACHER_NAME
+			 , ROOM_REG_DATE
+			 , ROOM_MOD_DATE
+			 , ROOM_MOD_USER
+			 , (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = ROOM_MOD_USER
+			) AS ROOM_MOD_USER_NAME
+		FROM AC_ROOM_INFO
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+			AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+	</select>
+
+	<select id="roomList" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, ROOM_CODE
+			, ROOM_NAME
+			, ROOM_LIMIT
+			, ROOM_TEACHER_NAME
+			, ROOM_SUB_TEACHER_NAME
+			, ROOM_REG_DATE
+			, ROOM_MOD_DATE
+			, ROOM_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = ROOM_MOD_USER
+			) AS ROOM_MOD_USER_NAME
+		FROM AC_ROOM_INFO
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(room_code)">
+			AND ROOM_CODE = #{room_code}
+		</if>
+	</select>
+
+	<insert id="roomRegist" parameterType="rmap">
+		INSERT INTO AC_ROOM_INFO (
+			COMP_CODE
+			, BSNS_CODE
+			, ROOM_CODE
+			, ROOM_NAME
+			, ROOM_LIMIT
+			, ROOM_TEACHER_NAME
+			, ROOM_SUB_TEACHER_NAME
+			, ROOM_REG_DATE
+			, ROOM_MOD_DATE
+			, ROOM_MOD_USER
+		)
+		VALUES (
+			#{comp_code}
+			, #{bsns_code}
+			, sfUniqueKey()
+			, #{room_name}
+			, #{room_limit}
+			, #{room_teacher_name}
+			, #{room_sub_teacher_name}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<update id="roomModify" parameterType="hmap">
+		UPDATE AC_ROOM_INFO
+		SET
+			ROOM_NAME = #{room_name}
+		  , ROOM_LIMIT = #{room_limit}
+		  , ROOM_TEACHER_NAME = #{room_teacher_name}
+		  , ROOM_SUB_TEACHER_NAME = #{room_sub_teacher_name}
+		  , ROOM_MOD_DATE = NOW()
+		  , ROOM_MOD_USER = #{user_id}
+		WHERE COMP_CODE = #{comp_code}
+		  AND BSNS_CODE = #{bsns_code}
+		  AND ROOM_CODE = #{room_code}
+	</update>
+
+</mapper>

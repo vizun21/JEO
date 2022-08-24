@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="accounting.trial.balance">
+	<select id="trialBalanceTotal" parameterType="hmap" resultType="rmap">
+		SELECT
+			IF(GWAN_IO_TYPE = 'I'
+				, IFNULL(
+					(SELECT SUM(TRAN_PRICE)
+						FROM AC_TRAN_LIST
+						WHERE COMP_CODE = #{comp_code}
+							AND BSNS_CODE = #{bsns_code}
+							AND MOCK_CODE = SMI.MOCK_CODE
+						  <![CDATA[
+							AND TRAN_DATE >= #{session_start_date}
+							AND TRAN_DATE < #{end_date}
+					      ]]>
+					), 0
+				), ''
+			) AS INPUT_TRAN_TOTAL
+			, IF(GWAN_IO_TYPE = 'I'
+				, IFNULL(
+					(SELECT SUM(TRAN_PRICE)
+						FROM AC_TRAN_LIST
+						WHERE COMP_CODE = #{comp_code}
+							AND BSNS_CODE = #{bsns_code}
+							AND MOCK_CODE = SMI.MOCK_CODE
+						  <![CDATA[
+						  	AND TRAN_DATE >= #{start_date}
+							AND TRAN_DATE < #{end_date}
+					      ]]>
+					), 0
+				), ''
+			) AS INPUT_TRAN_AMOUNT
+			, CONCAT('[', GWAN_NUMB, HANG_NUMB, MOCK_NUMB, '] ', MOCK_NAME)AS GHM_NAME
+			, IF(GWAN_IO_TYPE = 'O'
+				, IFNULL(
+					(SELECT SUM(TRAN_PRICE)
+						FROM AC_TRAN_LIST
+						WHERE COMP_CODE = #{comp_code}
+							AND BSNS_CODE = #{bsns_code}
+							AND MOCK_CODE = SMI.MOCK_CODE
+						  <![CDATA[
+						  	AND TRAN_DATE >= #{start_date}
+							AND TRAN_DATE < #{end_date}
+					      ]]>
+					), 0
+				), ''
+			) AS OUTPUT_TRAN_AMOUNT
+			, IF(GWAN_IO_TYPE = 'O'
+				, IFNULL(
+					(SELECT SUM(TRAN_PRICE)
+						FROM AC_TRAN_LIST
+						WHERE COMP_CODE = #{comp_code}
+							AND BSNS_CODE = #{bsns_code}
+							AND MOCK_CODE = SMI.MOCK_CODE
+						  <![CDATA[
+							AND TRAN_DATE >= #{session_start_date}
+							AND TRAN_DATE < #{end_date}
+					      ]]>
+					), 0
+				), ''
+			) AS OUTPUT_TRAN_TOTAL
+		FROM SYS_MOCK_INFO SMI
+			JOIN SYS_HANG_INFO USING (HANG_CODE)
+			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+			JOIN SYS_GHM_INFO USING (GHM_CODE)
+		WHERE BSNS_CATE = #{bsns_cate}
+			AND GHM_ACTIVE_YN = 'Y'
+			AND GHM_YEAR = #{session_year}
+	</select>
+
+	<select id="trialBalanceAnnual" parameterType="hmap" resultType="rmap">
+		SELECT
+			GWAN_IO_TYPE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'BUDG_IO_TYPE'
+					AND CDDT_VAL = GWAN_IO_TYPE
+			) AS GWAN_IO_TYPE_NAME
+			 , CONCAT(GWAN_NUMB, HANG_NUMB, MOCK_NUMB) AS GHM_NUMB
+			 , MOCK_NAME
+			 , IFNULL(
+				(SELECT SUM(CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER/100)) AS SIGNED INTEGER))
+					FROM AC_BUDG_DETAIL
+					JOIN AC_BUDG_INFO USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+					WHERE COMP_CODE = #{comp_code}
+						AND BSNS_CODE = #{bsns_code}
+						AND MOCK_CODE = SMI.MOCK_CODE
+						AND BUDG_TYPE = (SELECT MAX(BUDG_TYPE)
+											FROM AC_BUDG_INFO
+											WHERE COMP_CODE = #{comp_code}
+												AND BSNS_CODE = #{bsns_code}
+											  	AND BUDG_YEAR = #{session_year})
+				), 0
+			) AS BGDT_AMOUNT
+			, IFNULL(SUM(TRAN_PRICE), 0) AS TRAN_AMOUNT
+			, IFNULL(SUM(CASE WHEN DATE_FORMAT(TRAN_DATE, '%Y-%c') = DATE_FORMAT(DATE(CONCAT(#{session_year}, '-', #{session_start_month}, '-1')), '%Y-%c') THEN TRAN_PRICE END), 0) AS TRAN_SUB_AMOUNT_1
+			, IFNULL(SUM(CASE WHEN DATE_FORMAT(TRAN_DATE, '%Y-%c') = DATE_FORMAT(DATE(CONCAT(#{session_year}, '-', #{session_start_month}, '-1')) + INTERVAL(1) MONTH, '%Y-%c') THEN TRAN_PRICE END), 0) AS TRAN_SUB_AMOUNT_2
+			, IFNULL(SUM(CASE WHEN DATE_FORMAT(TRAN_DATE, '%Y-%c') = DATE_FORMAT(DATE(CONCAT(#{session_year}, '-', #{session_start_month}, '-1')) + INTERVAL(2) MONTH, '%Y-%c') THEN TRAN_PRICE END), 0) AS TRAN_SUB_AMOUNT_3
+			, IFNULL(SUM(CASE WHEN DATE_FORMAT(TRAN_DATE, '%Y-%c') = DATE_FORMAT(DATE(CONCAT(#{session_year}, '-', #{session_start_month}, '-1')) + INTERVAL(3) MONTH, '%Y-%c') THEN TRAN_PRICE END), 0) AS TRAN_SUB_AMOUNT_4
+			, IFNULL(SUM(CASE WHEN DATE_FORMAT(TRAN_DATE, '%Y-%c') = DATE_FORMAT(DATE(CONCAT(#{session_year}, '-', #{session_start_month}, '-1')) + INTERVAL(4) MONTH, '%Y-%c') THEN TRAN_PRICE END), 0) AS TRAN_SUB_AMOUNT_5
+			, IFNULL(SUM(CASE WHEN DATE_FORMAT(TRAN_DATE, '%Y-%c') = DATE_FORMAT(DATE(CONCAT(#{session_year}, '-', #{session_start_month}, '-1')) + INTERVAL(5) MONTH, '%Y-%c') THEN TRAN_PRICE END), 0) AS TRAN_SUB_AMOUNT_6
+			, IFNULL(SUM(CASE WHEN DATE_FORMAT(TRAN_DATE, '%Y-%c') = DATE_FORMAT(DATE(CONCAT(#{session_year}, '-', #{session_start_month}, '-1')) + INTERVAL(6) MONTH, '%Y-%c') THEN TRAN_PRICE END), 0) AS TRAN_SUB_AMOUNT_7
+			, IFNULL(SUM(CASE WHEN DATE_FORMAT(TRAN_DATE, '%Y-%c') = DATE_FORMAT(DATE(CONCAT(#{session_year}, '-', #{session_start_month}, '-1')) + INTERVAL(7) MONTH, '%Y-%c') THEN TRAN_PRICE END), 0) AS TRAN_SUB_AMOUNT_8
+			, IFNULL(SUM(CASE WHEN DATE_FORMAT(TRAN_DATE, '%Y-%c') = DATE_FORMAT(DATE(CONCAT(#{session_year}, '-', #{session_start_month}, '-1')) + INTERVAL(8) MONTH, '%Y-%c') THEN TRAN_PRICE END), 0) AS TRAN_SUB_AMOUNT_9
+			, IFNULL(SUM(CASE WHEN DATE_FORMAT(TRAN_DATE, '%Y-%c') = DATE_FORMAT(DATE(CONCAT(#{session_year}, '-', #{session_start_month}, '-1')) + INTERVAL(9) MONTH, '%Y-%c') THEN TRAN_PRICE END), 0) AS TRAN_SUB_AMOUNT_10
+			, IFNULL(SUM(CASE WHEN DATE_FORMAT(TRAN_DATE, '%Y-%c') = DATE_FORMAT(DATE(CONCAT(#{session_year}, '-', #{session_start_month}, '-1')) + INTERVAL(10) MONTH, '%Y-%c') THEN TRAN_PRICE END), 0) AS TRAN_SUB_AMOUNT_11
+			, IFNULL(SUM(CASE WHEN DATE_FORMAT(TRAN_DATE, '%Y-%c') = DATE_FORMAT(DATE(CONCAT(#{session_year}, '-', #{session_start_month}, '-1')) + INTERVAL(11) MONTH, '%Y-%c') THEN TRAN_PRICE END), 0) AS TRAN_SUB_AMOUNT_12
+		FROM SYS_MOCK_INFO SMI
+			JOIN SYS_HANG_INFO USING (HANG_CODE)
+			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+			JOIN SYS_GHM_INFO USING (GHM_CODE)
+			LEFT JOIN AC_TRAN_LIST ATL
+				ON COMP_CODE = #{comp_code}
+					AND BSNS_CODE = #{bsns_code}
+					AND ATL.MOCK_CODE = SMI.MOCK_CODE
+		WHERE BSNS_CATE = #{bsns_cate}
+			AND GHM_ACTIVE_YN = 'Y'
+			AND GHM_YEAR = #{session_year}
+		GROUP BY SMI.MOCK_CODE
+	</select>
+</mapper>

@@ -1,0 +1,149 @@
+.checkResult {color: red;}
+.red {color: red}
+.required {color: red;margin-left: 2px;}
+.table .handle {cursor: move;}
+
+.datepicker[readonly], .datepicker-removable[readonly] {
+    background-color: #fff;
+}
+.datetimepicker[readonly], .datetimepicker-timechangeonly[readonly] {
+    background-color: #fff;
+}
+.business-box .business-select-box {
+    position: absolute;
+    width: 169px;
+}
+.business-box .business-select-box ul {
+    border: 1px solid #ddd;
+    border-top: 0px;
+    background-color: #f8f9fa;
+    border-bottom-left-radius: .2rem;
+    border-bottom-right-radius: .2rem;
+    position: relative;
+    font-size: .875rem;
+    padding-left: 0px;
+}
+.business-box .business-select-box ul li {
+    list-style: none;
+    text-align: center;
+    padding: .25rem .5rem;
+    color: rgba(52,58,64,.8);
+}
+.business-box .business-select-box ul li:hover {
+    cursor: pointer;
+}
+
+/* sidebar */
+.nav-sidebar .nav-link {
+    padding: .5rem .5rem;
+}
+.nav-sidebar .nav-treeview .nav-item {
+    margin-left: 1rem;
+}
+.nav-sidebar .nav-second-link {
+    width: calc(250px - 1rem * 2)!important;
+}
+.nav-sidebar .nav-third-link {
+    width: calc(250px - 1.5rem * 2)!important;
+}
+
+/* table */
+.table {
+    border-top: 1px solid #dee2e6;
+}
+.table thead th, .table tfoot th {
+    white-space: nowrap;
+}
+.table thead th, .table tbody th, .table tfoot th {
+    background-color: lightyellow;
+}
+.table thead th, .table tbody th, .table tfoot th, .table-list tbody td {
+    text-align: center;
+}
+.table thead th, .table tbody th, .table tfoot th, .table tbody td {
+    vertical-align: middle;
+}
+.table-list thead th {
+    border-top: 0px;
+    border-bottom: 1px solid #dee2e6;
+}
+.table-form {
+    margin-bottom: 0;
+}
+.table-form .icheck-info.d-inline {
+    margin-top: .25rem!important;
+    margin-bottom: .25rem!important;
+}
+
+/* overlay */
+.overlay {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    background-color: rgba(0,0,0,0.1);
+    z-index: 4;
+}
+.overlay-icon{
+    padding: 30% 40%;
+    margin: auto auto;
+    z-index: 5;
+}
+
+/* button */
+.btn {
+    white-space: nowrap;
+}
+.btn-hide {
+    display: none;
+}
+
+/* bootstrap customise */
+.table-sm td, .table-sm th {
+    padding: .3rem .5rem;
+}
+.modal-header {
+    padding: .7rem;
+}
+.modal-header .close i{
+    padding: .25rem;
+}
+
+/* admin-lte customise */
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+.card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+/* datatables customise */
+table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td.dtr-control:before, table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>th.dtr-control:before {
+    background-color: #17a2b8;
+}
+table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td.dtr-control:before {
+    left: 9px;
+    margin-top: 0px;
+}
+.dropdown-item.active, .dropdown-item:active {
+    color: #000000;
+    background-color: lightgoldenrodyellow;
+    font-weight: bold;
+}
+
+/* select2 customise */
+.select2-container--default .select2-results__option {
+    padding: 3px 12px;
+    font-size: .75rem;
+}
+
+/* custom-select customise */
+select.custom-select {
+    height: 200px!important;
+}

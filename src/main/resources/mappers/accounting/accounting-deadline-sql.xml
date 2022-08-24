@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="accounting.deadline">
+	<select id="deadlinePage" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, DEAD_CODE
+			, YEAR AS DEAD_YEAR
+			, MONTH AS DEAD_MONTH
+			, IFNULL(DEAD_BALANCE, '') AS DEAD_BALANCE
+			, IF(DEAD_CODE, 'Y', 'N') AS IS_CLOSED
+			, IFNULL(DATE_FORMAT(DEAD_REG_DATE, '%Y-%m-%d'), '') AS DEAD_REG_DATE
+			, DEAD_REG_USER
+			, IFNULL(
+				(SELECT USER_NAME
+					FROM DF_USER_INFO
+					WHERE USER_ID = DEAD_REG_USER
+				), ''
+			) AS DEAD_REG_USER_NAME
+		FROM
+			(SELECT
+				DATE
+				, YEAR(DATE) AS YEAR
+				, MONTH(DATE) AS MONTH
+				FROM
+				(SELECT
+					DATE(CONCAT(#{year}, '-', #{bsns_sess_start_month}, '-01')) + INTERVAL(T.INTERV) MONTH AS DATE
+				FROM
+					(SELECT 0 AS INTERV			UNION ALL SELECT 1
+						UNION ALL SELECT 2		UNION ALL SELECT 3
+						UNION ALL SELECT 4		UNION ALL SELECT 5
+						UNION ALL SELECT 6		UNION ALL SELECT 7
+						UNION ALL SELECT 8		UNION ALL SELECT 9
+						UNION ALL SELECT 10		UNION ALL SELECT 11
+					) AS T
+				) AS YM
+			) YM
+		LEFT JOIN AC_DEAD_INFO ADI
+			ON COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND ADI.DEAD_YEAR = YM.YEAR
+			AND DEAD_MONTH = YM.MONTH
+	</select>
+
+	<select id="deadlineList" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			 , BSNS_CODE
+			 , DEAD_CODE
+			 , DEAD_YEAR
+			 , DEAD_MONTH
+			 , DEAD_BALANCE
+			 , DEAD_REG_DATE
+			 , DEAD_REG_USER
+			 , (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = DEAD_REG_USER
+			) AS DEAD_REG_USER_NAME
+		FROM AC_DEAD_INFO
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(dead_code)">
+			AND DEAD_CODE = #{dead_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(year)">
+			AND DEAD_YEAR = #{year}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(month)">
+			AND DEAD_MONTH = #{month}
+		</if>
+	</select>
+
+	<select id="deadlineBalance" parameterType="hmap" resultType="java.math.BigInteger">
+		SELECT DEAD_BALANCE
+		FROM AC_DEAD_INFO
+		WHERE COMP_CODE = #{comp_code}
+		  AND BSNS_CODE = #{bsns_code}
+		  AND DEAD_YEAR = #{year}
+		  AND DEAD_MONTH = #{month}
+	</select>
+
+	<insert id="deadlineRegist" parameterType="hmap">
+		INSERT INTO AC_DEAD_INFO (
+			COMP_CODE
+			, BSNS_CODE
+			, DEAD_CODE
+			, DEAD_YEAR
+			, DEAD_MONTH
+			, DEAD_BALANCE
+			, DEAD_REG_DATE
+			, DEAD_REG_USER
+		)
+		VALUES (
+			#{comp_code}
+			, #{bsns_code}
+			, sfUniqueKey()
+			, #{dead_year}
+			, #{dead_month}
+			, #{dead_balance}
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<delete id="deadlineDelete" parameterType="hmap">
+		DELETE FROM AC_DEAD_INFO
+		WHERE COMP_CODE = #{comp_code}
+		  AND BSNS_CODE = #{bsns_code}
+		  AND DEAD_CODE = #{dead_code}
+	</delete>
+
+</mapper>

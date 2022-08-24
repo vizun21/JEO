@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="system.menu">
+	<select id="menuTree" parameterType="hmap" resultType="rmap">
+		SELECT
+			MENU_LEVEL
+			, HIGH_MENU_CODE
+			, MENU_CODE
+			, DPI.PAGE_NAME AS MENU_NAME
+			, DPI.PAGE_URL AS MENU_URL
+			, DPI.PAGE_ICON AS MENU_ICON
+			, MENU_DEPTH
+			, MENU_SEQ
+			, DPI.PAGE_YN AS MENU_YN
+			, IF(
+				(SELECT COUNT(HIGH_MENU_CODE)
+					FROM DF_MENU_INFO
+					WHERE HIGH_MENU_CODE = DMI.MENU_CODE
+						AND MENU_LEVEL = #{user_level}
+				) > 0, TRUE, FALSE
+			) AS HAS_CHILD
+		FROM DF_MENU_INFO DMI
+			JOIN DF_PAGE_INFO DPI ON DPI.PAGE_CODE = MENU_CODE
+		WHERE PAGE_YN  = 'Y'
+			AND MENU_LEVEL = #{user_level}
+			AND (BSNS_CATE = '' OR BSNS_CATE IS NULL OR BSNS_CATE = #{bsns_cate})
+		ORDER BY MENU_SEQ
+	</select>
+
+	<select id="menuList" parameterType="hmap" resultType="rmap">
+		SELECT
+			MENU_LEVEL
+			, HIGH_MENU_CODE
+			, MENU_CODE
+			, DPI.PAGE_NAME AS MENU_NAME
+			, DPI.PAGE_URL AS MENU_URL
+			, DPI.PAGE_ICON AS MENU_ICON
+			, MENU_DEPTH
+			, MENU_SEQ
+			, DPI.PAGE_YN AS MENU_YN
+			, IF(
+				(SELECT COUNT(HIGH_MENU_CODE)
+					FROM DF_MENU_INFO
+					WHERE HIGH_MENU_CODE = DMI.MENU_CODE
+						AND MENU_LEVEL = #{menu_level}
+				) > 0, TRUE, FALSE
+			) AS HAS_CHILD
+		FROM DF_MENU_INFO DMI
+			JOIN DF_PAGE_INFO DPI ON DPI.PAGE_CODE = MENU_CODE
+	<where>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(page_yn)">
+			AND PAGE_YN = #{page_yn}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(menu_code)">
+			AND MENU_CODE = #{menu_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(high_menu_code)">
+			AND HIGH_MENU_CODE = #{high_menu_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(menu_level)">
+			AND MENU_LEVEL = #{menu_level}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(menu_depth)">
+			AND MENU_DEPTH = #{menu_depth}
+		</if>
+	</where>
+		ORDER BY MENU_SEQ
+	</select>
+
+	<update id="menuSort" parameterType="hmap">
+		UPDATE DF_MENU_INFO
+		SET
+			MENU_SEQ = #{menu_seq}
+			, MENU_MOD_DATE = NOW()
+			, MENU_MOD_USER = #{user_id}
+		WHERE HIGH_MENU_CODE = #{high_menu_code}
+			AND MENU_CODE = #{menu_code}
+	</update>
+
+	<insert id="menuRegist" parameterType="hmap">
+		<selectKey keyProperty="next_menu_depth,next_menu_seq" resultType="rmap" order="BEFORE">
+			SELECT
+				IFNULL(
+					(SELECT MENU_DEPTH + 1
+						FROM DF_MENU_INFO
+						WHERE MENU_CODE = #{high_menu_code}
+							AND MENU_LEVEL = #{menu_level}
+					), 1
+			    ) AS NEXT_MENU_DEPTH
+				, IFNULL(
+				    (SELECT MAX(MENU_SEQ) + 1
+						FROM DF_MENU_INFO
+						WHERE HIGH_MENU_CODE = #{high_menu_code}
+							AND MENU_LEVEL = #{menu_level}
+					), 1
+				) AS NEXT_MENU_SEQ
+		</selectKey>
+
+		INSERT INTO DF_MENU_INFO (
+			MENU_LEVEL
+			, HIGH_MENU_CODE
+			, MENU_CODE
+			, MENU_DEPTH
+			, MENU_SEQ
+			, MENU_REG_DATE
+			, MENU_MOD_DATE
+			, MENU_MOD_USER
+		)
+		VALUES (
+			#{menu_level}
+			, #{high_menu_code}
+			, #{menu_code}
+			, IFNULL(#{menu_depth}, #{next_menu_depth})
+			, #{next_menu_seq}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<delete id="menuDelete">
+		DELETE FROM DF_MENU_INFO
+		WHERE MENU_LEVEL = #{menu_level}
+			AND MENU_CODE = #{menu_code}
+	</delete>
+
+	<select id="breadcrumb" parameterType="hmap" resultType="rmap">
+		SELECT
+			(SELECT PAGE_NAME
+				FROM DF_PAGE_INFO
+				WHERE PAGE_CODE = MENU_CODE1
+			) AS MENU_NAME1
+			, (SELECT PAGE_NAME
+				FROM DF_PAGE_INFO
+				WHERE PAGE_CODE = MENU_CODE2
+			) AS MENU_NAME2
+			, (SELECT PAGE_NAME
+				FROM DF_PAGE_INFO
+				WHERE PAGE_CODE = MENU_CODE3
+			) AS MENU_NAME3
+		FROM
+			(SELECT
+				DMI.MENU_CODE AS MENU_CODE1
+				, DMI2.MENU_CODE AS MENU_CODE2
+				, DMI3.MENU_CODE AS MENU_CODE3
+			FROM DF_MENU_INFO DMI
+				LEFT JOIN DF_MENU_INFO DMI2
+					ON DMI2.HIGH_MENU_CODE = DMI.MENU_CODE
+					AND DMI2.MENU_LEVEL = DMI.MENU_LEVEL
+				LEFT JOIN DF_MENU_INFO DMI3
+					ON DMI3.HIGH_MENU_CODE = DMI2.MENU_CODE
+					AND DMI3.MENU_LEVEL = DMI2.MENU_LEVEL
+			WHERE (DMI2.MENU_CODE = #{menu_code} OR DMI3.MENU_CODE = #{menu_code})
+				AND DMI2.MENU_LEVEL = #{user_level}
+				AND DMI.MENU_DEPTH = 1
+		) BREADCRUMB
+	</select>
+
+	<select id="rootMenuList" parameterType="hmap" resultType="rmap">
+		SELECT
+			MENU_LEVEL
+			, MENU_CODE
+			, CDDT_NAME
+		FROM DF_MENU_INFO DMI
+			JOIN SYS_CODE_DETAIL SCD
+			    ON SCD.CDDT_VAL = DMI.MENU_LEVEL
+				AND SCD.CODE_ID = 'USER_LEVEL'
+		WHERE MENU_CODE = #{menu_code}
+		ORDER BY MENU_LEVEL DESC
+	</select>
+
+	<select id="notAddRootMenuList" parameterType="hmap" resultType="rmap">
+		SELECT
+			CDDT_VAL
+			 , CDDT_NAME
+		FROM SYS_CODE_DETAIL
+		WHERE CODE_ID = 'USER_LEVEL'
+			AND CDDT_VAL NOT IN (
+				SELECT MENU_LEVEL
+				FROM DF_MENU_INFO
+				WHERE MENU_CODE = #{menu_code}
+			)
+	</select>
+</mapper>

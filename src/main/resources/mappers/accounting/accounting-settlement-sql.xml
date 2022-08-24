@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="accounting.settlement">
+	<select id="settlementPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			GHM_CODE
+			, BSNS_CATE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CDDT_VAL = BSNS_CATE
+			) AS BSNS_CATE_NAME
+			, GHM_YEAR
+			, GWAN_CODE
+			, GWAN_IO_TYPE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'BUDG_IO_TYPE'
+					AND CDDT_VAL = GWAN_IO_TYPE
+			) AS GWAN_IO_TYPE_NAME
+			, GWAN_NUMB
+			, GWAN_NAME
+			, HANG_CODE
+			, HANG_NUMB
+			, HANG_NAME
+			, MOCK_CODE
+			, MOCK_NUMB
+			, MOCK_NAME
+			, IFNULL(
+				(SELECT SUM(CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER/100)) AS SIGNED INTEGER))
+					FROM AC_BUDG_DETAIL
+						JOIN AC_BUDG_INFO USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+					WHERE COMP_CODE = #{comp_code}
+						AND BSNS_CODE = #{bsns_code}
+						AND MOCK_CODE = SMI.MOCK_CODE
+						AND BUDG_TYPE = (SELECT MAX(BUDG_TYPE)
+											FROM AC_BUDG_INFO
+											WHERE COMP_CODE = #{comp_code}
+												AND BSNS_CODE = #{bsns_code}
+											  	AND BUDG_YEAR = #{session_year})
+				), 0
+			) AS BUDG_AMOUNT
+			, ROUND(IFNULL(
+				(SELECT SUM(CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER/100)) AS SIGNED INTEGER))
+					FROM AC_BUDG_DETAIL
+						JOIN AC_BUDG_INFO USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+					WHERE COMP_CODE = #{comp_code}
+						AND BSNS_CODE = #{bsns_code}
+						AND MOCK_CODE = SMI.MOCK_CODE
+						AND BUDG_TYPE = (SELECT MAX(BUDG_TYPE)
+											FROM AC_BUDG_INFO
+											WHERE COMP_CODE = #{comp_code}
+												AND BSNS_CODE = #{bsns_code}
+											  	AND BUDG_YEAR = #{session_year})
+				), 0
+			)/12 * #{months}) AS SUB_BUDG_AMOUNT
+			, IFNULL(
+				(SELECT SUM(TRAN_PRICE)
+					FROM AC_TRAN_LIST
+					WHERE COMP_CODE = #{comp_code}
+						AND BSNS_CODE = #{bsns_code}
+						AND MOCK_CODE = SMI.MOCK_CODE
+					  <![CDATA[
+						AND TRAN_DATE >= #{session_start_date}
+						AND TRAN_DATE < #{start_date}
+					  ]]>
+				), 0
+			) AS PREV_TRAN_AMOUNT
+			, IFNULL(
+				(SELECT SUM(TRAN_PRICE)
+					FROM AC_TRAN_LIST
+					WHERE COMP_CODE = #{comp_code}
+						AND BSNS_CODE = #{bsns_code}
+						AND MOCK_CODE = SMI.MOCK_CODE
+					  <![CDATA[
+						AND TRAN_DATE >= #{start_date}
+						AND TRAN_DATE < DATE(#{start_date}) + INTERVAL #{months} MONTH
+					  ]]>
+				), 0
+			) AS TRAN_AMOUNT
+		FROM SYS_MOCK_INFO SMI
+			JOIN SYS_HANG_INFO USING (HANG_CODE)
+			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+			JOIN SYS_GHM_INFO USING (GHM_CODE)
+		WHERE BSNS_CATE = #{bsns_cate}
+			AND GHM_ACTIVE_YN = 'Y'
+			AND GHM_YEAR = #{session_year}
+			AND GWAN_IO_TYPE = #{io_type}
+	</select>
+
+	<select id="getSettlementAmount" parameterType="hmap" resultType="BigInteger">
+		SELECT IFNULL(SUM(TRAN_PRICE), 0)
+		FROM AC_TRAN_LIST ATL
+				 JOIN SYS_MOCK_INFO SMI ON SMI.MOCK_CODE = ATL.MOCK_CODE
+				 JOIN SYS_HANG_INFO SHI ON SHI.HANG_CODE = SMI.HANG_CODE
+				 JOIN SYS_GWAN_INFO SGI ON SGI.GWAN_CODE = SHI.GWAN_CODE
+				 JOIN SYS_GHM_INFO SGI2 ON SGI2.GHM_CODE = SGI.GHM_CODE
+		WHERE COMP_CODE = #{comp_code}
+		  AND BSNS_CODE = #{bsns_code}
+		  AND SGI2.GHM_YEAR = #{session_year}
+		  AND SGI.GWAN_IO_TYPE = #{io_type}
+	</select>
+</mapper>

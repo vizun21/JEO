@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="system.code">
+	<select id="codePage" parameterType="hmap" resultType="rmap">
+		SELECT
+			CODE_ID
+			 , CODE_NAME
+		FROM SYS_CODE_INFO
+	</select>
+
+	<insert id="codeRegist" parameterType="hmap">
+		INSERT INTO SYS_CODE_INFO (
+			CODE_ID
+			, CODE_NAME
+		)
+		VALUES (
+			#{code_id}
+			, #{code_name}
+		)
+	</insert>
+
+	<select id="codeList" parameterType="hmap" resultType="rmap">
+		SELECT
+			CODE_ID
+			 , CODE_NAME
+		FROM SYS_CODE_INFO
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(code_id)">
+				AND CODE_ID = #{code_id}
+			</if>
+		</where>
+	</select>
+
+	<select id="codeDetailList" parameterType="hmap" resultType="rmap">
+		SELECT
+			CODE_ID
+			, CDDT_VAL
+			, CDDT_NAME
+			, CDDT_SEQ
+			, DATE_FORMAT(CDDT_REG_DATE, '%Y-%m-%d') AS CDDT_REG_DATE
+			, DATE_FORMAT(CDDT_MOD_DATE, '%Y-%m-%d') AS CDDT_MOD_DATE
+			, CDDT_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = CDDT_MOD_USER
+			) AS CDDT_MOD_USER_NAME
+		FROM SYS_CODE_DETAIL
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(code_id)">
+				AND CODE_ID = #{code_id}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(cddt_val)">
+				AND CDDT_VAL = #{cddt_val}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(cddt_name)">
+				AND CDDT_NAME = #{cddt_name}
+			</if>
+		</where>
+		ORDER BY CDDT_SEQ
+	</select>
+
+	<insert id="codeDetailRegist" parameterType="hmap">
+		<selectKey keyProperty="cddt_seq" resultType="rmap" order="BEFORE">
+			SELECT IFNULL(MAX(CDDT_SEQ) + 1, 1) AS CDDT_SEQ
+			FROM SYS_CODE_DETAIL
+			WHERE CODE_ID = #{code_id}
+		</selectKey>
+
+		INSERT INTO SYS_CODE_DETAIL (
+			CODE_ID
+			, CDDT_VAL
+			, CDDT_NAME
+			, CDDT_SEQ
+			, CDDT_REG_DATE
+			, CDDT_MOD_DATE
+			, CDDT_MOD_USER
+		)
+		VALUES(
+			#{code_id}
+			, #{cddt_val}
+			, #{cddt_name}
+			, #{cddt_seq}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<update id="codeDetailSort" parameterType="hmap">
+		UPDATE SYS_CODE_DETAIL
+		SET
+			CDDT_SEQ = #{cddt_seq}
+			, CDDT_MOD_DATE = NOW()
+			, CDDT_MOD_USER = #{user_id}
+		WHERE CODE_ID = #{code_id}
+			AND CDDT_VAL = #{cddt_val}
+	</update>
+</mapper>

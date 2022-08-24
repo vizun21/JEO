@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="comp.comp">
+	<insert id="compRegist" parameterType="hmap">
+		INSERT INTO DF_COMP_INFO (
+			 COMP_CODE
+			,COMP_TYPE
+			,COMP_REG_NUMB_1
+			,COMP_REG_NUMB_2
+			,COMP_REG_NUMB_3
+			,COMP_NAME
+			,COMP_BANKDA_PW
+			,COMP_APPR_YN
+			,COMP_EXP_DATE
+			,COMP_REG_DATE
+			,COMP_MOD_DATE
+			,COMP_MOD_USER
+		)
+		VALUES (
+			 #{comp_code}
+			,#{comp_type}
+			,#{comp_reg_numb_1}
+			,#{comp_reg_numb_2}
+			,#{comp_reg_numb_3}
+			,#{comp_name}
+			,#{comp_bankda_pw}
+			,'N'
+			,#{comp_exp_date}
+			,NOW()
+			,NOW()
+			,#{user_id}
+		)
+	</insert>
+
+	<select id="compList" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, COMP_TYPE
+			, IF(COMP_TYPE='P', '개인', '법인') AS COMP_TYPE_NAME
+			, CONCAT(
+				COMP_REG_NUMB_1, '-', COMP_REG_NUMB_2, '-', COMP_REG_NUMB_3
+			) AS COMP_REG_NUMB
+			, COMP_REG_NUMB_1
+			, COMP_REG_NUMB_2
+			, COMP_REG_NUMB_3
+			, COMP_NAME
+			, COMP_BANKDA_PW
+			, COMP_APPR_YN
+			, IF(COMP_APPR_YN='Y', '승인', '미승인') AS COMP_APPR_YN_NAME
+			, DATE_FORMAT(COMP_EXP_DATE, '%Y-%m-%d') AS COMP_EXP_DATE
+			, DUI.USER_ID AS CEO_ID
+			, DUI.USER_NAME AS CEO_NAME
+			, DUI.USER_EMAIL AS CEO_EMAIL
+			, DUI.USER_MOBILE AS CEO_MOBILE
+			, DATE_FORMAT(COMP_REG_DATE, '%Y-%m-%d') AS COMP_REG_DATE
+			, DATE_FORMAT(COMP_MOD_DATE, '%Y-%m-%d') AS COMP_MOD_DATE
+			, COMP_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = COMP_MOD_USER
+			) AS COMP_MOD_USER_NAME
+		FROM DF_COMP_INFO
+			LEFT JOIN DF_COMP_CEO USING (COMP_CODE)
+			LEFT JOIN DF_USER_INFO DUI USING (COMP_CODE, USER_ID)
+		WHERE COMP_CODE != 'ESOFT'
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(comp_code)">
+			AND COMP_CODE = #{comp_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(comp_reg_numb_1) and @com.erowm.common.util.CommonUtils@isNotEmpty(comp_reg_numb_2)
+						and @com.erowm.common.util.CommonUtils@isNotEmpty(comp_reg_numb_3)">
+			AND COMP_REG_NUMB_1 = #{comp_reg_numb_1}
+			AND COMP_REG_NUMB_2 = #{comp_reg_numb_2}
+			AND COMP_REG_NUMB_3 = #{comp_reg_numb_3}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(comp_type)">
+			AND COMP_TYPE = #{comp_type}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(comp_appr_yn)">
+			AND COMP_APPR_YN = #{comp_appr_yn}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+			AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+	</select>
+
+	<update id="compModify" parameterType="hmap">
+		UPDATE DF_COMP_INFO
+		SET
+			COMP_EXP_DATE = #{comp_exp_date}
+			, COMP_MOD_DATE = NOW()
+			, COMP_MOD_USER = #{user_id}
+		WHERE COMP_CODE = #{comp_code}
+	</update>
+
+	<update id="compApproval" parameterType="hmap">
+		UPDATE DF_COMP_INFO
+		SET
+		  COMP_APPR_YN = 'Y'
+		  , COMP_MOD_DATE = NOW()
+		  , COMP_MOD_USER = #{user_id}
+		WHERE COMP_CODE = #{comp_code}
+	</update>
+
+	<delete id="compDelete">
+		DELETE FROM DF_COMP_INFO
+		WHERE COMP_CODE = #{comp_code}
+	</delete>
+</mapper>

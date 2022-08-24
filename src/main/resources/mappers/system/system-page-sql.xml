@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="system.page">
+	<select id="pageList" parameterType="hmap" resultType="rmap">
+		SELECT
+			PAGE_CODE
+			, PAGE_NAME
+			, PAGE_URL
+			, PAGE_ICON
+			, PAGE_YN
+			, IF(PAGE_YN='Y', '사용', '미사용') AS PAGE_YN_NAME
+			, DATE_FORMAT(PAGE_REG_DATE, '%Y-%m-%d') AS PAGE_REG_DATE
+			, DATE_FORMAT(PAGE_MOD_DATE, '%Y-%m-%d') AS PAGE_MOD_DATE
+			, PAGE_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = PAGE_MOD_USER
+			) AS PAGE_MOD_USER_NAME
+			, BSNS_CATE
+			, IFNULL(
+				(SELECT CDDT_NAME
+					FROM SYS_CODE_DETAIL
+					WHERE CDDT_VAL = BSNS_CATE
+				), '전체'
+			) AS BSNS_CATE_NAME
+		FROM DF_PAGE_INFO
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(page_code)">
+				AND PAGE_CODE = #{page_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(page_yn)">
+				AND PAGE_YN = #{page_yn}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(page_url)">
+				AND PAGE_URL = #{page_url}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+				AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(menu_level)">
+				AND PAGE_CODE NOT IN (
+					SELECT MENU_CODE
+					FROM DF_MENU_INFO
+					WHERE MENU_LEVEL = #{menu_level}
+				)
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+				AND (BSNS_CATE = #{bsns_cate} OR BSNS_CATE IS NULL OR BSNS_CATE = '')
+			</if>
+		</where>
+	</select>
+
+	<insert id="pageRegist" parameterType="hmap">
+		INSERT INTO DF_PAGE_INFO (
+			PAGE_CODE
+			, PAGE_NAME
+			, PAGE_URL
+			, PAGE_ICON
+			, PAGE_YN
+			, PAGE_REG_DATE
+			, PAGE_MOD_DATE
+			, PAGE_MOD_USER
+			, BSNS_CATE
+		)
+		VALUES(
+			sfUniqueKey()
+			, #{page_name}
+			, #{page_url}
+			, #{page_icon}
+			, #{page_yn}
+			, NOW()
+			, NOW()
+			, #{user_id}
+			, #{bsns_cate}
+		)
+	</insert>
+
+	<update id="pageModify" parameterType="hmap">
+		UPDATE DF_PAGE_INFO
+		SET
+			PAGE_NAME = #{page_name}
+		  , PAGE_URL = #{page_url}
+		  , PAGE_ICON = #{page_icon}
+		  , PAGE_YN = #{page_yn}
+		  , PAGE_MOD_DATE = NOW()
+		  , PAGE_MOD_USER = #{user_id}
+		  , BSNS_CATE = #{bsns_cate}
+		WHERE PAGE_CODE = #{page_code}
+	</update>
+
+	<delete id="pageDelete" parameterType="hmap">
+		DELETE FROM df_page_info
+		WHERE PAGE_CODE = #{page_code}
+	</delete>
+</mapper>

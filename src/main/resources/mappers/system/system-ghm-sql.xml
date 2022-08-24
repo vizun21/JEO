@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="system.ghm">
+	<select id="ghmPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			GHM_CODE
+			, BSNS_CATE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CDDT_VAL = BSNS_CATE
+			) AS BSNS_CATE_NAME
+			, GHM_YEAR
+			, GHM_ACTIVE_YN
+			, IF(GHM_ACTIVE_YN='Y', '활성화', '비활성화') AS GHM_ACTIVE_YN_NAME
+			, DATE_FORMAT(GHM_REG_DATE, '%Y-%m-%d') AS GHM_REG_DATE
+			, DATE_FORMAT(GHM_MOD_DATE, '%Y-%m-%d') AS GHM_MOD_DATE
+			, GHM_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = GHM_MOD_USER
+			) AS GHM_MOD_USER_NAME
+		FROM SYS_GHM_INFO
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_active_yn)">
+				AND GHM_ACTIVE_YN = #{ghm_active_yn}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+				AND BSNS_CATE = #{bsns_cate}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_year)">
+				AND GHM_YEAR = #{ghm_year}
+			</if>
+		</where>
+	</select>
+
+	<select id="ghmList" parameterType="hmap" resultType="rmap">
+		SELECT
+			GHM_CODE
+			, BSNS_CATE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CDDT_VAL = BSNS_CATE
+			) AS BSNS_CATE_NAME
+			, GHM_YEAR
+			, GHM_ACTIVE_YN
+			, IF(GHM_ACTIVE_YN='Y', '활성화', '비활성화') AS GHM_ACTIVE_YN_NAME
+			, DATE_FORMAT(GHM_REG_DATE, '%Y-%m-%d') AS GHM_REG_DATE
+			, DATE_FORMAT(GHM_MOD_DATE, '%Y-%m-%d') AS GHM_MOD_DATE
+			, GHM_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = GHM_MOD_USER
+			) AS GHM_MOD_USER_NAME
+		FROM SYS_GHM_INFO
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_code)">
+				AND GHM_CODE = #{ghm_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+				AND BSNS_CATE = #{bsns_cate}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_year)">
+				AND GHM_YEAR = #{ghm_year}
+			</if>
+		</where>
+	</select>
+
+	<insert id="ghmRegist" parameterType="hmap">
+		INSERT INTO SYS_GHM_INFO (
+			GHM_CODE
+			, BSNS_CATE
+			, GHM_YEAR
+			, GHM_REG_DATE
+			, GHM_MOD_DATE
+			, GHM_MOD_USER
+		)
+		VALUES (
+			sfUniqueKey()
+			, #{bsns_cate}
+			, #{ghm_year}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<select id="ghmYear" parameterType="hmap" resultType="rmap">
+		SELECT DISTINCT(GHM_YEAR)
+		FROM SYS_GHM_INFO
+		WHERE GHM_ACTIVE_YN = 'Y'
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+			AND BSNS_CATE = #{bsns_cate}
+		</if>
+		ORDER BY GHM_YEAR DESC
+	</select>
+
+	<select id="ghmSubPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			GHM_CODE
+			, GWAN_CODE
+			, GWAN_IO_TYPE
+			, IF(GWAN_IO_TYPE='I', '수입', '지출') AS GWAN_IO_TYPE_NAME
+			, GWAN_NUMB
+			, GWAN_NAME
+			, GWAN_NOTE
+			, IFNULL(HANG_CODE, '') AS HANG_CODE
+			, IFNULL(HANG_NUMB, '') AS HANG_NUMB
+			, IFNULL(HANG_NAME, '') AS HANG_NAME
+			, IFNULL(HANG_NOTE, '') AS HANG_NOTE
+			, IFNULL(MOCK_CODE, '') AS MOCK_CODE
+			, IFNULL(MOCK_NUMB, '') AS MOCK_NUMB
+			, IFNULL(MOCK_NAME, '') AS MOCK_NAME
+			, IFNULL(MOCK_NOTE, '') AS MOCK_NOTE
+		FROM SYS_GWAN_INFO SGI
+			LEFT JOIN SYS_HANG_INFO SHI USING (GWAN_CODE)
+			LEFT JOIN SYS_MOCK_INFO SMI USING (HANG_CODE)
+			JOIN SYS_GHM_INFO USING (GHM_CODE)
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_code)">
+				AND GHM_CODE = #{ghm_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+				AND BSNS_CATE = #{bsns_cate}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_year)">
+				AND GHM_YEAR = #{ghm_year}
+			</if>
+		</where>
+	</select>
+
+	<update id="ghmActivate" parameterType="hmap">
+		UPDATE SYS_GHM_INFO
+		SET
+			GHM_ACTIVE_YN = 'Y'
+		  , GHM_MOD_DATE = NOW()
+		  , GHM_MOD_USER = #{user_id}
+		WHERE GHM_CODE = #{ghm_code}
+	</update>
+
+
+	<select id="gwanList" parameterType="hmap" resultType="rmap">
+		SELECT
+			GHM_CODE
+			, GWAN_CODE
+			, GWAN_IO_TYPE
+			, IF(GWAN_IO_TYPE='I', '수입', '지출') AS GWAN_IO_TYPE_NAME
+			, GWAN_NUMB
+			, GWAN_NAME
+			, GWAN_NOTE
+			, DATE_FORMAT(GWAN_REG_DATE, '%Y-%m-%d') AS GWAN_REG_DATE
+			, DATE_FORMAT(GWAN_MOD_DATE, '%Y-%m-%d') AS GWAN_MOD_DATE
+			, GWAN_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = GWAN_MOD_USER
+			) AS GWAN_MOD_USER_NAME
+		FROM SYS_GWAN_INFO
+			JOIN SYS_GHM_INFO USING (GHM_CODE)
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(gwan_code)">
+				AND GWAN_CODE = #{gwan_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_code)">
+				AND GHM_CODE = #{ghm_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+				AND BSNS_CATE = #{bsns_cate}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_year)">
+				AND GHM_YEAR = #{ghm_year}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(gwan_io_type)">
+				AND GWAN_IO_TYPE = #{gwan_io_type}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(gwan_numb)">
+				AND GWAN_NUMB = #{gwan_numb}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_active_yn)">
+				AND GHM_ACTIVE_YN = #{ghm_active_yn}
+			</if>
+		</where>
+	</select>
+
+	<insert id="gwanRegist" parameterType="hmap">
+		INSERT INTO SYS_GWAN_INFO (
+			GHM_CODE
+			, GWAN_CODE
+			, GWAN_IO_TYPE
+			, GWAN_NUMB
+			, GWAN_NAME
+			, GWAN_NOTE
+			, GWAN_REG_DATE
+			, GWAN_MOD_DATE
+			, GWAN_MOD_USER
+		)
+		VALUES (
+			#{ghm_code}
+			, #{gwan_code}
+			, #{gwan_io_type}
+			, #{gwan_numb}
+			, #{gwan_name}
+			, #{gwan_note}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<update id="gwanModify" parameterType="hmap">
+		UPDATE SYS_GWAN_INFO
+		SET
+			GWAN_NAME = #{gwan_name}
+			, GWAN_NOTE = #{gwan_note}
+			, GWAN_MOD_DATE = NOW()
+			, GWAN_MOD_USER = #{user_id}
+		WHERE GWAN_CODE = #{gwan_code}
+	</update>
+
+	<delete id="gwanDelete" parameterType="hmap">
+		DELETE FROM SYS_GWAN_INFO
+		WHERE GWAN_CODE = #{gwan_code}
+	</delete>
+
+
+	<select id="hangList" parameterType="hmap" resultType="rmap">
+		SELECT
+			GWAN_CODE
+			, HANG_CODE
+			, HANG_NUMB
+			, HANG_NAME
+			, HANG_NOTE
+			, DATE_FORMAT(HANG_REG_DATE, '%Y-%m-%d') AS HANG_REG_DATE
+			, DATE_FORMAT(HANG_MOD_DATE, '%Y-%m-%d') AS HANG_MOD_DATE
+			, HANG_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = HANG_MOD_USER
+			) AS HANG_MOD_USER_NAME
+			, GHM_CODE
+			, GWAN_CODE
+			, GWAN_IO_TYPE
+			, IF(GWAN_IO_TYPE='I', '수입', '지출') AS GWAN_IO_TYPE_NAME
+			, GWAN_NUMB
+			, GWAN_NAME
+			, GWAN_NOTE
+		FROM SYS_HANG_INFO
+			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(hang_code)">
+				AND HANG_CODE = #{hang_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(gwan_code)">
+				AND GWAN_CODE = #{gwan_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(hang_numb)">
+				AND HANG_NUMB = #{hang_numb}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_code)">
+				AND GHM_CODE = #{ghm_code}
+			</if>
+		</where>
+	</select>
+
+	<insert id="hangRegist" parameterType="hmap">
+		INSERT INTO SYS_HANG_INFO (
+			GWAN_CODE
+			, HANG_CODE
+			, HANG_NUMB
+			, HANG_NAME
+			, HANG_NOTE
+			, HANG_REG_DATE
+			, HANG_MOD_DATE
+			, HANG_MOD_USER
+		)
+		VALUES (
+			#{gwan_code}
+			, #{hang_code}
+			, #{hang_numb}
+			, #{hang_name}
+			, #{hang_note}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<update id="hangModify" parameterType="hmap">
+		UPDATE SYS_HANG_INFO
+		SET
+			HANG_NAME = #{hang_name}
+			, HANG_NOTE = #{hang_note}
+			, HANG_MOD_DATE = NOW()
+			, HANG_MOD_USER = #{user_id}
+		WHERE HANG_CODE = #{hang_code}
+	</update>
+
+	<delete id="hangDelete" parameterType="hmap">
+		DELETE FROM SYS_HANG_INFO
+		WHERE HANG_CODE = #{hang_code}
+	</delete>
+
+
+	<select id="mockList" parameterType="hmap" resultType="rmap">
+		SELECT
+			HANG_CODE
+			, MOCK_CODE
+			, MOCK_NUMB
+			, MOCK_NAME
+			, MOCK_NOTE
+			, HANG_CODE
+			, HANG_NUMB
+			, HANG_NAME
+			, GWAN_CODE
+		    , GWAN_IO_TYPE
+			, IF(GWAN_IO_TYPE='I', '수입', '지출') AS GWAN_IO_TYPE_NAME
+			, GWAN_NUMB
+			, GWAN_NAME
+			, DATE_FORMAT(MOCK_REG_DATE, '%Y-%m-%d') AS MOCK_REG_DATE
+			, DATE_FORMAT(MOCK_MOD_DATE, '%Y-%m-%d') AS MOCK_MOD_DATE
+			, MOCK_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = MOCK_MOD_USER
+			) AS MOCK_MOD_USER_NAME
+		FROM SYS_MOCK_INFO
+			JOIN SYS_HANG_INFO USING (HANG_CODE)
+			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+			JOIN SYS_GHM_INFO USING (GHM_CODE)
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(mock_code)">
+				AND MOCK_CODE = #{mock_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(hang_code)">
+				AND HANG_CODE = #{hang_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(mock_numb)">
+				AND MOCK_NUMB = #{mock_numb}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_code)">
+				AND GHM_CODE = #{ghm_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_year)">
+				AND GHM_YEAR = #{ghm_year}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_cate)">
+				AND BSNS_CATE = #{bsns_cate}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(gwan_io_type)">
+				AND GWAN_IO_TYPE = #{gwan_io_type}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(gwan_code)">
+				AND GWAN_CODE = #{gwan_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(ghm_active_yn)">
+				AND GHM_ACTIVE_YN = #{ghm_active_yn}
+			</if>
+		</where>
+		ORDER BY GWAN_IO_TYPE, GWAN_NUMB, HANG_NUMB, MOCK_NUMB
+	</select>
+
+	<insert id="mockRegist" parameterType="hmap">
+		INSERT INTO SYS_MOCK_INFO (
+			HANG_CODE
+			, MOCK_CODE
+			, MOCK_NUMB
+			, MOCK_NAME
+			, MOCK_NOTE
+			, MOCK_REG_DATE
+			, MOCK_MOD_DATE
+			, MOCK_MOD_USER
+		)
+		VALUES (
+			#{hang_code}
+			, #{mock_code}
+			, #{mock_numb}
+			, #{mock_name}
+			, #{mock_note}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<update id="mockModify" parameterType="hmap">
+		UPDATE SYS_MOCK_INFO
+		SET
+			MOCK_NAME = #{mock_name}
+			, MOCK_NOTE = #{mock_note}
+			, MOCK_MOD_DATE = NOW()
+			, MOCK_MOD_USER = #{user_id}
+		WHERE MOCK_CODE = #{mock_code}
+	</update>
+
+	<delete id="mockDelete" parameterType="hmap">
+		DELETE FROM SYS_MOCK_INFO
+		WHERE MOCK_CODE = #{mock_code}
+	</delete>
+
+	<select id="ghmReportList" parameterType="hmap" resultType="rmap">
+		SELECT
+			GHM_CODE
+			, GHMR_CODE
+			, GHMR_NAME
+			, I_MOCK_CODE
+			, O_MOCK_CODE
+		FROM SYS_GHM_REPORT
+		WHERE GHM_CODE = #{ghm_code}
+	</select>
+
+	<insert id="ghmReportRegist" parameterType="hmap">
+		INSERT INTO SYS_GHM_REPORT (
+			GHM_CODE
+			, GHMR_CODE
+			, GHMR_NAME
+			, I_MOCK_CODE
+			, O_MOCK_CODE
+		)
+		VALUES (
+			#{ghm_code}
+			, sfUniqueKey()
+			, #{ghmr_name}
+			, #{i_mock_code}
+			, #{o_mock_code}
+		)
+	</insert>
+
+	<update id="ghmReportModify" parameterType="hmap">
+		UPDATE SYS_GHM_REPORT
+		SET
+			GHM_CODE = #{ghm_code}
+		  , GHMR_NAME = #{ghmr_name}
+		  , I_MOCK_CODE = #{i_mock_code}
+		  , O_MOCK_CODE = #{o_mock_code}
+		WHERE GHMR_CODE = #{ghmr_code}
+	</update>
+
+	<delete id="ghmReportDelete" parameterType="hmap">
+		DELETE FROM SYS_GHM_REPORT
+		WHERE GHMR_CODE = #{ghmr_code}
+	</delete>
+
+</mapper>

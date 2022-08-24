@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="accounting.acnt">
+	<select id="acntPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, ACNT_CODE
+			, BANK_CODE
+			, (SELECT BANK_NAME
+				FROM SYS_BANK_INFO
+				WHERE BANK_CODE = AAI.BANK_CODE
+			) AS BANK_NAME
+			, ACNT_NAME
+			, ACNT_NUMB
+			, ACNT_WEB_ID
+			, ACNT_WEB_PW
+			, ACNT_NOTE
+			, DATE_FORMAT(ACNT_REG_DATE, '%Y-%m-%d') AS ACNT_REG_DATE
+			, DATE_FORMAT(ACNT_MOD_DATE, '%Y-%m-%d') AS ACNT_MOD_DATE
+			, ACNT_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = ACNT_MOD_USER
+			) AS ACNT_MOD_USER_NAME
+		FROM AC_ACNT_INFO AAI
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bank_code)">
+			AND BANK_CODE = #{bank_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+			AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+	</select>
+
+	<select id="acntList" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, ACNT_CODE
+			, BANK_CODE
+			, (SELECT BANK_NAME
+				FROM SYS_BANK_INFO
+				WHERE BANK_CODE = AAI.BANK_CODE
+			) AS BANK_NAME
+			, ACNT_NAME
+			, ACNT_NUMB
+			, ACNT_WEB_ID
+			, ACNT_WEB_PW
+			, ACNT_NOTE
+			, DATE_FORMAT(ACNT_REG_DATE, '%Y-%m-%d') AS ACNT_REG_DATE
+			, DATE_FORMAT(ACNT_MOD_DATE, '%Y-%m-%d') AS ACNT_MOD_DATE
+			, ACNT_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = ACNT_MOD_USER
+			) AS ACNT_MOD_USER_NAME
+			, BSNS_NAME
+			, COMP_TYPE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'COMP_TYPE'
+					AND CDDT_VAL = COMP_TYPE
+			) AS COMP_TYPE_NAME
+			, CONCAT(COMP_REG_NUMB_1, '-', COMP_REG_NUMB_2, '-', COMP_REG_NUMB_3) AS COMP_REG_NUMB
+			, COMP_NAME
+			, COMP_BANKDA_PW
+		FROM AC_ACNT_INFO AAI
+			JOIN DF_BSNS_INFO USING (COMP_CODE, BSNS_CODE)
+			JOIN DF_COMP_INFO USING (COMP_CODE)
+	<where>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(comp_code)">
+			AND COMP_CODE = #{comp_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bsns_code)">
+			AND BSNS_CODE = #{bsns_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(acnt_code)">
+			AND ACNT_CODE = #{acnt_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(acnt_numb)">
+			AND ACNT_NUMB = #{acnt_numb}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bank_code)">
+			AND BANK_CODE = #{bank_code}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+			AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+	</where>
+	</select>
+
+	<insert id="acntRegist" parameterType="hmap">
+		INSERT INTO AC_ACNT_INFO (
+			COMP_CODE
+			, BSNS_CODE
+			, ACNT_CODE
+			, BANK_CODE
+			, ACNT_NAME
+			, ACNT_NUMB
+			, ACNT_WEB_ID
+			, ACNT_WEB_PW
+			, ACNT_NOTE
+			, ACNT_REG_DATE
+			, ACNT_MOD_DATE
+			, ACNT_MOD_USER
+		)
+		VALUES (
+			#{comp_code}
+			, #{bsns_code}
+			, sfUniqueKey()
+			, #{bank_code}
+			, #{acnt_name}
+			, #{acnt_numb}
+			, #{acnt_web_id}
+			, #{acnt_web_pw}
+			, #{acnt_note}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<update id="acntModify" parameterType="hmap">
+		UPDATE AC_ACNT_INFO
+		SET
+			ACNT_NAME = #{acnt_name}
+			, ACNT_WEB_ID = #{acnt_web_id}
+			, ACNT_WEB_PW = #{acnt_web_pw}
+			, ACNT_NOTE = #{acnt_note}
+			, ACNT_MOD_DATE = NOW()
+			, ACNT_MOD_USER = #{user_id}
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND ACNT_CODE = #{acnt_code}
+	</update>
+
+	<delete id="acntDelete">
+		DELETE FROM AC_ACNT_INFO
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND ACNT_CODE = #{acnt_code}
+	</delete>
+</mapper>

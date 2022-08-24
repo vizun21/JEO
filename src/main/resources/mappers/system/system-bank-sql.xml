@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="system.bank">
+	<select id="bankPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			BANK_CODE
+			, BANK_NAME
+			, BANK_WEB_YN
+			, IF(BANK_WEB_YN='Y', '사용', '미사용') AS BANK_WEB_YN_NAME
+			, BANK_YN
+			, IF(BANK_YN='Y', '사용', '미사용') AS BANK_YN_NAME
+			, BANK_NOTE
+			, DATE_FORMAT(BANK_REG_DATE, '%Y-%m-%d') AS BANK_REG_DATE
+			, DATE_FORMAT(BANK_MOD_DATE, '%Y-%m-%d') AS BANK_MOD_DATE
+			, BANK_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = BANK_MOD_USER
+			) AS BANK_MOD_USER_NAME
+		FROM SYS_BANK_INFO
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bank_yn)">
+				AND BANK_YN = #{bank_yn}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+				AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+		</where>
+	</select>
+
+	<select id="bankList" parameterType="hmap" resultType="rmap">
+		SELECT
+			BANK_CODE
+			, BANK_NAME
+			, BANK_WEB_YN
+			, IF(BANK_WEB_YN='Y', '사용', '미사용') AS BANK_WEB_YN_NAME
+			, BANK_YN
+			, IF(BANK_YN='Y', '사용', '미사용') AS BANK_YN_NAME
+			, BANK_NOTE
+			, DATE_FORMAT(BANK_REG_DATE, '%Y-%m-%d') AS BANK_REG_DATE
+			, DATE_FORMAT(BANK_MOD_DATE, '%Y-%m-%d') AS BANK_MOD_DATE
+			, BANK_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = BANK_MOD_USER
+			) AS BANK_MOD_USER_NAME
+		FROM SYS_BANK_INFO
+		WHERE BANK_YN = 'Y'
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(bank_code)">
+			AND BANK_CODE = #{bank_code}
+		</if>
+	</select>
+
+	<insert id="bankRegist" parameterType="hmap">
+		INSERT INTO SYS_BANK_INFO (
+			BANK_CODE
+			, BANK_NAME
+			, BANK_WEB_YN
+			, BANK_YN
+			, BANK_NOTE
+			, BANK_REG_DATE
+			, BANK_MOD_DATE
+			, BANK_MOD_USER
+		)
+		VALUES (
+			#{bank_code}
+			, #{bank_name}
+			, #{bank_web_yn}
+			, #{bank_yn}
+			, #{bank_note}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<update id="bankModify" parameterType="hmap">
+		UPDATE SYS_BANK_INFO
+		SET
+			BANK_NAME = #{bank_name}
+			, BANK_WEB_YN = #{bank_web_yn}
+			, BANK_YN = #{bank_yn}
+			, BANK_NOTE = #{bank_note}
+			, BANK_MOD_DATE = NOW()
+			, BANK_MOD_USER = #{user_id}
+		WHERE BANK_CODE = #{bank_code}
+	</update>
+</mapper>

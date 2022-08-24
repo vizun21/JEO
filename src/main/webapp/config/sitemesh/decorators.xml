@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/layout">
+    <excludes>
+        <pattern>/includeSample/*</pattern>
+    </excludes>
+
+    <decorator name="simpleLayout" page="simpleLayout.jsp">
+        <pattern>/user/join/**</pattern>
+		<pattern>/user/login</pattern>
+		<pattern>/user/logout</pattern>
+    </decorator>
+
+    <decorator name="defaultLayout" page="defaultLayout.jsp">
+		<pattern>/my**</pattern>
+		<pattern>/admin/**</pattern>
+	</decorator>
+
+    <decorator name="businessSelectLayout" page="businessSelectLayout.jsp">
+        <pattern>/home</pattern>
+		<pattern>/accounting/**</pattern>
+		<pattern>/business/**</pattern>
+    </decorator>
+
+	<decorator name="popupLayout" page="popupLayout.jsp">
+		<pattern>/**/popup/**</pattern>
+	</decorator>
+
+	<decorator name="hwpctrlLayout" page="hwpctrlLayout.jsp">
+		<pattern>/print/hwpctrl/**</pattern>
+	</decorator>
+</decorators>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xmlns:beans="http://www.springframework.org/schema/beans"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	   http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+	   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+	   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<bean id="dataSourceSpied" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="#{settings['database.driverClassName']}"/>
+		<property name="url" value="#{settings['database.url']}?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true"/>
+		<property name="username" value="#{settings['database.username']}"/>
+		<property name="password" value="#{settings['database.password']}"/>
+	</bean>
+
+	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="dataSourceSpied"/>
+		<property name="logFormatter">
+			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+				<property name="loggingType" value="MULTI_LINE"/>
+				<property name="sqlPrefix" value="SQL쿼리 : &#10;&#009;&#009;"/>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+	<!-- @Transactional Annotation을 이용한 트랜잭션의 관리가 가능 -->
+	<tx:annotation-driven proxy-target-class="true"/>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+		<property name="mapperLocations" value="classpath:mappers/**/*.xml"></property>
+	</bean>
+
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+	</bean>
+
+	<context:component-scan base-package="com.erowm">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+
+	<bean id="bankdaAccount" class="com.erowm.common.config.BankdaAccount">
+		<property name="SERVICE_TYPE" value="#{settings['bankdaAccount.SERVICE_TYPE']}"/>
+		<property name="PARTNER_ID" value="#{settings['bankdaAccount.PARTNER_ID']}"/>
+		<property name="PARTNER_PW" value="#{settings['bankdaAccount.PARTNER_PW']}"/>
+		<property name="PARTNER_NAME" value="#{settings['bankdaAccount.PARTNER_NAME']}"/>
+	</bean>
+
+	<bean id="childcareAccount" class="com.erowm.common.config.ChildcareAccount">
+		<property name="COMMON_URL" value="#{settings['childcareAccount.COMMON_URL']}"/>
+		<property name="C_AUTH_KEY" value="#{settings['childcareAccount.C_AUTH_KEY']}"/>
+	</bean>
+
+	<beans:bean class="java.lang.String" id="resourcePath">
+		<beans:constructor-arg value="#{settings['resourcePath']}"/>
+	</beans:bean>
+	<beans:bean class="java.lang.String" id="resourceUploadImgPath">
+		<beans:constructor-arg value="#{settings['resourceUploadImgPath']}"/>
+	</beans:bean>
+
+	<!-- property xml -->
+	<util:properties id="settings" location="/config/properties/settings.xml"/>
+
+</beans>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="user.user">
+	<insert id="userRegist" parameterType="hmap">
+		INSERT INTO DF_USER_INFO (
+			 COMP_CODE
+			,USER_ID
+			,USER_PW
+			,USER_NAME
+			,USER_EMAIL
+			,USER_TEL
+			,USER_MOBILE
+			,USER_REG_NUMB_1
+			,USER_REG_NUMB_2
+			,USER_JOIN_DATE
+			,USER_SALES
+			,USER_LEVEL
+			,USER_APPR_YN
+			,USER_YN
+			,USER_LOGIN_DATE
+			,USER_REG_DATE
+			,USER_MOD_DATE
+			,USER_MOD_USER
+		)
+		VALUES (
+			 #{comp_code}
+			,#{user_id}
+			,#{user_enc_pw}
+			,#{user_name}
+			,#{user_email}
+			,#{user_tel}
+			,#{user_mobile}
+			,#{user_reg_numb_1}
+			,#{user_reg_numb_2}
+			,#{user_join_date}
+			,#{user_sales}
+			,#{user_level}
+			,'N'
+			,'Y'
+			,NULL
+			,NOW()
+			,NOW()
+			,#{user_id}
+		)
+	</insert>
+
+	<insert id="ceoRegist" parameterType="hmap">
+		INSERT INTO DF_COMP_CEO (COMP_CODE, USER_ID)
+		VALUES (#{comp_code}, #{user_id})
+	</insert>
+
+	<select id="userList" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, USER_ID
+			, USER_PW
+			, USER_NAME
+			, USER_EMAIL
+			, USER_TEL
+			, USER_MOBILE
+			, USER_REG_NUMB_1
+			, USER_REG_NUMB_2
+			, CONCAT(
+				USER_REG_NUMB_1, '-', USER_REG_NUMB_2
+			) AS USER_REG_NUMB
+			, USER_JOIN_DATE
+			, USER_SALES
+			, USER_LEVEL
+			, USER_APPR_YN
+			, USER_YN
+			, DATE_FORMAT(USER_LOGIN_DATE, '%Y-%m-%d') AS USER_LOGIN_DATE
+			, DATE_FORMAT(USER_REG_DATE, '%Y-%m-%d') AS USER_REG_DATE
+			, DATE_FORMAT(USER_MOD_DATE, '%Y-%m-%d') AS USER_MOD_DATE
+			, USER_MOD_USER
+		FROM DF_USER_INFO
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(user_id)">
+				AND USER_ID = #{user_id}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(comp_code)">
+				AND COMP_CODE = #{comp_code}
+			</if>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(user_reg_numb_1) and @com.erowm.common.util.CommonUtils@isNotEmpty(user_reg_numb_2)">
+				AND USER_REG_NUMB_1 = #{user_reg_numb_1}
+				AND USER_REG_NUMB_2 = #{user_reg_numb_2}
+			</if>
+		</where>
+	</select>
+
+	<select id="userLogin" resultType="loginVO">
+		SELECT
+			USER_ID
+			, USER_PW
+			, USER_NAME
+			, USER_EMAIL
+			, USER_TEL
+			, USER_MOBILE
+			, USER_REG_NUMB_1
+			, USER_REG_NUMB_2
+			, CONCAT(
+				USER_REG_NUMB_1, '-', USER_REG_NUMB_2
+			) AS USER_REG_NUMB
+			, USER_JOIN_DATE
+			, USER_SALES
+			, USER_LEVEL
+			, USER_APPR_YN
+			, USER_YN
+			, USER_LOGIN_DATE
+			, DATE_FORMAT(USER_REG_DATE, '%Y-%m-%d') AS USER_REG_DATE
+			, DATE_FORMAT(USER_MOD_DATE, '%Y-%m-%d') AS USER_MOD_DATE
+			, USER_MOD_USER
+			, COMP_CODE
+			, COMP_TYPE
+			, COMP_REG_NUMB_1
+			, COMP_REG_NUMB_2
+			, COMP_REG_NUMB_3
+			, CONCAT(
+				COMP_REG_NUMB_1, '-', COMP_REG_NUMB_2, '-', COMP_REG_NUMB_3
+			) AS COMP_REG_NUMB
+			, COMP_NAME
+			, COMP_BANKDA_PW
+			, COMP_APPR_YN
+			, COMP_EXP_DATE
+			, IF(DCC.USER_ID IS NOT NULL, 'Y', 'N') AS CEO_YN
+		FROM DF_USER_INFO DUI
+			JOIN DF_COMP_INFO DCI USING (COMP_CODE)
+			LEFT JOIN DF_COMP_CEO DCC USING (COMP_CODE, USER_ID)
+		WHERE USER_ID = #{user_id}
+			AND USER_PW = #{user_pw}
+	</select>
+
+	<select id="userTransform" resultType="loginVO">
+		SELECT
+			USER_ID
+			 , USER_PW
+			 , USER_NAME
+			 , USER_EMAIL
+			 , USER_TEL
+			 , USER_MOBILE
+			 , USER_REG_NUMB_1
+			 , USER_REG_NUMB_2
+			 , CONCAT(
+				USER_REG_NUMB_1, '-', USER_REG_NUMB_2
+			 ) AS USER_REG_NUMB
+			 , USER_JOIN_DATE
+			 , USER_SALES
+			 , USER_LEVEL
+			 , USER_APPR_YN
+			 , USER_YN
+			 , USER_LOGIN_DATE
+			 , DATE_FORMAT(USER_REG_DATE, '%Y-%m-%d') AS USER_REG_DATE
+			 , DATE_FORMAT(USER_MOD_DATE, '%Y-%m-%d') AS USER_MOD_DATE
+			 , USER_MOD_USER
+			 , COMP_CODE
+			 , COMP_TYPE
+			 , COMP_REG_NUMB_1
+			 , COMP_REG_NUMB_2
+			 , COMP_REG_NUMB_3
+			 , CONCAT(
+				COMP_REG_NUMB_1, '-', COMP_REG_NUMB_2, '-', COMP_REG_NUMB_3
+			 ) AS COMP_REG_NUMB
+			 , COMP_NAME
+			 , COMP_BANKDA_PW
+			 , COMP_APPR_YN
+			 , COMP_EXP_DATE
+			 , IF(DCC.USER_ID IS NOT NULL, 'Y', 'N') AS CEO_YN
+		FROM DF_USER_INFO DUI
+			 JOIN DF_COMP_INFO DCI USING (COMP_CODE)
+			 LEFT JOIN DF_COMP_CEO DCC USING (COMP_CODE, USER_ID)
+		WHERE USER_ID = #{user_id}
+	</select>
+
+	<update id="login" parameterType="hmap">
+		UPDATE DF_USER_INFO
+		SET
+			USER_LOGIN_DATE = NOW()
+		WHERE USER_ID = #{user_id}
+	</update>
+
+	<delete id="userDelete" parameterType="hmap">
+		DELETE FROM DF_USER_INFO
+		WHERE USER_ID = #{user_id}
+	</delete>
+
+	<delete id="ceoDelete" parameterType="hmap">
+		DELETE FROM DF_COMP_CEO
+		WHERE COMP_CODE = #{comp_code}
+			AND USER_ID = #{user_id}
+	</delete>
+
+	<update id="userApproval" parameterType="hmap">
+		UPDATE DF_USER_INFO
+		SET
+			USER_APPR_YN = 'Y'
+		  , USER_MOD_DATE = NOW()
+		  , USER_MOD_USER = #{user_id}
+		WHERE COMP_CODE = #{comp_code}
+			AND USER_ID = #{update_user_id}
+	</update>
+
+
+	<select id="userPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, USER_ID
+			, USER_NAME
+			, USER_EMAIL
+			, USER_TEL
+			, USER_MOBILE
+			, USER_REG_NUMB_1
+			, USER_REG_NUMB_2
+			, CONCAT(
+				USER_REG_NUMB_1, '-', USER_REG_NUMB_2
+			) AS USER_REG_NUMB
+			, USER_JOIN_DATE
+			, USER_SALES
+			, USER_LEVEL
+			, USER_APPR_YN
+			, IF(USER_APPR_YN='Y', '승인', '미승인') AS USER_APPR_YN_NAME
+			, USER_YN
+			, IF(USER_YN='Y', '사용', '미사용') AS USER_YN_NAME
+			, IFNULL(USER_LOGIN_DATE, '') AS USER_LOGIN_DATE
+			, DATE_FORMAT(USER_REG_DATE, '%Y-%m-%d') AS USER_REG_DATE
+			, DATE_FORMAT(USER_MOD_DATE, '%Y-%m-%d') AS USER_MOD_DATE
+			, USER_MOD_USER
+		FROM DF_USER_INFO DUI
+		WHERE COMP_CODE = #{comp_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(user_appr_yn)">
+			AND USER_APPR_YN = #{user_appr_yn}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(user_yn)">
+			AND USER_YN = #{user_yn}
+		</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+			AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+	</select>
+
+	<update id="userModify" parameterType="hmap">
+		UPDATE DF_USER_INFO
+		SET
+			USER_NAME = #{user_name}
+			, USER_EMAIL = #{user_email}
+			, USER_TEL = #{user_tel}
+			, USER_MOBILE = #{user_mobile}
+			, USER_MOD_DATE = NOW()
+			, USER_MOD_USER = #{user_id}
+		WHERE USER_ID = #{user_id}
+	</update>
+
+	<update id="userChangePassword" parameterType="hmap">
+		UPDATE DF_USER_INFO
+		SET
+			USER_PW = #{user_enc_pw}
+		WHERE USER_ID = #{user_id}
+	</update>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="business.auth">
+	<select id="authUserList" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, USER_ID
+			, USER_NAME
+		FROM DF_BSNS_AUTH
+			JOIN DF_USER_INFO USING (COMP_CODE, USER_ID)
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+	</select>
+
+	<select id="unauthUserList" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, USER_ID
+			, USER_NAME
+		FROM DF_USER_INFO
+		WHERE COMP_CODE = #{comp_code}
+			AND USER_ID != #{user_id}
+			AND USER_ID NOT IN (
+				SELECT
+					USER_ID
+				FROM DF_BSNS_AUTH
+					JOIN DF_USER_INFO USING (COMP_CODE, USER_ID)
+				WHERE BSNS_CODE = #{bsns_code}
+			)
+	</select>
+
+	<insert id="authRegist" parameterType="hmap">
+		INSERT INTO DF_BSNS_AUTH (
+			COMP_CODE
+			, BSNS_CODE
+			, USER_ID
+		)
+		VALUES (
+			#{comp_code}
+			, #{bsns_code}
+			, #{user_id}
+		)
+	</insert>
+
+	<delete id="authDelete" parameterType="hmap">
+		DELETE FROM DF_BSNS_AUTH
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND USER_ID = #{user_id}
+	</delete>
+</mapper>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="accounting.budget.settlement">
+	<select id="budgetSettlementSummary" parameterType="hmap" resultType="rmap">
+		SELECT GWAN_NAME
+			 , BUDGET_AMOUNT
+			 , TRAN_AMOUNT
+			 , BUDGET_AMOUNT - TRAN_AMOUNT AS DIFFERENCE
+		FROM (
+				 SELECT GWAN.GWAN_NAME   AS GWAN_NAME
+					  , IFNULL(
+						 (SELECT SUM(CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER / 100)) AS SIGNED INTEGER))
+						  FROM AC_BUDG_DETAIL
+								   JOIN AC_BUDG_INFO USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+								   JOIN SYS_MOCK_INFO USING (MOCK_CODE)
+								   JOIN SYS_HANG_INFO USING (HANG_CODE)
+								   JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+						  WHERE COMP_CODE = #{comp_code}
+							AND BSNS_CODE = #{bsns_code}
+							AND BUDG_TYPE = (
+							  SELECT MAX(BUDG_TYPE)
+							  FROM AC_BUDG_INFO
+							  WHERE COMP_CODE = #{comp_code}
+								AND BSNS_CODE = #{bsns_code}
+								AND BUDG_YEAR = #{session_year}
+							  )
+							AND GWAN_CODE = GWAN.GWAN_CODE
+							 ), 0)       AS BUDGET_AMOUNT
+					  , IFNULL((SELECT SUM(TRAN_PRICE)
+								FROM AC_TRAN_LIST ATL
+										 JOIN SYS_MOCK_INFO USING (MOCK_CODE)
+										 JOIN SYS_HANG_INFO USING (HANG_CODE)
+										 JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+								WHERE COMP_CODE = #{comp_code}
+								  AND BSNS_CODE = #{bsns_code}
+								  AND GWAN_CODE = GWAN.GWAN_CODE
+								   ), 0) AS TRAN_AMOUNT
+				 FROM SYS_GWAN_INFO GWAN
+						  JOIN SYS_GHM_INFO GHM ON GHM.GHM_CODE = GWAN.GHM_CODE
+				 WHERE GHM.BSNS_CATE = #{bsns_cate}
+				   AND GHM.GHM_YEAR = #{session_year}
+				   AND GHM.GHM_ACTIVE_YN = 'Y'
+				   AND GWAN.GWAN_IO_TYPE = #{io_type}
+			 ) T
+	</select>
+
+	<select id="budgetSettlement" parameterType="hmap" resultType="rmap">
+		SELECT GWAN_NUMB
+			 , GWAN_NAME
+			 , HANG_NUMB
+			 , HANG_NAME
+			 , MOCK_NUMB
+			 , MOCK_NAME
+			 , BUDGET_AMOUNT
+			 , TRAN_AMOUNT
+			 , BUDGET_AMOUNT - TRAN_AMOUNT AS DIFFERENCE
+		FROM (
+				 SELECT *
+					  , IFNULL(
+						 (SELECT SUM(CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER / 100)) AS SIGNED INTEGER))
+						  FROM AC_BUDG_DETAIL
+								   JOIN AC_BUDG_INFO USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+								   JOIN SYS_MOCK_INFO USING (MOCK_CODE)
+						  WHERE COMP_CODE = #{comp_code}
+							AND BSNS_CODE = #{bsns_code}
+							AND BUDG_TYPE = (
+							  SELECT MAX(BUDG_TYPE)
+							  FROM AC_BUDG_INFO
+							  WHERE COMP_CODE = #{comp_code}
+								AND BSNS_CODE = #{bsns_code}
+								AND BUDG_YEAR = #{session_year}
+							  )
+							AND MOCK_CODE = GHM.MOCK_CODE
+							 ), 0)       AS BUDGET_AMOUNT
+					  , IFNULL((SELECT SUM(TRAN_PRICE)
+								FROM AC_TRAN_LIST ATL
+										 JOIN SYS_MOCK_INFO USING (MOCK_CODE)
+								WHERE COMP_CODE = #{comp_code}
+								  AND BSNS_CODE = #{bsns_code}
+								  AND MOCK_CODE = GHM.MOCK_CODE
+								   ), 0) AS TRAN_AMOUNT
+				 FROM SYS_MOCK_INFO GHM
+						  JOIN SYS_HANG_INFO USING (HANG_CODE)
+						  JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+						  JOIN SYS_GHM_INFO USING (GHM_CODE)
+				 WHERE BSNS_CATE = #{bsns_cate}
+				   AND GHM_YEAR = #{session_year}
+				   AND GHM_ACTIVE_YN = 'Y'
+				   AND GWAN_IO_TYPE = #{io_type}
+			 ) T
+	</select>
+
+	<resultMap id="generalLedgerResultMap" type="hashmap">
+		<id property="mock_code" column="mock_code"/>
+		<result property="mock_name" column="mock_name"/>
+		<result property="current_budg_amount" column="current_budg_amount"/>
+		<result property="input_tran_amount" column="input_tran_amount"/>
+		<result property="output_tran_amount" column="output_tran_amount"/>
+		<result property="input_accumulated_amount" column="input_accumulated_amount"/>
+		<result property="output_accumulated_amount" column="output_accumulated_amount"/>
+		<result property="balance" column="balance"/>
+		<collection property="generalLedgerDetails" ofType="hashmap" javaType="list">
+			<result property="tran_date" column="tran_date"/>
+			<result property="tran_proof_numb" column="tran_proof_numb"/>
+			<result property="tran_jukyo" column="tran_jukyo"/>
+			<result property="tran_input_price" column="tran_input_price"/>
+			<result property="tran_output_price" column="tran_output_price"/>
+		</collection>
+	</resultMap>
+
+	<select id="generalLedger" parameterType="hmap" resultMap="generalLedgerResultMap">
+		<![CDATA[
+		SELECT DATE_FORMAT(TRAN_DATE, '%m/%d')                                  AS TRAN_DATE
+			 , sfProofNumberFormat(TRAN_DATE, TRAN_IO_TYPE, TRAN_PROOF_NUMB)    AS TRAN_PROOF_NUMB
+			 , TRAN_JUKYO
+			 , IF(TRAN_IO_TYPE = 'I', TRAN_PRICE, 0)                            AS TRAN_INPUT_PRICE
+			 , IF(TRAN_IO_TYPE = 'O', TRAN_PRICE, 0)                            AS TRAN_OUTPUT_PRICE
+			 , MOCK_CODE
+			 , MOCK_NAME
+			 , BUDG_AMOUNT - PREV_ACCUMULATED_AMOUNT                            AS CURRENT_BUDG_AMOUNT
+			 , IF(TRAN_IO_TYPE = 'I', TRAN_AMOUNT, 0)                           AS INPUT_TRAN_AMOUNT
+			 , IF(TRAN_IO_TYPE = 'O', TRAN_AMOUNT, 0)                           AS OUTPUT_TRAN_AMOUNT
+			 , IF(TRAN_IO_TYPE = 'I', PREV_ACCUMULATED_AMOUNT + TRAN_AMOUNT, 0) AS INPUT_ACCUMULATED_AMOUNT
+			 , IF(TRAN_IO_TYPE = 'O', PREV_ACCUMULATED_AMOUNT + TRAN_AMOUNT, 0) AS OUTPUT_ACCUMULATED_AMOUNT
+			 , BUDG_AMOUNT - PREV_ACCUMULATED_AMOUNT - TRAN_AMOUNT              AS BALANCE
+		FROM (
+				 SELECT *
+					  , IFNULL(
+						 (SELECT SUM(CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER / 100)) AS SIGNED INTEGER))
+						  FROM AC_BUDG_INFO
+								   JOIN AC_BUDG_DETAIL USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+						  WHERE COMP_CODE = #{comp_code}
+							AND BSNS_CODE = #{bsns_code}
+							AND BUDG_YEAR = #{session_year}
+							AND BUDG_TYPE = (SELECT MAX(BUDG_TYPE)
+											 FROM AC_BUDG_INFO
+											 WHERE COMP_CODE = #{comp_code}
+											   AND BSNS_CODE = #{bsns_code}
+											   AND BUDG_YEAR = #{session_year})
+							AND MOCK_CODE = ATL.MOCK_CODE
+							 ), 0
+					 ) AS BUDG_AMOUNT
+					  , IFNULL(
+						 (SELECT SUM(TRAN_PRICE)
+						  FROM AC_TRAN_LIST
+						  WHERE COMP_CODE = #{comp_code}
+							AND BSNS_CODE = #{bsns_code}
+							AND TRAN_DATE >= #{session_start_date}
+							AND TRAN_DATE < #{start_date}
+							AND MOCK_CODE = ATL.MOCK_CODE
+						  GROUP BY MOCK_CODE
+							 ), 0
+					 ) AS PREV_ACCUMULATED_AMOUNT
+					  , IFNULL(
+						 (SELECT SUM(TRAN_PRICE)
+						  FROM AC_TRAN_LIST
+						  WHERE COMP_CODE = #{comp_code}
+							AND BSNS_CODE = #{bsns_code}
+							AND TRAN_DATE >= #{start_date}
+							AND TRAN_DATE < #{end_date}
+							AND MOCK_CODE = ATL.MOCK_CODE
+						  GROUP BY MOCK_CODE
+							 ), 0
+					 ) AS TRAN_AMOUNT
+				 FROM AC_TRAN_LIST ATL
+						  JOIN SYS_MOCK_INFO SMI USING (MOCK_CODE)
+				 WHERE COMP_CODE = #{comp_code}
+				   AND BSNS_CODE = #{bsns_code}
+				   AND TRAN_DATE >= #{start_date}
+				   AND TRAN_DATE < #{end_date}
+			 ) T
+		ORDER BY MOCK_CODE, TRAN_DATE
+		]]>
+	</select>
+</mapper>

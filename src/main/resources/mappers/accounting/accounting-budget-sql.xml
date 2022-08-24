@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="accounting.budget">
+	<select id="budgetPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, BUDG_CODE
+			, BUDG_YEAR
+			, BUDG_TYPE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'BUDG_TYPE'
+					AND CDDT_VAL = BUDG_TYPE
+			) AS BUDG_TYPE_NAME
+			, DATE_FORMAT(BUDG_REG_DATE, '%Y-%m-%d') AS BUDG_REG_DATE
+			, DATE_FORMAT(BUDG_MOD_DATE, '%Y-%m-%d') AS BUDG_MOD_DATE
+			, BUDG_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = BUDG_MOD_USER
+			) AS BUDG_MOD_USER_NAME
+		FROM AC_BUDG_INFO
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(budg_year)">
+			AND BUDG_YEAR = #{budg_year}
+		</if>
+		ORDER BY BUDG_TYPE ASC
+	</select>
+
+	<select id="budgetList" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, BUDG_CODE
+			, BUDG_YEAR
+			, BUDG_TYPE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'BUDG_TYPE'
+					AND CDDT_VAL = BUDG_TYPE
+			) AS BUDG_TYPE_NAME
+			, DATE_FORMAT(BUDG_REG_DATE, '%Y-%m-%d') AS BUDG_REG_DATE
+			, DATE_FORMAT(BUDG_MOD_DATE, '%Y-%m-%d') AS BUDG_MOD_DATE
+			, BUDG_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = BUDG_MOD_USER
+			) AS BUDG_MOD_USER_NAME
+		FROM AC_BUDG_INFO
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(budg_code)">
+			AND BUDG_CODE = #{budg_code}
+		</if>
+		ORDER BY BUDG_TYPE ASC
+	</select>
+
+	<insert id="budgetRegist" parameterType="hmap">
+		<selectKey keyProperty="budg_type" resultType="rmap" order="BEFORE">
+			SELECT IFNULL(MAX(CAST(BUDG_TYPE AS UNSIGNED)) + 1, 0) AS BUDG_TYPE
+			FROM AC_BUDG_INFO
+			WHERE COMP_CODE = #{comp_code}
+				AND BSNS_CODE = #{bsns_code}
+				AND BUDG_YEAR = #{budg_year}
+		</selectKey>
+
+		INSERT INTO AC_BUDG_INFO (
+			COMP_CODE
+			, BSNS_CODE
+			, BUDG_CODE
+			, BUDG_YEAR
+			, BUDG_TYPE
+			, BUDG_REG_DATE
+			, BUDG_MOD_DATE
+			, BUDG_MOD_USER
+		)
+		VALUES (
+			#{comp_code}
+			, #{bsns_code}
+			, sfUniqueKey()
+			, #{budg_year}
+			, #{budg_type}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<select id="budgetDetailPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			GWAN_CODE
+			, GWAN_IO_TYPE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'BUDG_IO_TYPE'
+					AND CDDT_VAL = GWAN_IO_TYPE
+			) AS GWAN_IO_TYPE_NAME
+			, GWAN_NUMB
+			, GWAN_NAME
+			, HANG_CODE
+			, HANG_NUMB
+			, HANG_NAME
+			, MOCK_CODE
+			, MOCK_NUMB
+			, MOCK_NAME
+			, COMP_CODE
+			, BSNS_CODE
+			, BUDG_CODE
+			, BUDG_YEAR
+			, BUDG_TYPE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'BUDG_TYPE'
+					AND CDDT_VAL = BUDG_TYPE
+			) AS BUDG_TYPE_NAME
+			, BGDT_CODE
+			, MOCK_CODE
+			, BGDT_CONTENT
+			, BGDT_PRICE
+			, sfRemoveDecimalZero(BGDT_QTY) AS BGDT_QTY
+			, BGDT_MONTH
+			, sfRemoveDecimalZero(BGDT_PER) AS BGDT_PER
+			, IFNULL(DATE_FORMAT(BGDT_REG_DATE, '%Y-%m-%d'), '') AS BGDT_REG_DATE
+			, IFNULL(DATE_FORMAT(BGDT_MOD_DATE, '%Y-%m-%d'), '') AS BGDT_MOD_DATE
+			, BGDT_MOD_USER
+			, IFNULL(
+				(SELECT USER_NAME
+					FROM DF_USER_INFO
+					WHERE USER_ID = BGDT_MOD_USER
+				), ''
+			) AS BGDT_MOD_USER_NAME
+		FROM SYS_MOCK_INFO
+			JOIN SYS_HANG_INFO USING (HANG_CODE)
+			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+			JOIN SYS_GHM_INFO USING (GHM_CODE)
+			LEFT JOIN (
+				SELECT *
+				FROM AC_BUDG_DETAIL ABD
+					JOIN AC_BUDG_INFO ABI USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+				WHERE COMP_CODE = #{comp_code}
+					AND BSNS_CODE = #{bsns_code}
+					AND BUDG_CODE = #{budg_code}
+			) BUDGET USING (MOCK_CODE)
+		WHERE BSNS_CATE = #{bsns_cate}
+			AND GHM_ACTIVE_YN = 'Y'
+			AND GHM_YEAR = #{budg_year}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(budg_io_type)">
+			AND GWAN_IO_TYPE = #{budg_io_type}
+		</if>
+		ORDER BY GWAN_IO_TYPE, CAST(GWAN_NUMB AS UNSIGNED), CAST(HANG_NUMB AS UNSIGNED), CAST(MOCK_NUMB AS UNSIGNED), BGDT_CODE
+	</select>
+
+	<select id="budgetDetailList" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			 , BSNS_CODE
+			 , BUDG_CODE
+			 , BGDT_CODE
+			 , MOCK_CODE
+			 , BGDT_CONTENT
+			 , BGDT_PRICE
+			 , BGDT_QTY
+			 , BGDT_MONTH
+			 , BGDT_PER
+			 , BGDT_REG_DATE
+			 , BGDT_MOD_DATE
+			 , BGDT_MOD_USER
+		FROM AC_BUDG_DETAIL
+	<where>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(mock_code)">
+			AND MOCK_CODE = #{mock_code}
+		</if>
+	</where>
+	</select>
+
+	<insert id="budgetDetailRegist" parameterType="hmap">
+		INSERT INTO AC_BUDG_DETAIL (
+			COMP_CODE
+			, BSNS_CODE
+			, BUDG_CODE
+			, BGDT_CODE
+			, MOCK_CODE
+			, BGDT_CONTENT
+			, BGDT_PRICE
+			, BGDT_QTY
+			, BGDT_MONTH
+			, BGDT_PER
+			, BGDT_REG_DATE
+			, BGDT_MOD_DATE
+			, BGDT_MOD_USER
+		)
+		VALUES(
+			#{comp_code}
+			, #{bsns_code}
+			, #{budg_code}
+			, sfUniqueKey()
+			, #{mock_code}
+			, #{bgdt_content}
+			, #{bgdt_price}
+			, #{bgdt_qty}
+			, #{bgdt_month}
+			, #{bgdt_per}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		);
+	</insert>
+
+	<update id="budgetDetailModify" parameterType="hmap">
+		UPDATE AC_BUDG_DETAIL
+		SET
+			BGDT_CONTENT = #{bgdt_content}
+			, BGDT_PRICE = #{bgdt_price}
+			, BGDT_QTY = #{bgdt_qty}
+			, BGDT_MONTH = #{bgdt_month}
+			, BGDT_PER = #{bgdt_per}
+			, BGDT_MOD_DATE = NOW()
+			, BGDT_MOD_USER = #{user_id}
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND BUDG_CODE = #{budg_code}
+			AND BGDT_CODE = #{bgdt_code}
+	</update>
+
+	<delete id="budgetDetailDelete" parameterType="hmap">
+		DELETE FROM AC_BUDG_DETAIL
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND BUDG_CODE = #{budg_code}
+			AND BGDT_CODE = #{bgdt_code}
+	</delete>
+
+	<select id="getLastBudgetType" parameterType="hmap" resultType="String">
+		SELECT IFNULL(MAX(BUDG_TYPE), 0)
+		FROM AC_BUDG_INFO
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND BUDG_YEAR = #{budg_year}
+	</select>
+
+	<select id="getBudgetAmount" parameterType="hmap" resultType="BigInteger">
+		SELECT IFNULL(SUM(ROUND(BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER / 100))), 0)
+		FROM AC_BUDG_DETAIL ABD
+				 JOIN AC_BUDG_INFO ABI
+					  ON ABI.COMP_CODE = ABD.COMP_CODE
+						  AND ABI.BSNS_CODE = ABD.BSNS_CODE
+						  AND ABI.BUDG_CODE = ABD.BUDG_CODE
+				 JOIN SYS_MOCK_INFO SMI ON SMI.MOCK_CODE = ABD.MOCK_CODE
+				 JOIN SYS_HANG_INFO SHI ON SHI.HANG_CODE = SMI.HANG_CODE
+				 JOIN SYS_GWAN_INFO SGI ON SGI.GWAN_CODE = SHI.GWAN_CODE
+		WHERE ABD.COMP_CODE = #{comp_code}
+		  AND ABD.BSNS_CODE = #{bsns_code}
+		  AND ABI.BUDG_YEAR = #{session_year}
+		  AND ABI.BUDG_TYPE = IFNULL(
+				#{budg_type},
+				(SELECT MAX(BUDG_TYPE)
+				 FROM AC_BUDG_INFO
+				 WHERE COMP_CODE = #{comp_code}
+				   AND BSNS_CODE = #{bsns_code}
+				   AND BUDG_YEAR = #{session_year}
+				)
+			)
+		  AND SGI.GWAN_IO_TYPE = #{io_type}
+	</select>
+</mapper>

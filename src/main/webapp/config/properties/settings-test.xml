@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+	<!-- Database -->
+	<entry key="database.driverClassName">org.mariadb.jdbc.Driver</entry>
+	<entry key="database.url">jdbc:mariadb://</entry>
+	<entry key="database.username"></entry>
+	<entry key="database.password"></entry>
+
+	<!-- BankdaAccount -->
+	<entry key="bankdaAccount.SERVICE_TYPE"></entry>
+	<entry key="bankdaAccount.PARTNER_ID"></entry>
+	<entry key="bankdaAccount.PARTNER_PW"></entry>
+	<entry key="bankdaAccount.PARTNER_NAME"></entry>
+
+	<!--
+	* 보육통합정보시스템 개발서버 연동가이드
+	* hosts 파일에 아래 내용 추가 필요
+	* 116.67.111.16	stgapi.childcare.go.kr
+	*
+	* 개발용 인증키로 테스트가 되지 않아 문의하니, 운영용 인증키로 테스트서버(stgapi) 쪽으로 데이터 보내서 테스트해도 무방하다고 함
+	* 다만, 운영서버에 테스트데이터를 잘못보내지 않도록 주의 할 것!
+	-->
+	<!-- ChildcareAccount -->
+	<entry key="childcareAccount.COMMON_URL">https://stgapi.childcare.go.kr/route/soap/acntRpt/</entry>
+	<entry key="childcareAccount.C_AUTH_KEY"></entry>
+
+	<!-- Resource Path -->
+	<entry key="resourcePath"></entry>
+	<entry key="resourceUploadImgPath"></entry>
+</properties>

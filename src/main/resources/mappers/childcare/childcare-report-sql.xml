@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="childcare.report">
+	<select id="childcareReportList" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, REPO_CODE
+			, REPO_OPER
+			, REPO_YEAR
+			, REPO_TYPE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'BUDG_TYPE'
+					AND CDDT_VAL = REPO_TYPE
+			) AS BUDG_TYPE_NAME
+			, REPO_CONTENT
+			, REPO_RESULT_CODE
+			, IF(REPO_RESULT_CODE = '000', '성공', '오류') AS REPO_RESULT_STATUS
+			, IF(REPO_RESULT_CODE = '000', 'GREEN', 'RED') AS REPO_RESULT_STATUS_COLOR
+			, REPO_RESULT_MSG
+			, DATE_FORMAT(REPO_REG_DATE, '%Y-%m-%d') AS REPO_REG_DATE
+			, DATE_FORMAT(REPO_MOD_DATE, '%Y-%m-%d') AS REPO_MOD_DATE
+			, REPO_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = REPO_MOD_USER
+			) AS REPO_MOD_USER_NAME
+		FROM DC_REPO_INFO
+		<where>
+			<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(repo_code)">
+				AND REPO_CODE = #{repo_code}
+			</if>
+		</where>
+	</select>
+
+	<insert id="childcareReportRegist" parameterType="hmap">
+		INSERT INTO DC_REPO_INFO (
+			COMP_CODE
+			, BSNS_CODE
+			, REPO_CODE
+			, REPO_OPER
+			, REPO_YEAR
+			, REPO_TYPE
+			, REPO_CONTENT
+			, REPO_RESULT_CODE
+			, REPO_RESULT_MSG
+			, REPO_REG_DATE
+			, REPO_MOD_DATE
+			, REPO_MOD_USER
+		)
+		VALUES (
+			#{comp_code}
+			, #{bsns_code}
+			, IFNULL(#{repo_code}, sfUniqueKey())
+			, #{repo_oper}
+			, #{repo_year}
+			, #{repo_type}
+			, #{repo_content}
+			, #{repo_result_code}
+			, #{repo_result_msg}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+		ON DUPLICATE KEY UPDATE
+			REPO_OPER = #{repo_oper}
+			, REPO_YEAR = #{repo_year}
+			, REPO_TYPE = #{repo_type}
+			, REPO_CONTENT = #{repo_content}
+			, REPO_RESULT_CODE = #{repo_result_code}
+			, REPO_RESULT_MSG = #{repo_result_msg}
+			, REPO_MOD_DATE = NOW()
+			, REPO_MOD_USER = #{user_id}
+	</insert>
+
+
+	<select id="monthlyPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, REPO_CODE
+			, IF(REPO_CODE, 'Y', 'N') AS IS_REPORTED
+			, REPO_OPER
+			, YEAR AS REPO_YEAR
+			, MONTH AS REPO_MONTH
+			, REPO_CONTENT
+			, REPO_RESULT_CODE
+			, IF(REPO_CODE IS NULL, '',
+				IF(REPO_RESULT_CODE = '000', '성공', '오류')
+			) AS REPO_RESULT_STATUS
+			, IF(REPO_CODE IS NULL, '',
+				IF(REPO_RESULT_CODE = '000', 'green', 'red')
+			) AS REPO_RESULT_STATUS_COLOR
+			, REPO_RESULT_MSG
+			, IFNULL(DATE_FORMAT(REPO_REG_DATE, '%Y-%m-%d'), '') AS REPO_REG_DATE
+			, IFNULL(DATE_FORMAT(REPO_MOD_DATE, '%Y-%m-%d'), '') AS REPO_MOD_DATE
+			, REPO_MOD_USER
+			, IFNULL(
+				(SELECT USER_NAME
+					FROM DF_USER_INFO
+					WHERE USER_ID = REPO_MOD_USER
+				), ''
+			) AS REPO_MOD_USER_NAME
+		FROM
+			(SELECT
+				DATE
+				, YEAR(DATE) AS YEAR
+				, MONTH(DATE) AS MONTH
+			FROM
+				(SELECT
+					DATE(CONCAT(#{year}, '-', #{bsns_sess_start_month}, '-01')) + INTERVAL(T.INTERV) MONTH AS DATE
+				FROM
+					(SELECT 0 AS INTERV			UNION ALL SELECT 1
+						UNION ALL SELECT 2		UNION ALL SELECT 3
+						UNION ALL SELECT 4		UNION ALL SELECT 5
+						UNION ALL SELECT 6		UNION ALL SELECT 7
+						UNION ALL SELECT 8		UNION ALL SELECT 9
+						UNION ALL SELECT 10		UNION ALL SELECT 11
+					) AS T
+				) AS YM
+			) YM
+			LEFT JOIN DC_REPO_INFO
+				ON COMP_CODE = #{comp_code}
+					AND BSNS_CODE = #{bsns_code}
+					AND REPO_OPER = 'acRptMonthSum'
+					AND REPO_YEAR = YM.YEAR
+					AND REPO_TYPE = YM.MONTH
+	</select>
+
+	<select id="monthlyData" parameterType="hmap" resultType="rmap">
+		SELECT
+			IF(TRAN_IO_TYPE = 'I', '1', IF(TRAN_IO_TYPE = 'O', '2', '')) AS GB
+			 , CONCAT(GWAN_NUMB, HANG_NUMB, MOCK_NUMB) AS CD
+			 , SUM(TRAN_PRICE) AS AMT
+			 , COUNT(TRAN_CODE) AS CNT
+		FROM AC_TRAN_LIST
+			JOIN SYS_MOCK_INFO USING (MOCK_CODE)
+			JOIN SYS_HANG_INFO USING (HANG_CODE)
+			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND YEAR(TRAN_DATE) = #{repo_year}
+		  	AND MONTH(TRAN_DATE) = #{repo_month}
+		GROUP BY MOCK_CODE
+	</select>
+
+
+	<select id="budgetPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			ABI.COMP_CODE
+			, ABI.BSNS_CODE
+			, BUDG_YEAR
+			, BUDG_TYPE
+			, (SELECT CDDT_NAME
+				FROM SYS_CODE_DETAIL
+				WHERE CODE_ID = 'BUDG_TYPE'
+					AND CDDT_VAL = BUDG_TYPE
+			) AS BUDG_TYPE_NAME
+			, REPO_CODE
+			, IF(REPO_CODE, 'Y', 'N') AS IS_REPORTED
+			, REPO_OPER
+			, REPO_YEAR
+			, REPO_TYPE
+			, REPO_CONTENT
+			, REPO_RESULT_CODE
+			, IF(REPO_CODE IS NULL, '',
+				IF(REPO_RESULT_CODE = '000', '성공', '오류')
+			) AS REPO_RESULT_STATUS
+			, IF(REPO_CODE IS NULL, '',
+				IF(REPO_RESULT_CODE = '000', 'green', 'red')
+			) AS REPO_RESULT_STATUS_COLOR
+			, REPO_RESULT_MSG
+			, IFNULL(DATE_FORMAT(REPO_REG_DATE, '%Y-%m-%d'), '') AS REPO_REG_DATE
+			, IFNULL(DATE_FORMAT(REPO_MOD_DATE, '%Y-%m-%d'), '') AS REPO_MOD_DATE
+			, REPO_MOD_USER
+			, IFNULL(
+				(SELECT USER_NAME
+					FROM DF_USER_INFO
+					WHERE USER_ID = REPO_MOD_USER
+				), ''
+			) AS REPO_MOD_USER_NAME
+		FROM AC_BUDG_INFO ABI
+		LEFT JOIN DC_REPO_INFO DRI
+			ON DRI.COMP_CODE = ABI.COMP_CODE
+			AND DRI.BSNS_CODE = ABI.BSNS_CODE
+			AND DRI.REPO_YEAR = ABI.BUDG_YEAR
+			AND DRI.REPO_TYPE = ABI.BUDG_TYPE
+			AND DRI.REPO_OPER = 'acRptBudget'
+		WHERE ABI.COMP_CODE = #{comp_code}
+			AND ABI.BSNS_CODE = #{bsns_code}
+			AND BUDG_YEAR = #{budg_year}
+	</select>
+
+	<select id="budgetData" parameterType="hmap" resultType="rmap">
+		SELECT
+			GB
+			, CD
+			, IFNULL(SUM(BGDT_AMOUNT), 0) AS BGTAMT
+			, IFNULL(GROUP_CONCAT(CONCAT(BGDT_CONTENT, ' = ', FORMAT(BGDT_AMOUNT, 0)) SEPARATOR '\n'), '') AS COMPUTBSIS
+		FROM (
+			SELECT
+				MOCK_CODE
+				, IF(GWAN_IO_TYPE = 'I', '1', IF(GWAN_IO_TYPE = 'O', '2', '')) AS GB
+				, CONCAT(GWAN_NUMB, HANG_NUMB, MOCK_NUMB) AS CD
+				, ROUND(BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER/100)) AS BGDT_AMOUNT
+				, CONCAT(BGDT_CONTENT, '\t', FORMAT(BGDT_PRICE, 0), '원 × ', sfRemoveDecimalZero(FORMAT(BGDT_QTY, 5)), '명(개) × ', BGDT_MONTH, '개월', ' × ', BGDT_PER, '%') AS BGDT_CONTENT
+			FROM SYS_MOCK_INFO SMI
+				JOIN SYS_HANG_INFO USING (HANG_CODE)
+				JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+				JOIN SYS_GHM_INFO USING (GHM_CODE)
+				LEFT JOIN (
+					SELECT *
+					FROM AC_BUDG_DETAIL ABD
+						JOIN AC_BUDG_INFO ABI USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+					WHERE COMP_CODE = #{comp_code}
+						AND BSNS_CODE = #{bsns_code}
+						AND BUDG_YEAR = #{repo_year}
+						AND BUDG_TYPE = #{repo_type}
+				) BUDGET USING (MOCK_CODE)
+			WHERE BSNS_CATE = #{bsns_cate}
+				AND GHM_ACTIVE_YN = 'Y'
+				AND GHM_YEAR = #{repo_year}
+			ORDER BY GWAN_IO_TYPE, CAST(GWAN_NUMB AS UNSIGNED), CAST(HANG_NUMB AS UNSIGNED), CAST(MOCK_NUMB AS UNSIGNED)
+		) T
+		GROUP BY MOCK_CODE
+	</select>
+
+
+	<select id="settlementPage" parameterType="hmap" resultType="rmap">
+		SELECT
+			GHM_YEAR
+			, COMP_CODE
+			, BSNS_CODE
+			, REPO_CODE
+			, IF(REPO_CODE, 'Y', 'N') AS IS_REPORTED
+			, REPO_OPER
+			, REPO_YEAR
+			, REPO_TYPE
+			, REPO_CONTENT
+			, REPO_RESULT_CODE
+			, IF(REPO_CODE IS NULL, '',
+				IF(REPO_RESULT_CODE = '000', '성공', '오류')
+			) AS REPO_RESULT_STATUS
+			, IF(REPO_CODE IS NULL, '',
+				IF(REPO_RESULT_CODE = '000', 'green', 'red')
+			) AS REPO_RESULT_STATUS_COLOR
+			, REPO_RESULT_MSG
+			, IFNULL(DATE_FORMAT(REPO_REG_DATE, '%Y-%m-%d'), '') AS REPO_REG_DATE
+			, IFNULL(DATE_FORMAT(REPO_MOD_DATE, '%Y-%m-%d'), '') AS REPO_MOD_DATE
+			, REPO_MOD_USER
+			, IFNULL(
+				(SELECT USER_NAME
+					FROM DF_USER_INFO
+					WHERE USER_ID = REPO_MOD_USER
+				), ''
+			) AS REPO_MOD_USER_NAME
+		FROM SYS_GHM_INFO SGI
+			LEFT JOIN DC_REPO_INFO DRI
+				ON DRI.REPO_YEAR = SGI.GHM_YEAR
+					AND COMP_CODE = #{comp_code}
+					AND BSNS_CODE = #{bsns_code}
+					AND REPO_OPER = 'acRptStacnt'
+		WHERE BSNS_CATE = #{bsns_cate}
+		  AND GHM_ACTIVE_YN = 'Y'
+	</select>
+
+	<select id="settlementData" parameterType="hmap" resultType="rmap">
+		SELECT
+			IF(GWAN_IO_TYPE = 'I', '1', IF(GWAN_IO_TYPE = 'O', '2', '')) AS GB
+			, CONCAT(GWAN_NUMB, HANG_NUMB, MOCK_NUMB) AS CD
+			, IFNULL(
+				(SELECT SUM(TRAN_PRICE)
+					FROM AC_TRAN_LIST
+					WHERE COMP_CODE = #{comp_code}
+						AND BSNS_CODE = #{bsns_code}
+						AND MOCK_CODE = SMI.MOCK_CODE
+					  <![CDATA[
+						AND TRAN_DATE >= #{start_date}
+						AND TRAN_DATE < #{end_date}
+					  ]]>
+				), 0
+			) AS CSCNN
+		FROM SYS_MOCK_INFO SMI
+			JOIN SYS_HANG_INFO USING (HANG_CODE)
+			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+			JOIN SYS_GHM_INFO USING (GHM_CODE)
+		WHERE BSNS_CATE = #{bsns_cate}
+			AND GHM_ACTIVE_YN = 'Y'
+			AND GHM_YEAR = #{session_year}
+	</select>
+
+</mapper>

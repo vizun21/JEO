@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="accounting.print">
+
+	<resultMap id="transactionResultMap" type="hashmap">
+		<id property="comp_code" column="comp_code"/>
+		<id property="bsns_code" column="bsns_code"/>
+		<id property="year" column="year"/>
+		<id property="month" column="month"/>
+		<collection property="transactions" ofType="hashmap" javaType="list">
+			<result property="tran_code" column="tran_code"/>
+			<result property="bktr_code" column="bktr_code"/>
+			<result property="tran_date" column="tran_date"/>
+			<result property="tran_proof_numb" column="tran_proof_numb"/>
+			<result property="mock_name" column="mock_name"/>
+			<result property="tran_jukyo" column="tran_jukyo"/>
+			<result property="tran_input_price" column="tran_input_price"/>
+			<result property="tran_output_price" column="tran_output_price"/>
+		</collection>
+	</resultMap>
+
+	<select id="transactionList" parameterType="hmap" resultMap="transactionResultMap">
+		<![CDATA[
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, TRAN_CODE
+			, BKTR_CODE
+			, YEAR(TRAN_DATE) AS YEAR
+			, MONTH(TRAN_DATE) AS MONTH
+			, DATE_FORMAT(TRAN_DATE, '%m/%d') AS TRAN_DATE
+			, sfProofNumberFormat(TRAN_DATE, TRAN_IO_TYPE, TRAN_PROOF_NUMB) AS TRAN_PROOF_NUMB
+		    , MOCK_NAME
+			, TRAN_JUKYO
+			, IF(TRAN_IO_TYPE = 'I', TRAN_PRICE, 0) TRAN_INPUT_PRICE
+			, IF(TRAN_IO_TYPE = 'O', TRAN_PRICE, 0) TRAN_OUTPUT_PRICE
+		FROM AC_TRAN_LIST ATL
+			JOIN SYS_MOCK_INFO USING (MOCK_CODE)
+			JOIN SYS_HANG_INFO USING (HANG_CODE)
+			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+			AND (TRAN_DATE >= #{start_date} AND TRAN_DATE < #{end_date})
+		ORDER BY TRAN_DATE ASC, TRAN_CODE ASC
+		]]>
+	</select>
+
+
+	<resultMap id="voucherResultMap" type="rmap">
+		<id property="comp_code" column="comp_code"/>
+		<id property="bsns_code" column="bsns_code"/>
+		<id property="tran_date" column="tran_date"/>
+		<id property="mock_code" column="mock_code"/>
+		<id property="gwan_io_type_name" column="gwan_io_type_name"/>
+		<result property="tran_year" column="tran_year"/>
+		<result property="gwan_name" column="gwan_name"/>
+		<result property="hang_name" column="hang_name"/>
+		<result property="mock_name" column="mock_name"/>
+		<collection property="transactions" ofType="hashmap" javaType="list">
+			<result property="tran_code" column="tran_code"/>
+			<result property="bktr_code" column="bktr_code"/>
+			<result property="tran_proof_numb" column="tran_proof_numb"/>
+			<result property="tran_price" column="tran_price"/>
+			<result property="tran_jukyo" column="tran_jukyo"/>
+			<result property="tran_note" column="tran_note"/>
+		</collection>
+	</resultMap>
+
+	<select id="voucher" parameterType="hmap" resultMap="voucherResultMap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, TRAN_CODE
+			, BKTR_CODE
+			, YEAR(TRAN_DATE) AS TRAN_YEAR
+			, DATE_FORMAT(TRAN_DATE, '%Y-%m-%d') AS TRAN_DATE
+			, sfProofNumberFormat(TRAN_DATE, TRAN_IO_TYPE, TRAN_PROOF_NUMB) AS TRAN_PROOF_NUMB
+			, GWAN_NAME
+			, GWAN_IO_TYPE
+			, IF(TRAN_PRICE >= 0,
+				(SELECT CDDT_NAME
+					FROM SYS_CODE_DETAIL
+					WHERE CODE_ID = 'IO_TYPE'
+						AND CDDT_VAL = GWAN_IO_TYPE
+				),
+				CONCAT(
+					(SELECT CDDT_NAME
+						FROM SYS_CODE_DETAIL
+						WHERE CODE_ID = 'IO_TYPE'
+							AND CDDT_VAL = GWAN_IO_TYPE
+					), '반납')
+			) AS GWAN_IO_TYPE_NAME
+			, HANG_NAME
+			, MOCK_CODE
+			, MOCK_NAME
+			, TRAN_PRICE
+			, TRAN_JUKYO
+			, TRAN_NOTE
+		FROM AC_TRAN_LIST ATL
+			JOIN SYS_MOCK_INFO USING (MOCK_CODE)
+			JOIN SYS_HANG_INFO USING (HANG_CODE)
+			JOIN SYS_GWAN_INFO USING (GWAN_CODE)
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(return_voucher)">
+			AND (TRAN_DATE >= #{start_date} AND TRAN_DATE <![CDATA[<]]> #{end_date})
+			AND TRAN_IO_TYPE = #{tran_io_type}
+	<choose>
+		<when test='return_voucher == "Y"'>
+			AND TRAN_PRICE <![CDATA[<]]> 0
+		</when>
+		<when test='return_voucher == "N"'>
+			AND TRAN_PRICE >= 0
+		</when>
+	</choose>
+</if>
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(tran_code_list)">
+			AND TRAN_CODE IN
+			<foreach collection="tran_code_list" item="item" index="index" separator="," open="(" close=")">
+				#{item}
+			</foreach>
+		</if>
+		ORDER BY TRAN_DATE ASC, TRAN_CODE ASC
+	</select>
+
+
+	<resultMap id="gwanResultMap" type="rmap">
+		<result property="comp_code" column="comp_code"/>
+		<result property="bsns_code" column="bsns_code"/>
+		<result property="budg_year" column="budg_year"/>
+		<result property="budg_type" column="budg_type"/>
+		<result property="gwan_code" column="gwan_code"/>
+		<result property="gwan_numb" column="gwan_numb"/>
+		<result property="gwan_name" column="gwan_name"/>
+		<result property="budg_amount" column="budg_amount"/>
+		<result property="compare_budg_year" column="compare_budg_year"/>
+		<result property="compare_budg_type" column="compare_budg_type"/>
+		<collection property="hang"
+					column="{comp_code=COMP_CODE,bsns_code=BSNS_CODE,budg_year=BUDG_YEAR,budg_type=BUDG_TYPE,gwan_code=GWAN_CODE,
+							compare_budg_year=COMPARE_BUDG_YEAR,compare_budg_type=COMPARE_BUDG_TYPE}"
+					javaType="java.util.ArrayList" ofType="rmap" select="getHang"/>
+	</resultMap>
+
+	<select id="budget" parameterType="hmap" resultMap="gwanResultMap">
+		SELECT
+			#{comp_code} AS COMP_CODE
+			, #{bsns_code} AS BSNS_CODE
+			, #{budg_year} AS BUDG_YEAR
+			, #{budg_type} AS BUDG_TYPE
+			, #{compare_budg_year} AS COMPARE_BUDG_YEAR
+			, #{compare_budg_type} AS COMPARE_BUDG_TYPE
+			, GWAN_CODE
+			, GWAN_NUMB
+			, GWAN_NAME
+			, IFNULL(
+				SUM(CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER/100)) AS SIGNED INTEGER))
+			, 0) AS BUDG_AMOUNT
+			, IFNULL(
+				(SELECT SUM(CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER/100)) AS SIGNED INTEGER))
+				 FROM SYS_GWAN_INFO
+					 JOIN SYS_HANG_INFO USING (GWAN_CODE)
+					 JOIN SYS_MOCK_INFO USING (HANG_CODE)
+					 JOIN AC_BUDG_DETAIL USING (MOCK_CODE)
+					 JOIN AC_BUDG_INFO USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+				 WHERE COMP_CODE = #{comp_code}
+					 AND BSNS_CODE = #{bsns_code}
+					 AND BUDG_YEAR = #{compare_budg_year}
+					 AND BUDG_TYPE = #{compare_budg_type}
+					 AND GWAN_IO_TYPE LIKE SGI.GWAN_IO_TYPE
+					 AND GWAN_NUMB = SGI.GWAN_NUMB
+				), 0
+			) AS PREV_BUDG_AMOUNT
+		FROM SYS_GHM_INFO
+			JOIN SYS_GWAN_INFO SGI USING (GHM_CODE)
+			JOIN SYS_HANG_INFO USING (GWAN_CODE)
+			JOIN SYS_MOCK_INFO USING (HANG_CODE)
+			LEFT JOIN (
+				SELECT *
+				FROM AC_BUDG_DETAIL ABD
+					JOIN AC_BUDG_INFO ABI USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+				WHERE COMP_CODE = #{comp_code}
+					AND BSNS_CODE = #{bsns_code}
+					AND BUDG_YEAR = #{budg_year}
+					AND BUDG_TYPE = #{budg_type}
+			) T USING (MOCK_CODE)
+		WHERE BSNS_CATE = #{bsns_cate}
+			AND GHM_YEAR = #{budg_year}
+			AND GWAN_IO_TYPE = #{io_type}
+		GROUP BY GWAN_CODE
+	</select>
+
+	<resultMap id="hangResultMap" type="rmap">
+		<result property="comp_code" column="comp_code"/>
+		<result property="bsns_code" column="bsns_code"/>
+		<result property="budg_year" column="budg_year"/>
+		<result property="budg_type" column="budg_type"/>
+		<result property="hang_code" column="hang_code"/>
+		<result property="hang_numb" column="hang_numb"/>
+		<result property="hang_name" column="hang_name"/>
+		<result property="budg_amount" column="budg_amount"/>
+		<result property="prev_budg_amount" column="prev_budg_amount"/>
+		<result property="compare_budg_year" column="compare_budg_year"/>
+		<result property="compare_budg_type" column="compare_budg_type"/>
+		<collection property="mock"
+					column="{comp_code=COMP_CODE,bsns_code=BSNS_CODE,budg_year=BUDG_YEAR,budg_type=BUDG_TYPE,hang_code=HANG_CODE,
+							compare_budg_year=COMPARE_BUDG_YEAR,compare_budg_type=COMPARE_BUDG_TYPE}"
+					javaType="java.util.ArrayList" ofType="rmap" select="getMock"/>
+	</resultMap>
+
+	<select id="getHang" parameterType="hmap" resultMap="hangResultMap">
+		SELECT
+			#{comp_code} AS COMP_CODE
+			, #{bsns_code} AS BSNS_CODE
+			, #{budg_year} AS BUDG_YEAR
+			, #{budg_type} AS BUDG_TYPE
+			, #{compare_budg_year} AS COMPARE_BUDG_YEAR
+			, #{compare_budg_type} AS COMPARE_BUDG_TYPE
+			, HANG_CODE
+			, HANG_NUMB
+			, HANG_NAME
+			, IFNULL(
+				SUM(CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER/100)) AS SIGNED INTEGER))
+			, 0) AS BUDG_AMOUNT
+			, IFNULL(
+				(SELECT SUM(CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER/100)) AS SIGNED INTEGER))
+				 FROM SYS_GWAN_INFO
+					 JOIN SYS_HANG_INFO USING (GWAN_CODE)
+					 JOIN SYS_MOCK_INFO USING (HANG_CODE)
+					 JOIN AC_BUDG_DETAIL USING (MOCK_CODE)
+					 JOIN AC_BUDG_INFO USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+				 WHERE COMP_CODE = #{comp_code}
+					 AND BSNS_CODE = #{bsns_code}
+					 AND BUDG_YEAR = #{compare_budg_year}
+					 AND BUDG_TYPE = #{compare_budg_type}
+					 AND GWAN_IO_TYPE LIKE SGI.GWAN_IO_TYPE
+					 AND GWAN_NUMB = SGI.GWAN_NUMB
+					 AND HANG_NUMB = SHI.HANG_NUMB
+				), 0
+			) AS PREV_BUDG_AMOUNT
+		FROM SYS_GWAN_INFO SGI
+			JOIN SYS_HANG_INFO SHI USING (GWAN_CODE)
+			JOIN SYS_MOCK_INFO USING (HANG_CODE)
+			LEFT JOIN (
+				SELECT *
+				FROM AC_BUDG_DETAIL ABD
+					JOIN AC_BUDG_INFO ABI USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+				WHERE COMP_CODE = #{comp_code}
+					AND BSNS_CODE = #{bsns_code}
+					AND BUDG_YEAR = #{budg_year}
+					AND BUDG_TYPE = #{budg_type}
+			) T USING (MOCK_CODE)
+		WHERE GWAN_CODE = #{gwan_code}
+		GROUP BY HANG_CODE
+	</select>
+
+	<select id="getMock" parameterType="hmap" resultType="rmap">
+		SELECT
+			MOCK_NUMB
+			, MOCK_NAME
+			, IFNULL(
+				SUM(CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER/100)) AS SIGNED INTEGER))
+			, 0) AS BUDG_AMOUNT
+			, IFNULL(
+				(SELECT SUM(CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER/100)) AS SIGNED INTEGER))
+				 FROM SYS_GWAN_INFO
+					 JOIN SYS_HANG_INFO USING (GWAN_CODE)
+					 JOIN SYS_MOCK_INFO USING (HANG_CODE)
+					 JOIN AC_BUDG_DETAIL USING (MOCK_CODE)
+					 JOIN AC_BUDG_INFO USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+				 WHERE COMP_CODE = #{comp_code}
+					 AND BSNS_CODE = #{bsns_code}
+				     AND BUDG_YEAR = #{compare_budg_year}
+				     AND BUDG_TYPE = #{compare_budg_type}
+					 AND GWAN_IO_TYPE LIKE SGI.GWAN_IO_TYPE
+					 AND GWAN_NUMB = SGI.GWAN_NUMB
+					 AND HANG_NUMB = SHI.HANG_NUMB
+					 AND MOCK_NUMB = SMI.MOCK_NUMB
+				), 0
+			) AS PREV_BUDG_AMOUNT
+			, GROUP_CONCAT(BGDT_CONTENT, '  ', BGDT_PRICE, '원', ' × ', sfRemoveDecimalZero(BGDT_QTY), '명(개)', ' × ', BGDT_MONTH, '개월', ' × ', BGDT_PER, '%',
+				' = ', CAST((BGDT_PRICE * BGDT_QTY * BGDT_MONTH * (BGDT_PER/100)) AS SIGNED INTEGER), '원' SEPARATOR '\n\r'
+			) AS CONTENT
+		FROM SYS_GWAN_INFO SGI
+			JOIN SYS_HANG_INFO SHI USING (GWAN_CODE)
+			JOIN SYS_MOCK_INFO SMI USING (HANG_CODE)
+			LEFT JOIN (
+				SELECT *
+				FROM AC_BUDG_DETAIL ABD
+					JOIN AC_BUDG_INFO ABI USING (COMP_CODE, BSNS_CODE, BUDG_CODE)
+				WHERE COMP_CODE = #{comp_code}
+					AND BSNS_CODE = #{bsns_code}
+					AND BUDG_YEAR = #{budg_year}
+					AND BUDG_TYPE = #{budg_type}
+			) T USING (MOCK_CODE)
+		WHERE HANG_CODE = #{hang_code}
+		GROUP BY MOCK_CODE
+	</select>
+
+</mapper>

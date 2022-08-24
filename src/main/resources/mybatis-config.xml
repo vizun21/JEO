@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<typeAliases>
+		<typeAlias alias="hmap" type="java.util.LinkedHashMap"/>
+		<typeAlias alias="rmap" type="com.erowm.common.domain.RMap"/>
+		<typeAlias alias="loginVO" type="com.erowm.common.domain.LoginVO"/>
+		<typeAlias alias="businessVO" type="com.erowm.common.domain.BusinessVO"/>
+		<typeAlias alias="Room" type="com.erowm.webapp.accounting.room.domain.Room"/>
+		<typeAlias alias="Child" type="com.erowm.webapp.accounting.child.domain.Child"/>
+		<typeAlias alias="GeneralLedger" type="com.erowm.webapp.accounting.budgetSettlement.domain.GeneralLedger"/>
+	</typeAliases>
+</configuration>

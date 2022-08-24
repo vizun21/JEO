@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="accounting.child">
+	<select id="childPage" parameterType="hmap" resultType="Child">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, CHILD_CODE
+			, CHILD_NAME
+			, CHILD_REG_NUMB_1
+			, CHILD_REG_NUMB_2
+			, CHILD_ADMISSION_DATE
+			, CHILD_GRADUATION_DATE
+			, CHILD_ZIPCODE
+			, CHILD_ADDR
+			, CHILD_DETAIL_ADDR
+			, CHILD_STATUS
+			, ROOM_CODE
+			, (SELECT ROOM_NAME
+				FROM AC_ROOM_INFO
+				WHERE COMP_CODE = ACI.COMP_CODE
+					AND BSNS_CODE = ACI.BSNS_CODE
+					AND ROOM_CODE = ACI.ROOM_CODE
+			) AS ROOM_NAME
+			, CHILD_REG_DATE
+			, CHILD_MOD_DATE
+			, CHILD_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = CHILD_MOD_USER
+			) AS CHILD_MOD_USER_NAME
+		FROM AC_CHILD_INFO ACI
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(keyword)">
+			AND ${keyword_column} LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+	</select>
+
+	<select id="childList" parameterType="hmap" resultType="rmap">
+		SELECT
+			COMP_CODE
+			, BSNS_CODE
+			, CHILD_CODE
+			, CHILD_NAME
+			, CHILD_REG_NUMB_1
+			, CHILD_REG_NUMB_2
+			, CHILD_ADMISSION_DATE
+			, CHILD_GRADUATION_DATE
+			, CHILD_ZIPCODE
+			, CHILD_ADDR
+			, CHILD_DETAIL_ADDR
+			, CHILD_STATUS
+			, ROOM_CODE
+			, CHILD_REG_DATE
+			, CHILD_MOD_DATE
+			, CHILD_MOD_USER
+			, (SELECT USER_NAME
+				FROM DF_USER_INFO
+				WHERE USER_ID = CHILD_MOD_USER
+			) AS CHILD_MOD_USER_NAME
+		FROM AC_CHILD_INFO
+		WHERE COMP_CODE = #{comp_code}
+			AND BSNS_CODE = #{bsns_code}
+		<if test="@com.erowm.common.util.CommonUtils@isNotEmpty(child_code)">
+			AND CHILD_CODE = #{child_code}
+		</if>
+	</select>
+
+	<insert id="childRegist" parameterType="rmap">
+		<selectKey keyProperty="child_code" resultType="rmap" order="BEFORE">
+			SELECT sfUniqueKey() AS CHILD_CODE
+		</selectKey>
+
+		INSERT INTO AC_CHILD_INFO (
+			COMP_CODE
+			, BSNS_CODE
+			, CHILD_CODE
+			, CHILD_NAME
+			, CHILD_REG_NUMB_1
+			, CHILD_REG_NUMB_2
+			, CHILD_ADMISSION_DATE
+			, CHILD_GRADUATION_DATE
+			, CHILD_ZIPCODE
+			, CHILD_ADDR
+			, CHILD_DETAIL_ADDR
+			, CHILD_STATUS
+			, ROOM_CODE
+			, CHILD_REG_DATE
+			, CHILD_MOD_DATE
+			, CHILD_MOD_USER
+		)
+		VALUES (
+			#{comp_code}
+			, #{bsns_code}
+			, #{child_code}
+			, #{child_name}
+			, #{child_reg_numb_1}
+			, #{child_reg_numb_2}
+			, #{child_admission_date}
+			, NULLIF(#{child_graduation_date}, '')
+			, #{child_zipcode}
+			, #{child_addr}
+			, #{child_detail_addr}
+			, #{child_status}
+			, #{room_code}
+			, NOW()
+			, NOW()
+			, #{user_id}
+		)
+	</insert>
+
+	<update id="childModify" parameterType="hmap">
+		UPDATE AC_CHILD_INFO
+		SET
+			CHILD_NAME = #{child_name}
+		  , CHILD_REG_NUMB_1 = #{child_reg_numb_1}
+		  , CHILD_REG_NUMB_2 = #{child_reg_numb_2}
+		  , CHILD_ADMISSION_DATE = #{child_admission_date}
+		  , CHILD_GRADUATION_DATE = NULLIF(#{child_graduation_date}, '')
+		  , CHILD_ZIPCODE = #{child_zipcode}
+		  , CHILD_ADDR = #{child_addr}
+		  , CHILD_DETAIL_ADDR = #{child_detail_addr}
+		  , CHILD_STATUS = #{child_status}
+		  , ROOM_CODE = #{room_code}
+		  , CHILD_MOD_DATE = NOW()
+		  , CHILD_MOD_USER = #{user_id}
+		WHERE COMP_CODE = #{comp_code}
+		  AND BSNS_CODE = #{bsns_code}
+		  AND CHILD_CODE = #{child_code}
+	</update>
+
+</mapper>
