@@ -14,6 +14,7 @@ public class Define {
 	public static final String UPDATE_USER_ID = "update_user_id";
 	public static final String CEO_YN = "ceo_yn";
 	public static final String AUTH_USER = "auth_user";
+	public static final String USER_POSITION = "user_position";
 
 	public static final String IO_TYPE = "io_type";
 	public static final String BSNS_CATE = "bsns_cate";

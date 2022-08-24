@@ -36,7 +36,17 @@ public class UserJoinRestController {
 	@RequestMapping(value = "/user/join/person", method = RequestMethod.POST)
 	public String joinPersonPOST(HMap hmap, HttpServletRequest request) {
 		hmap.putRequestAll(request.getParameterMap());
-		hmap.put(Define.USER_LEVEL, TypeVal.LEVEL_COMP_USER);
+
+		hmap.put(Define.COMP_CODE, "CP202208240001");	// 전주환경사업소 COMP_CODE로 고정
+
+		// 직책이 팀장, 부장, 과장인 경우에는 관리자로 설정
+		String position = hmap.getString(Define.USER_POSITION);
+		if (position.equals("TJ") || position.equals("BJ") || position.equals("GJ")) {
+			hmap.put(Define.USER_LEVEL, TypeVal.LEVEL_COMP_ADMIN);
+		} else {
+			hmap.put(Define.USER_LEVEL, TypeVal.LEVEL_COMP_USER);
+		}
+
 		userService.userRegist(hmap);
 		return "/user/join/complete";
 	}

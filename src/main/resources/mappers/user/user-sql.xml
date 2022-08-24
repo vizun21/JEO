@@ -15,6 +15,7 @@
 			,USER_REG_NUMB_2
 			,USER_JOIN_DATE
 			,USER_SALES
+			,USER_POSITION
 			,USER_LEVEL
 			,USER_APPR_YN
 			,USER_YN
@@ -35,6 +36,7 @@
 			,#{user_reg_numb_2}
 			,#{user_join_date}
 			,#{user_sales}
+			,#{user_position}
 			,#{user_level}
 			,'N'
 			,'Y'

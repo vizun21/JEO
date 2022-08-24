@@ -55,8 +55,11 @@
 				<div class="form-group">
 					<label for="user_name">직책</label>
 					<div class="input-group mb-3 input-group-append">
-						<select class="select2 form-control" id="user_position" data-minimum-results-for-search="Infinity" style="width: 100%;">
+						<select class="select2 form-control" id="user_position" name="user_position" data-minimum-results-for-search="Infinity" style="width: 100%;">
 							<option value="">[직책선택]</option>
+							<c:forEach var="position" items="${positionList}" varStatus="status">
+								<option value="${position.cddt_val}">${position.cddt_name}</option>
+							</c:forEach>
 						</select>
 					</div>
 				</div>
