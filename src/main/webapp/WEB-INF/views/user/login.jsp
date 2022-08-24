@@ -1,5 +1,7 @@
 <head>
     <style>
+        .login-box {width: 500px;}
+        .login-logo {font-size: 2rem;margin-top: 0.9rem;font-weight: bold;}
         .about_info a {font-size: 14px;color: gray;}
         .icheck-info {font-size: 14px;}
     </style>
@@ -8,14 +10,14 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="/"><b>JEO</b></a>
+        <a href="/"><b>전주환경사업소 시설관리시스템</b></a>
     </div>
 
     <div class="card">
         <div class="card-body login-card-body">
             <form id="loginForm">
                 <div class="input-group mb-3">
-                    <input type="id" class="form-control" id="user_id" name="user_id" placeholder="ID" title="아이디"
+                    <input type="id" class="form-control" id="user_id" name="user_id" placeholder="사원번호" title="사원번호"
 						   data-parsley-required="true">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -24,7 +26,7 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" class="form-control" id="user_pw" name="user_pw" placeholder="Password" title="비밀번호"
+                    <input type="password" class="form-control" id="user_pw" name="user_pw" placeholder="비밀번호" title="비밀번호"
 						   data-parsley-required="true">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -47,28 +49,11 @@
 
 			<hr>
 
-<%--			<div class="input-group mb-3">--%>
-<%--				<button type="button" class="btn p-0 w-100" id="btnLoginKakao">--%>
-<%--				<a href="https://kauth.kakao.com/oauth/authorize--%>
-<%--					?client_id=9e69d402407f4bbd0b0023737702e900--%>
-<%--					&redirect_uri=http://192.168.0.49:8080/user/kakao/token--%>
-<%--					&response_type=code--%>
-<%--					&scope=profile,account_email,gender,birthday">--%>
-<%--					<img src="/resources/img/kakao_login_medium_wide.png" class="w-100">--%>
-<%--				</a>--%>
-<%--				</button>--%>
-<%--			</div>--%>
-
-<%--            <hr>--%>
-
             <div class="input-group mb-3">
-                <a class="btn btn-info btn-block" href="/user/join/person">개인회원가입</a>
-                <a class="btn btn-info btn-block" href="/user/join/comp">기업회원가입</a>
+                <a class="btn btn-info btn-block" href="/user/join/person">회원가입</a>
             </div>
 
             <div class="about_info text-center mt-3">
-                <a id="findID" href="#">아이디 찾기</a>
-                <span class="bar" aria-hidden="true">|</span>
                 <a id="findPW" href="#">비밀번호 찾기</a>
             </div>
 
@@ -110,46 +95,5 @@
 		});
 
 	});
-
-	<%--$("#btnLoginKakao").on("click", function () {--%>
-	<%--	$.ajax({--%>
-	<%--		type: "GET"--%>
-	<%--		, url: "/user/login/kakao"--%>
-	<%--		// , headers: {"Content-Type": "application/json"}--%>
-	<%--		, dataType: "text"--%>
-	<%--		// , data: JSON.stringify({--%>
-	<%--		// })--%>
-	<%--		, success: function (data) {--%>
-	<%--			&lt;%&ndash;if (data == "success") {&ndash;%&gt;--%>
-	<%--			&lt;%&ndash;	var destination = "${sessionScope.destination}";&ndash;%&gt;--%>
-	<%--			&lt;%&ndash;	self.location = isNull(destination) ? "/" : destination;&ndash;%&gt;--%>
-	<%--			&lt;%&ndash;} else {&ndash;%&gt;--%>
-	<%--			&lt;%&ndash;	alert(data);&ndash;%&gt;--%>
-	<%--			&lt;%&ndash;}&ndash;%&gt;--%>
-	<%--		}--%>
-	<%--		, error: function (request, status, error) {--%>
-	<%--			// alert(error);--%>
-	<%--		}--%>
-	<%--	})--%>
-	<%--});--%>
-
-	<%--$("#btnLoginKakao").on("click", function () {--%>
-	<%--	$.ajax({--%>
-	<%--		type: "GET"--%>
-	<%--		, url: "/user/oauth"--%>
-	<%--		, success: function (data) {--%>
-	<%--			console.log(data);--%>
-	<%--			&lt;%&ndash;if (data == "success") {&ndash;%&gt;--%>
-	<%--			&lt;%&ndash;	var destination = "${sessionScope.destination}";&ndash;%&gt;--%>
-	<%--			&lt;%&ndash;	self.location = isNull(destination) ? "/" : destination;&ndash;%&gt;--%>
-	<%--			&lt;%&ndash;} else {&ndash;%&gt;--%>
-	<%--			&lt;%&ndash;	alert(data);&ndash;%&gt;--%>
-	<%--			&lt;%&ndash;}&ndash;%&gt;--%>
-	<%--		}--%>
-	<%--		, error: function (request, status, error) {--%>
-	<%--			// alert(error);--%>
-	<%--		}--%>
-	<%--	})--%>
-	<%--});--%>
 </script>
 </body>
