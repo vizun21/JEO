@@ -1,3 +1,6 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
 <head>
     <style>
         .login-box {width: 500px;}
@@ -15,7 +18,7 @@
 
     <div class="card">
         <div class="card-body login-card-body">
-            <form id="loginForm">
+			<form id="loginForm" action="<c:url value='/user/login'/>" method="post">
                 <div class="input-group mb-3">
                     <input type="id" class="form-control" id="user_id" name="user_id" placeholder="사원번호" title="사원번호"
 						   data-parsley-required="true">
@@ -35,7 +38,7 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <button type="button" id="btnLogin" class="btn btn-info btn-block">로그인</button>
+                    <button type="submit" id="btnLogin" class="btn btn-info btn-block">로그인</button>
                 </div>
                 <div class="input-group mb-3">
                     <div class="icheck-info">
@@ -62,38 +65,11 @@
 </div>
 
 <script type="text/javascript">
-	$("#user_id, #user_pw").on("keyup", function (event) {
-		if (event.keyCode === 13) {
-			$("#btnLogin").trigger("click");
-		}
-	});
-
-	$("#btnLogin").on("click", function () {
-		if (!parsleyFormValidate("loginForm")) return false;
-
-
-		$.ajax({
-			type: "POST"
-			, url: "/user/loginCheck"
-			, headers: {"Content-Type": "application/json"}
-			, dataType: "text"
-			, data: JSON.stringify({
-				user_id: $("#user_id").val()
-				, user_pw: $("#user_pw").val()
-			})
-			, success: function (data) {
-				if (data == "success") {
-					var destination = "${sessionScope.destination}";
-					self.location = isNull(destination) ? "/" : destination;
-				} else {
-					alert(data);
-				}
-			}
-			, error: function (request, status, error) {
-				alertAjaxError(request, status, error);
-			}
-		});
-
+	$(function () {
+		<c:if test="${not empty fn:trim(loginErrorMessage) &&  loginErrorMessage ne ''}">
+		alert("<c:out value='${loginErrorMessage}'/>");
+		</c:if>
 	});
 </script>
+
 </body>
