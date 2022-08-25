@@ -11,5 +11,7 @@
 		<typeAlias alias="Room" type="com.jeo.webapp.accounting.room.domain.Room"/>
 		<typeAlias alias="Child" type="com.jeo.webapp.accounting.child.domain.Child"/>
 		<typeAlias alias="GeneralLedger" type="com.jeo.webapp.accounting.budgetSettlement.domain.GeneralLedger"/>
+
+		<typeAlias alias="User" type="com.jeo.user.domain.User"/>
 	</typeAliases>
 </configuration>

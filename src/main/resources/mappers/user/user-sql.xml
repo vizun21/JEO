@@ -266,4 +266,58 @@
 			USER_PW = #{user_enc_pw}
 		WHERE USER_ID = #{user_id}
 	</update>
+
+	<select id="selectUser" parameterType="hmap" resultType="User">
+		SELECT
+			COMP_CODE
+			 , USER_ID
+			 , USER_PW
+			 , USER_NAME
+			 , USER_EMAIL
+			 , USER_TEL
+			 , USER_MOBILE
+			 , USER_REG_NUMB_1
+			 , USER_REG_NUMB_2
+			 , USER_JOIN_DATE
+			 , USER_SALES
+			 , USER_POSITION
+			 , USER_LEVEL
+			 , USER_APPR_YN
+			 , USER_YN
+			 , PASSWORD_HINT
+			 , PASSWORD_HINT_ANSWER
+			 , USER_LOGIN_DATE
+			 , USER_REG_DATE
+			 , USER_MOD_DATE
+			 , USER_MOD_USER
+		FROM DF_USER_INFO
+		WHERE COMP_CODE = #{comp_code}
+		  AND USER_ID = #{user_id}
+	</select>
+
+	<update id="updateUser" parameterType="User">
+		UPDATE DF_USER_INFO
+		SET
+			USER_PW = #{user_pw}
+		  , USER_NAME = #{user_name}
+		  , USER_EMAIL = #{user_email}
+		  , USER_TEL = #{user_tel}
+		  , USER_MOBILE = #{user_mobile}
+		  , USER_REG_NUMB_1 = #{user_reg_numb_1}
+		  , USER_REG_NUMB_2 = #{user_reg_numb_2}
+		  , USER_JOIN_DATE = #{user_join_date}
+		  , USER_SALES = #{user_sales}
+		  , USER_POSITION = #{user_position}
+		  , USER_LEVEL = #{user_level}
+		  , USER_APPR_YN = #{user_appr_yn}
+		  , USER_YN = #{user_yn}
+		  , PASSWORD_HINT = #{password_hint}
+		  , PASSWORD_HINT_ANSWER = #{password_hint_answer}
+		  , USER_LOGIN_DATE = #{user_login_date}
+		  , USER_REG_DATE = #{user_reg_date}
+		  , USER_MOD_DATE = #{user_mod_date}
+		  , USER_MOD_USER = #{user_mod_user}
+		WHERE COMP_CODE = #{comp_code}
+		  AND USER_ID = #{user_id}
+	</update>
 </mapper>

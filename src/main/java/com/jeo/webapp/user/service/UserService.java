@@ -5,6 +5,7 @@ import com.jeo.common.domain.HMap;
 import com.jeo.common.domain.LoginDTO;
 import com.jeo.common.domain.LoginVO;
 import com.jeo.common.util.CommonUtils;
+import com.jeo.user.domain.User;
 import com.jeo.webapp.bankda.service.BankdaService;
 import com.jeo.webapp.common.dao.CommonDao;
 import com.jeo.webapp.comp.dao.CompDao;
@@ -104,5 +105,14 @@ public class UserService {
 		String encPassword = passwordEncoder.encode(hmap.getString(Define.USER_PW));
 		hmap.put(Define.USER_ENC_PW, encPassword);
 		return userDao.userChangePassword(hmap.getMap());
+	}
+
+	public User selectUser(HMap hmap) {
+		return userDao.selectUser(hmap.getMap());
+	}
+
+	public void userRetirement(User user) {
+		user.retirement();
+		userDao.updateUser(user);
 	}
 }
