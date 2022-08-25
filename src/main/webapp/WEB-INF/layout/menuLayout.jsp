@@ -1,11 +1,11 @@
-<%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator"%>
+<%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
-	<%@include file="../include/header.jsp"%>
+	<%@include file="../include/header.jsp" %>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -153,9 +153,7 @@
 		</div>
 
 		<div class="overlay">
-<%--			<div class="overlay-icon">--%>
-				<i class="overlay-icon fas fa-sync-alt fa-spin fa-5x"></i>
-<%--			</div>--%>
+			<i class="overlay-icon fas fa-sync-alt fa-spin fa-5x"></i>
 		</div>
 		<decorator:body></decorator:body>
 
@@ -172,12 +170,12 @@
 
 	<footer class="main-footer">
 		<div class="float-right d-none d-sm-inline"></div>
-		<strong>Copyright &copy; 2020-<fmt:formatDate value="<%=new java.util.Date()%>" pattern="yyyy" /> <a href="http://lmsystems.co.kr/">Esoft.corp</a>.</strong> All rights reserved.
+		<strong>Copyright &copy; 2020-<fmt:formatDate value="<%=new java.util.Date()%>" pattern="yyyy"/> <a href="http://lmsystems.co.kr/">Esoft.corp</a>.</strong> All rights reserved.
 	</footer>
 
 </div>
 
-<%@include file="../include/script.jsp"%>
+<%@include file="../include/script.jsp" %>
 
 </body>
 

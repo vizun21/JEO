@@ -19,11 +19,16 @@ import java.util.List;
 
 @Service
 public class UserService {
-	@Autowired UserDao userDao;
-	@Autowired CompDao compDao;
-	@Autowired CommonDao commonDao;
-	@Autowired BCryptPasswordEncoder passwordEncoder;
-	@Autowired BankdaService bankdaService;
+	@Autowired
+	UserDao userDao;
+	@Autowired
+	CompDao compDao;
+	@Autowired
+	CommonDao commonDao;
+	@Autowired
+	BCryptPasswordEncoder passwordEncoder;
+	@Autowired
+	BankdaService bankdaService;
 
 	public int userRegist(HMap hmap) {
 		// 사용자 등록
