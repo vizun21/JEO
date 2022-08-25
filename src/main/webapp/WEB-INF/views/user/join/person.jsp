@@ -89,7 +89,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="user_name">비밀번호 확인질문</label>
+					<label for="password_hint">비밀번호 확인질문</label>
 					<div class="input-group mb-3 input-group-append">
 						<select class="select2 form-control" id="password_hint" name="password_hint" title="비밀번호 확인질문"
 								data-parsley-required="true" data-minimum-results-for-search="Infinity" style="width: 100%;">
@@ -101,7 +101,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="user_mobile">비밀번호 확인질문 답변</label>
+					<label for="password_hint_answer">비밀번호 확인질문 답변</label>
 					<div class="input-group mb-3">
 						<input type="text" class="form-control" id="password_hint_answer" name="password_hint_answer" placeholder="비밀번호 확인질문 답변" title="비밀번호 확인질문 답변"
 							   data-parsley-required="true" data-parsley-maxlength="20">
@@ -179,19 +179,12 @@
 </div>
 
 <script type="text/javascript">
-	$(function () {
-	});
-
 	$("#user_id").on("keyup focusout", function () {
 		$(this).val(formatNumber($(this).val()));
 		overlapCheck($(this));
 	});
 
-	$("#user_email").on("keyup focusout", function () {
-		$(this).val(formatEmail($(this).val()));
-	});
-
-	$("#user_tel, #user_mobile").on("keyup focusout", function () {
+	$("#user_mobile").on("keyup focusout", function () {
 		$(this).val(formatPhone($(this).val()));
 	});
 
