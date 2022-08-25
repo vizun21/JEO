@@ -15,15 +15,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Map;
 
 @Controller
 public class UserLoginRestController {
-	@Autowired UserService userService;
-	@Autowired CompService compService;
-	@Autowired BCryptPasswordEncoder passwordEncoder;
+	@Autowired
+	UserService userService;
+	@Autowired
+	CompService compService;
+	@Autowired
+	BCryptPasswordEncoder passwordEncoder;
 	@Autowired
 	BusinessService businessService;
 
@@ -74,11 +78,11 @@ public class UserLoginRestController {
 				}
 
 				// 사용자로그인
-				SessionUtils.setAttribute(Define.loginVO, login);	// 로그인정보
+				SessionUtils.setAttribute(Define.loginVO, login);    // 로그인정보
 				HMap param2 = new HMap();
 				param2.put(Define.COMP_CODE, login.getComp_code());
 				param2.put(Define.BSNS_CODE, TypeVal.BSNS_CODE);
-				SessionUtils.setAttribute(Define.businessVO, businessService.businessVO(param2));	// 사업정보
+				SessionUtils.setAttribute(Define.businessVO, businessService.businessVO(param2));    // 사업정보
 			}
 			// 관리자로그인
 			else {

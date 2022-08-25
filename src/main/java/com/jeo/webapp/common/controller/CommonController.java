@@ -2,9 +2,7 @@ package com.jeo.webapp.common.controller;
 
 import com.jeo.common.config.Define;
 import com.jeo.common.config.TypeVal;
-import com.jeo.common.domain.BusinessVO;
 import com.jeo.common.domain.LoginVO;
-import com.jeo.common.util.CommonUtils;
 import com.jeo.common.util.SessionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
