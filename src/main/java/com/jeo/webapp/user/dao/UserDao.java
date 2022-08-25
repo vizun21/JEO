@@ -3,6 +3,7 @@ package com.jeo.webapp.user.dao;
 import com.jeo.common.dao.AbstractDao;
 import com.jeo.common.domain.LoginDTO;
 import com.jeo.common.domain.LoginVO;
+import com.jeo.user.domain.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -63,5 +64,13 @@ public class UserDao extends AbstractDao {
 
 	public int userChangePassword(Map<String, Object> map) {
 		return update(namespace + ".userChangePassword", map);
+	}
+
+	public User selectUser(Map<String, Object> map) {
+		return selectOne(namespace + ".selectUser", map);
+	}
+
+	public int updateUser(User user) {
+		return update(namespace + ".updateUser", user);
 	}
 }

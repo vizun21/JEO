@@ -89,7 +89,7 @@
 			, headers: {"Content-Type": "application/json"}
 			, dataType: "json"
 			, data: JSON.stringify({
-				user_yn: $("#user_yn").val()
+				user_yn: 'Y'
 				, keyword_column: $("#keyword_column").val()
 				, keyword: $("#keyword").val()
 			})
@@ -136,6 +136,29 @@
 		if (!confirm("퇴직처리하시겠습니까?")) return false;
 
 		// 퇴직처리
+		var user_id_list = [];
+		$("input[name=tb_check_list]:checked").each(function () {
+			user_id_list.push($(this).val());
+		});
+
+		$.ajax({
+			type: "POST"
+			, url: "/user/batch-retirement"
+			, headers: {"Content-Type": "application/json"}
+			, dataType: "text"
+			, data: JSON.stringify({
+				user_id_list: user_id_list
+			})
+			, async: false
+			, success: function (data) {
+				if (data == 'success') {
+					getPage();
+				}
+			}
+			, error: function (request, status, error) {
+				alertAjaxError(request, status, error);
+			}
+		});
 
 	});
 
