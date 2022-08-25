@@ -15,6 +15,11 @@
 		<pattern>/admin/**</pattern>
 	</decorator>
 
+    <decorator name="menuLayout" page="menuLayout.jsp">
+		<pattern>/comp/**</pattern>
+		<pattern>/admin/**</pattern>
+	</decorator>
+
     <decorator name="businessSelectLayout" page="businessSelectLayout.jsp">
         <pattern>/home</pattern>
 		<pattern>/accounting/**</pattern>

@@ -31,6 +31,7 @@
 			<mvc:mapping path="/accounting/**"/>
 			<mvc:mapping path="/business/**"/>
 			<mvc:mapping path="/admin/**"/>
+			<mvc:mapping path="/comp/**"/>
 			<bean id="menuInterceptor" class="com.jeo.common.interceptor.MenuInterceptor"/>
 		</mvc:interceptor>
 <!--		<mvc:interceptor>-->
