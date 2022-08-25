@@ -94,11 +94,11 @@
 				, keyword: $("#keyword").val()
 			})
 			, success: function (data) {
-				if($.fn.DataTable.isDataTable("#listTable")) {
+				if ($.fn.DataTable.isDataTable("#listTable")) {
 					$("#listTable").DataTable().clear();
 				}
 
-				$.each(data, function(index, item) {
+				$.each(data, function (index, item) {
 					var html = [];
 					html.push("");	// dtr-control 위치
 					html.push("<input type='checkbox' name='tb_check_list' value='" + item.user_id + "' data-ceo_id='" + item.ceo_id + "'>");
@@ -116,7 +116,7 @@
 				$("#listTable").DataTable().columns.adjust().draw();
 
 				$("input[name=tb_check_all]").prop("checked", false);
-				$("input[name=tb_check_list]").on("change", function (){
+				$("input[name=tb_check_list]").on("change", function () {
 					syncCheckbox("listTable");
 				});
 
