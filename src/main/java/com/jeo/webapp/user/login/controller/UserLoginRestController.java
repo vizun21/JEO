@@ -8,6 +8,7 @@ import com.jeo.common.domain.LoginVO;
 import com.jeo.common.util.CommonUtils;
 import com.jeo.common.util.DateUtils;
 import com.jeo.common.util.SessionUtils;
+import com.jeo.webapp.business.service.BusinessService;
 import com.jeo.webapp.comp.service.CompService;
 import com.jeo.webapp.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class UserLoginRestController {
 	@Autowired UserService userService;
 	@Autowired CompService compService;
 	@Autowired BCryptPasswordEncoder passwordEncoder;
+	@Autowired
+	BusinessService businessService;
 
 	@PostMapping(value = "/user/login")
 	public String loginCheckPOST(@ModelAttribute("dto") LoginDTO dto, Model model) {
@@ -71,7 +74,11 @@ public class UserLoginRestController {
 				}
 
 				// 사용자로그인
-				SessionUtils.setAttribute(Define.loginVO, login);
+				SessionUtils.setAttribute(Define.loginVO, login);	// 로그인정보
+				HMap param2 = new HMap();
+				param2.put(Define.COMP_CODE, login.getComp_code());
+				param2.put(Define.BSNS_CODE, TypeVal.BSNS_CODE);
+				SessionUtils.setAttribute(Define.businessVO, businessService.businessVO(param2));	// 사업정보
 			}
 			// 관리자로그인
 			else {

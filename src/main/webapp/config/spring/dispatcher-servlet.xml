@@ -33,12 +33,12 @@
 			<mvc:mapping path="/admin/**"/>
 			<bean id="menuInterceptor" class="com.jeo.common.interceptor.MenuInterceptor"/>
 		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/home"/>
-			<mvc:mapping path="/accounting/**"/>
-			<mvc:mapping path="/business/**"/>
-			<bean id="businessInterceptor" class="com.jeo.common.interceptor.BusinessInterceptor"/>
-		</mvc:interceptor>
+<!--		<mvc:interceptor>-->
+<!--			<mvc:mapping path="/home"/>-->
+<!--			<mvc:mapping path="/accounting/**"/>-->
+<!--			<mvc:mapping path="/business/**"/>-->
+<!--			<bean id="businessInterceptor" class="com.jeo.common.interceptor.BusinessInterceptor"/>-->
+<!--		</mvc:interceptor>-->
 	</mvc:interceptors>
 
 	<!-- ArgumentResolver 설정 -->
