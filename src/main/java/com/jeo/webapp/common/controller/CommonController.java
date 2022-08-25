@@ -28,6 +28,7 @@ public class CommonController {
 	}
 
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	public void homeGet(Model model) {
+	public String homeGet(Model model) {
+		return "redirect:/comp/user";
 	}
 }
