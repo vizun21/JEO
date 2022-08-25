@@ -51,7 +51,6 @@
 										<th>직책</th>
 										<th>이름</th>
 										<th>핸드폰번호</th>
-										<th>최근접속일</th>
 									</tr>
 									</thead>
 									<tbody></tbody>
@@ -67,12 +66,10 @@
 
 <script>
 	$(function () {
-		var maxIndex = $("#listTable th").length - 1
 		var args = {
 			orderColumns: [[2, "asc"]]
 			, excludeOrderColumns: [1]
 			, useColvis: true
-			, hideColumns: [maxIndex]
 		}
 		setDatatables("listTable", args);
 
@@ -107,10 +104,9 @@
 					html.push("<input type='checkbox' name='tb_check_list' value='" + item.user_id + "' data-ceo_id='" + item.ceo_id + "'>");
 					html.push(index + 1);
 					html.push(item.user_id);
-					html.push("");
+					html.push(item.user_position_name);
 					html.push(item.user_name);
 					html.push(item.user_mobile);
-					html.push(item.user_login_date);
 
 					var rowNode = $("#listTable").DataTable().row.add(html).node();
 					$(rowNode).attr("data-user_id", item.user_id);
