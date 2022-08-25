@@ -21,12 +21,7 @@ public class CommonController {
 		else if (loginVO.getUser_level() == TypeVal.LEVEL_ADMIN)
 			return "redirect:/admin/user/transform";
 		else if (loginVO.getUser_level() == TypeVal.LEVEL_COMP_ADMIN || loginVO.getUser_level() == TypeVal.LEVEL_COMP_USER) {
-			BusinessVO businessVO = (BusinessVO) SessionUtils.getAttribute(Define.businessVO);
-			if (CommonUtils.isEmpty(businessVO)) {
-				return "redirect:/mybusiness";
-			} else {
-				return "redirect:/home";
-			}
+			return "redirect:/home";
 		}
 
 		return "/error";

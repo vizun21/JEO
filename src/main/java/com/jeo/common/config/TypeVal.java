@@ -1,6 +1,8 @@
 package com.jeo.common.config;
 
 public class TypeVal {
+	public static final String BSNS_CODE = "20220825135033633042"; // 전주환경사업소 DEFAULT 사업코드
+
 	public static final String INDEX_COMP = "CP";
 
 	public static final int LEVEL_COMP_USER = 1;
