@@ -40,7 +40,7 @@
 			,#{user_sales}
 			,#{user_position}
 			,#{user_level}
-			,'N'
+			,'Y'
 			,'Y'
 		    ,#{password_hint}
 		    ,#{password_hint_answer}

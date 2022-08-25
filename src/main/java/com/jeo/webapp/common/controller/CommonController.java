@@ -18,15 +18,16 @@ public class CommonController {
 			return "redirect:/admin/user/transform";
 		else if (loginVO.getUser_level() == TypeVal.LEVEL_ADMIN)
 			return "redirect:/admin/user/transform";
-		else if (loginVO.getUser_level() == TypeVal.LEVEL_COMP_ADMIN || loginVO.getUser_level() == TypeVal.LEVEL_COMP_USER) {
-			return "redirect:/home";
+		else if (loginVO.getUser_level() == TypeVal.LEVEL_COMP_ADMIN) {
+			return "redirect:/comp/user";
+		} else if (loginVO.getUser_level() == TypeVal.LEVEL_COMP_USER) {
+			return "redirect:/facility";    // 시설물관리(구현예정)
 		}
 
 		return "/error";
 	}
 
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	public String homeGet(Model model) {
-		return "redirect:/comp/user";
+	public void homeGet(Model model) {
 	}
 }
