@@ -320,4 +320,12 @@
 		WHERE COMP_CODE = #{comp_code}
 		  AND USER_ID = #{user_id}
 	</update>
+
+	<select id="searchPassword" parameterType="User" resultType="String">
+		SELECT USER_PW
+		FROM DF_USER_INFO
+		WHERE USER_ID = #{user_id}
+		  AND PASSWORD_HINT = #{password_hint}
+		  AND PASSWORD_HINT_ANSWER = #{password_hint_answer}
+	</select>
 </mapper>

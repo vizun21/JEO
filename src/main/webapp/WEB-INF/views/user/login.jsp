@@ -57,7 +57,7 @@
             </div>
 
             <div class="about_info text-center mt-3">
-                <a id="findPW" href="#">비밀번호 찾기</a>
+                <a id="findPW" href="/user/searchPassword">비밀번호 찾기</a>
             </div>
 
         </div>

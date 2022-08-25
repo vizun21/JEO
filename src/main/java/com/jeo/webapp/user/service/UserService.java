@@ -120,4 +120,8 @@ public class UserService {
 		user.retirement();
 		userDao.updateUser(user);
 	}
+
+	public String searchPassword(User user) {
+		return userDao.searchPassword(user);
+	}
 }
