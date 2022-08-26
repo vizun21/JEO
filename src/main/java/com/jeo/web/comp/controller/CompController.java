@@ -28,4 +28,8 @@ public class CompController {
 		List<ConstructionType> resultList = constructionTypeService.selectConstructionTypeList();
 		model.addAttribute("resultList", resultList);
 	}
+
+	@GetMapping(value = "/comp/category")
+	public void compCategoryGET(Model model) {
+	}
 }
