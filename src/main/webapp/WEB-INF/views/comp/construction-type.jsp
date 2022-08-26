@@ -78,8 +78,7 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="submit" class="btn btn-info" id="btnRegist">저장</button>
-				<button type="submit" class="btn btn-info" id="btnModify">수정</button>
+				<button type="submit" form="constructionTypeForm" class="btn btn-info" id="btnRegist">저장</button>
 			</div>
 		</div>
 	</div>
