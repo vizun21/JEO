@@ -13,4 +13,8 @@ public class CategoryDao extends AbstractDao {
 	public List<Category> selectCategoryList() {
 		return selectList(namespace + ".select");
 	}
+
+	public int insertCategory(Category category) {
+		return insert(namespace + ".insert", category);
+	}
 }

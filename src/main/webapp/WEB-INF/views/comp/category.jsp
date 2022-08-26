@@ -59,8 +59,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form id="categoryForm" action="<c:url value="/category"/>" method="post"
-					  onsubmit="return checkForm();">
+				<form id="categoryForm" action="<c:url value="/category"/>" method="post" onsubmit="return checkForm();">
 					<table class="table-form table table-sm table-bordered">
 						<colgroup>
 							<col width="30%">

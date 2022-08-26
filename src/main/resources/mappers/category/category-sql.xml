@@ -7,4 +7,19 @@
 		FROM EO_CATEGORY
 		ORDER BY CATEGORY_NAME
 	</select>
+
+	<insert id="insert" parameterType="Category">
+		INSERT INTO EO_CATEGORY (
+			CATEGORY_NAME
+			, CATEGORY_REG_DATE
+			, CATEGORY_MOD_DATE
+			, CATEGORY_MOD_USER
+		)
+		VALUES (
+			#{category_name}
+			, NOW()
+			, NOW()
+			, #{category_mod_user}
+		)
+	</insert>
 </mapper>
