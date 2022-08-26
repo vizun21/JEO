@@ -29,7 +29,15 @@
 										<th>공종</th>
 									</tr>
 									</thead>
-									<tbody></tbody>
+									<tbody>
+									<c:forEach var="result" items="${resultList}" varStatus="status">
+										<tr>
+											<td></td>
+											<td>${status.count}</td>
+											<td>${result.construction_name}</td>
+										</tr>
+									</c:forEach>
+									</tbody>
 								</table>
 							</div>
 						</div>
@@ -51,7 +59,8 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form id="constructionTypeForm" action="<c:url value="/comp/construction-type"/>" method="post">
+				<form id="constructionTypeForm" action="<c:url value="/construction-type"/>" method="post"
+					  onsubmit="return checkForm();">
 					<table class="table-form table table-sm table-bordered">
 						<colgroup>
 							<col width="30%">
@@ -60,9 +69,9 @@
 						<tr>
 							<th>공종<span class="required">*</span></th>
 							<td>
-								<input type="hidden" id="frm_page_code" name="frm_page_code">
-								<input type="text" class="form-control form-control-sm" id="frm_page_name" name="frm_page_name" title="공종"
-									   data-parsley-required="true" data-parsley-maxlength="20">
+								<input type="hidden" id="construction_code" name="construction_code">
+								<input type="text" class="form-control form-control-sm" id="construction_name" name="construction_name"
+									   title="공종" data-parsley-required="true" data-parsley-maxlength="20">
 							</td>
 						</tr>
 					</table>
@@ -82,6 +91,8 @@
 			orderColumns: [[2, "asc"]]
 		}
 		setDatatables("listTable", args);
+
+		$("#listTable").DataTable().columns.adjust().draw();
 	});
 
 	$("#btnAdd").on("click", function () {
@@ -91,9 +102,7 @@
 		$("#formModal").modal("show");
 	});
 
-	$("#btnRegist").on("click", function () {
+	function checkForm() {
 		if (!parsleyFormValidate("constructionTypeForm")) return false;
-
-		// 공종정보 저장
-	});
+	}
 </script>

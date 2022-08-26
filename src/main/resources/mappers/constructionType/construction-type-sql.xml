@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="construction.type">
+	<select id="select" resultType="ConstructionType">
+		SELECT *
+		FROM EO_CONSTRUCTION_TYPE
+		ORDER BY CONSTRUCTION_NAME
+	</select>
+
+	<insert id="insert" parameterType="ConstructionType">
+		INSERT INTO EO_CONSTRUCTION_TYPE (
+			CONSTRUCTION_NAME
+			, CONSTRUCTION_REG_DATE
+			, CONSTRUCTION_MOD_DATE
+			, CONSTRUCTION_MOD_USER
+		)
+		VALUES (
+			#{construction_name}
+			, NOW()
+			, NOW()
+			, #{construction_mod_user}
+		)
+	</insert>
+</mapper>
