@@ -8,6 +8,8 @@
         <pattern>/user/join/**</pattern>
 		<pattern>/user/login</pattern>
 		<pattern>/user/logout</pattern>
+		<pattern>/user/searchPassword</pattern>
+		<pattern>/user/changePassword</pattern>
     </decorator>
 
     <decorator name="defaultLayout" page="defaultLayout.jsp">

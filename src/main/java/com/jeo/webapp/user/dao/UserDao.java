@@ -73,4 +73,12 @@ public class UserDao extends AbstractDao {
 	public int updateUser(User user) {
 		return update(namespace + ".updateUser", user);
 	}
+
+	public String searchPassword(User user) {
+		return selectOne(namespace + ".searchPassword", user);
+	}
+
+	public int userChangePassword(User user) {
+		return update(namespace + ".userChangePassword", user);
+	}
 }

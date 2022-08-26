@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 import java.util.Map;
@@ -23,9 +24,9 @@ public class UserController {
 	@Autowired
 	UserService userService;
 
-	@RequestMapping(value = "/user/batch-retirement", method = RequestMethod.POST)
-	public ResponseEntity<String> approvalPOST(HMap hmap, @RequestBody Map<String, Object> map) {
-		ResponseEntity<String> entity = null;
+	@PostMapping("/user/batch-retirement")
+	public ResponseEntity<String> batchRetirementPOST(HMap hmap, @RequestBody Map<String, Object> map) {
+		ResponseEntity<String> entity;
 		try {
 			hmap.set(map);
 
@@ -44,5 +45,35 @@ public class UserController {
 			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		return entity;
+	}
+
+	@PostMapping("/user/searchPassword")
+	public String searchPasswordPOST(@ModelAttribute("user") User user, Model model) {
+		model.addAttribute("user", user);
+
+		if (user == null || user.getUser_id() == null || user.getUser_id().equals("")
+				|| user.getPassword_hint() == null || user.getPassword_hint().equals("")
+				|| user.getPassword_hint_answer() == null || user.getPassword_hint_answer().equals("")) {
+			return "/error/wrongApproach";
+		}
+
+		String password = userService.searchPassword(user);
+		if (password == null || password.equals("")) {
+			return "/user/searchPasswordResult";
+		}
+
+		return "/user/changePassword";
+	}
+
+	@PostMapping("/user/changePassword")
+	public String changePasswordPOST(@ModelAttribute("user") User user, Model model) {
+		if (user == null || user.getUser_id() == null || user.getUser_id().equals("")
+				|| user.getUser_pw() == null || user.getUser_pw().equals("")) {
+			return "/error/wrongApproach";
+		}
+
+		userService.userChangePassword(user);
+
+		return "/user/changePasswordResult";
 	}
 }

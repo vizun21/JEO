@@ -11,6 +11,7 @@ public class User {
 	private String comp_code;
 	private String user_id;
 	private String user_pw;
+	private String user_enc_pw;
 	private String user_name;
 	private String user_email;
 	private String user_tel;
