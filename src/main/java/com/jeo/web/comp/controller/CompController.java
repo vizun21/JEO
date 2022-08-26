@@ -18,4 +18,8 @@ public class CompController {
 	@GetMapping(value = "/comp/user")
 	public void compUserGET() {
 	}
+
+	@GetMapping(value = "/comp/construction-type")
+	public void compConstructionTypeGET() {
+	}
 }
