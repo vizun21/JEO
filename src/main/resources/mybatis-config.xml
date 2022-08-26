@@ -14,5 +14,6 @@
 
 		<typeAlias alias="User" type="com.jeo.user.domain.User"/>
 		<typeAlias alias="ConstructionType" type="com.jeo.constructionType.domain.ConstructionType"/>
+		<typeAlias alias="Category" type="com.jeo.category.domain.Category"/>
 	</typeAliases>
 </configuration>

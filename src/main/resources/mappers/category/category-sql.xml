@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="category">
+	<select id="select" resultType="Category">
+		SELECT *
+		FROM EO_CATEGORY
+		ORDER BY CATEGORY_NAME
+	</select>
+
+	<insert id="insert" parameterType="Category">
+		INSERT INTO EO_CATEGORY (
+			CATEGORY_NAME
+			, CATEGORY_REG_DATE
+			, CATEGORY_MOD_DATE
+			, CATEGORY_MOD_USER
+		)
+		VALUES (
+			#{category_name}
+			, NOW()
+			, NOW()
+			, #{category_mod_user}
+		)
+	</insert>
+</mapper>

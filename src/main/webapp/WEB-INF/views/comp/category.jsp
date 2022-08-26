@@ -26,7 +26,7 @@
 									<tr>
 										<th class="no_toggle"></th>	<%-- dtr-control 위치 --%>
 										<th>연번</th>
-										<th>공종</th>
+										<th>구분</th>
 									</tr>
 									</thead>
 									<tbody>
@@ -34,7 +34,7 @@
 										<tr>
 											<td></td>
 											<td>${status.count}</td>
-											<td>${result.construction_name}</td>
+											<td>${result.category_name}</td>
 										</tr>
 									</c:forEach>
 									</tbody>
@@ -53,32 +53,31 @@
 	<div class="modal-dialog modal-md" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="formModalLabel">공종정보</h5>
+				<h5 class="modal-title" id="formModalLabel">구분정보</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<i class="fas fa-times"></i>
 				</button>
 			</div>
 			<div class="modal-body">
-				<form id="constructionTypeForm" action="<c:url value="/construction-type"/>" method="post"
-					  onsubmit="return checkForm();">
+				<form id="categoryForm" action="<c:url value="/category"/>" method="post" onsubmit="return checkForm();">
 					<table class="table-form table table-sm table-bordered">
 						<colgroup>
 							<col width="30%">
 							<col width="70%">
 						</colgroup>
 						<tr>
-							<th>공종<span class="required">*</span></th>
+							<th>구분<span class="required">*</span></th>
 							<td>
-								<input type="hidden" id="construction_code" name="construction_code">
-								<input type="text" class="form-control form-control-sm" id="construction_name" name="construction_name"
-									   title="공종" data-parsley-required="true" data-parsley-maxlength="20">
+								<input type="hidden" id="category_code" name="category_code">
+								<input type="text" class="form-control form-control-sm" id="category_name" name="category_name"
+									   title="구분" data-parsley-required="true" data-parsley-maxlength="20">
 							</td>
 						</tr>
 					</table>
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="submit" form="constructionTypeForm" class="btn btn-info" id="btnRegist">저장</button>
+				<button type="submit" form="categoryForm" class="btn btn-info" id="btnRegist">저장</button>
 			</div>
 		</div>
 	</div>
@@ -95,13 +94,13 @@
 	});
 
 	$("#btnAdd").on("click", function () {
-		initDataTable("constructionTypeForm");
+		initDataTable("categoryForm");
 		$("#btnRegist").show();
 		$("#btnModify").hide();
 		$("#formModal").modal("show");
 	});
 
 	function checkForm() {
-		if (!parsleyFormValidate("constructionTypeForm")) return false;
+		if (!parsleyFormValidate("categoryForm")) return false;
 	}
 </script>

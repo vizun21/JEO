@@ -1,5 +1,7 @@
 package com.jeo.web.comp.controller;
 
+import com.jeo.category.domain.Category;
+import com.jeo.category.service.CategoryService;
 import com.jeo.constructionType.domain.ConstructionType;
 import com.jeo.constructionType.service.ConstructionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,9 @@ public class CompController {
 	@Autowired
 	ConstructionTypeService constructionTypeService;
 
+	@Autowired
+	CategoryService categoryService;
+
 	@GetMapping(value = "/comp")
 	public String compGET() {
 		return "redirect:/comp/user";
@@ -26,6 +31,12 @@ public class CompController {
 	@GetMapping(value = "/comp/construction-type")
 	public void compConstructionTypeGET(Model model) {
 		List<ConstructionType> resultList = constructionTypeService.selectConstructionTypeList();
+		model.addAttribute("resultList", resultList);
+	}
+
+	@GetMapping(value = "/comp/category")
+	public void compCategoryGET(Model model) {
+		List<Category> resultList = categoryService.selectCategoryList();
 		model.addAttribute("resultList", resultList);
 	}
 }
