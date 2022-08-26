@@ -54,13 +54,11 @@ public class UserController {
 		if (user == null || user.getUser_id() == null || user.getUser_id().equals("")
 				|| user.getPassword_hint() == null || user.getPassword_hint().equals("")
 				|| user.getPassword_hint_answer() == null || user.getPassword_hint_answer().equals("")) {
-			model.addAttribute("resultInfo", "잘못된 접근입니다.");
-			return "/user/searchPasswordResult";
+			return "/error/wrongApproach";
 		}
 
 		String password = userService.searchPassword(user);
 		if (password == null || password.equals("")) {
-			model.addAttribute("resultInfo", "비밀번호를 찾을 수 없습니다.");
 			return "/user/searchPasswordResult";
 		}
 
@@ -71,8 +69,7 @@ public class UserController {
 	public String changePasswordPOST(@ModelAttribute("user") User user, Model model) {
 		if (user == null || user.getUser_id() == null || user.getUser_id().equals("")
 				|| user.getUser_pw() == null || user.getUser_pw().equals("")) {
-			model.addAttribute("resultInfo", "잘못된 접근입니다.");
-			return "/user/searchPasswordResult";
+			return "/error/wrongApproach";
 		}
 
 		userService.userChangePassword(user);
