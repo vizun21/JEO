@@ -26,7 +26,7 @@ public class UserController {
 
 	@PostMapping("/user/batch-retirement")
 	public ResponseEntity<String> batchRetirementPOST(HMap hmap, @RequestBody Map<String, Object> map) {
-		ResponseEntity<String> entity = null;
+		ResponseEntity<String> entity;
 		try {
 			hmap.set(map);
 
@@ -65,5 +65,18 @@ public class UserController {
 		}
 
 		return "/user/setNewPassword";
+	}
+
+	@PostMapping("/user/changePassword")
+	public String changePasswordPOST(@ModelAttribute("user") User user, Model model) {
+		if (user == null || user.getUser_id() == null || user.getUser_id().equals("")
+				|| user.getUser_pw() == null || user.getUser_pw().equals("")) {
+			model.addAttribute("resultInfo", "잘못된 접근입니다.");
+			return "/user/searchPasswordResult";
+		}
+
+		userService.userChangePassword(user);
+
+		return "/user/changePasswordResult";
 	}
 }

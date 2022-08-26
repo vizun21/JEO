@@ -112,6 +112,11 @@ public class UserService {
 		return userDao.userChangePassword(hmap.getMap());
 	}
 
+	public int userChangePassword(User user) {
+		user.setUser_enc_pw(passwordEncoder.encode(user.getUser_pw()));
+		return userDao.userChangePassword(user);
+	}
+
 	public User selectUser(HMap hmap) {
 		return userDao.selectUser(hmap.getMap());
 	}
