@@ -21,7 +21,7 @@ public class CommonController {
 		else if (loginVO.getUser_level() == TypeVal.LEVEL_COMP_ADMIN) {
 			return "redirect:/comp/user";
 		} else if (loginVO.getUser_level() == TypeVal.LEVEL_COMP_USER) {
-			return "redirect:/facility";    // 시설물관리(구현예정)
+			return "redirect:/facility/equipment/list";
 		}
 
 		return "/error";
