@@ -30,6 +30,13 @@
 									</tr>
 									</thead>
 									<tbody>
+									<c:forEach var="result" items="${resultList}" varStatus="status">
+										<tr>
+											<td></td>
+											<td>${status.count}</td>
+											<td>${result.category_name}</td>
+										</tr>
+									</c:forEach>
 									</tbody>
 								</table>
 							</div>
