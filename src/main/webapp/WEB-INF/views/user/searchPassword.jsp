@@ -17,7 +17,7 @@
 
 	<div class="card">
 		<div class="card-body register-card-body">
-			<form id="joinForm" action="/user/searchPassword" method="POST">
+			<form id="searchPasswordForm" action="/user/searchPassword" method="POST" onsubmit="return checkForm();">
 				<div class="form-group mb-3">
 					<label for="user_id">사원번호 <small>(8자리 숫자)</small></label>
 					<div class="input-group">
@@ -30,7 +30,6 @@
 							</div>
 						</div>
 					</div>
-					<small class="checkResult font-italic"></small>
 				</div>
 				<div class="form-group">
 					<label for="password_hint">비밀번호 확인질문</label>
@@ -73,6 +72,10 @@
 		alert("<c:out value='${searchPasswordErrorMessage}'/>");
 		</c:if>
 	});
+
+	function checkForm() {
+		if (!parsleyFormValidate("searchPasswordForm")) return false;
+	}
 </script>
 
 </body>
