@@ -62,7 +62,7 @@ public class UserController {
 			return "/user/searchPasswordResult";
 		}
 
-		return "/user/setNewPassword";
+		return "/user/changePassword";
 	}
 
 	@PostMapping("/user/changePassword")
