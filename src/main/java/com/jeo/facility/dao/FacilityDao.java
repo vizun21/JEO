@@ -11,6 +11,14 @@ public class FacilityDao extends AbstractDao {
 	private static String namespace = "facility";
 
 	public List<Facility> selectFacilityList() {
-		return selectList(namespace + ".select");
+		return selectList(namespace + ".selectList");
+	}
+
+	public Facility selectFacility(String facility_tag_no) {
+		return selectOne(namespace + ".select", facility_tag_no);
+	}
+
+	public int insert(Facility facility) {
+		return insert(namespace + ".insert", facility);
 	}
 }

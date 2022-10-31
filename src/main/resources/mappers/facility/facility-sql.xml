@@ -2,9 +2,64 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="facility">
-	<select id="select" resultType="Facility">
+	<select id="selectList" resultType="Facility">
 		SELECT *
 		FROM EO_FACILITY
 		ORDER BY FACILITY_TAG_NO
 	</select>
+
+	<select id="select" parameterType="String" resultType="Facility">
+		SELECT *
+		FROM EO_FACILITY
+		WHERE FACILITY_TAG_NO = #{facility_tag_no}
+	</select>
+
+	<insert id="insert" parameterType="Facility">
+		INSERT INTO eo_facility (
+			FACILITY_TAG_NO
+			, FACILITY_NAME
+			, CONSTRUCTION_CODE
+			, CATEGORY_CODE
+			, FACILITY_QUANTITY
+			, PURCHASE_PRICE
+			, EMPLACEMENT
+			, PRODUCTION_COMPANY
+			, FORM
+			, INSTALLER
+			, SPECIFICATION
+			, INSTALLATION_PURPOSE
+			, MANUFACTURE_DATE
+			, COMPLETION_DATE
+			, DURABLE
+			, MAJOR_REPAIRCOMPLETION_DATE
+			, MAJOR_REPAIR_CONTENT
+			, MAJOR_REPAIR_INSTALLER
+			, FACILITY_REG_DATE
+			, FACILITY_MOD_DATE
+			, FACILITY_MOD_USE
+		) VALUES (
+			#{facility_tag_no}
+			, #{facility_name}
+			, #{construction_code}
+			, #{category_code}
+			, #{facility_quantity}
+			, #{purchase_price}
+			, #{emplacement}
+			, #{production_company}
+			, #{form}
+			, #{installer}
+			, #{specification}
+			, #{installation_purpose}
+			, #{manufacture_date}
+			, #{completion_date}
+			, #{durable}
+			, #{major_repaircompletion_date}
+			, #{major_repair_content}
+			, #{major_repair_installer}
+			, #{facility_reg_date}
+			, #{facility_mod_date}
+			, #{facility_mod_user}
+		)
+	</insert>
 </mapper>
+

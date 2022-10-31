@@ -15,4 +15,12 @@ public class FacilityService {
 	public List<Facility> selectFacilityList() {
 		return facilityDao.selectFacilityList();
 	}
+
+	public Facility selectFacility(String facility_tag_no) {
+		return facilityDao.selectFacility(facility_tag_no);
+	}
+
+	public int insert(Facility facility) {
+		return facilityDao.insert(facility);
+	}
 }

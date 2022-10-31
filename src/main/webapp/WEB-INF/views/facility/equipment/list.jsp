@@ -32,7 +32,7 @@
 									</thead>
 									<tbody>
 									<c:forEach var="result" items="${resultList}" varStatus="status">
-										<tr>
+										<tr data-facility_tag_no="${result.facility_tag_no}">
 											<td></td>
 											<td>${status.count}</td>
 											<td>${result.facility_name}</td>
@@ -62,5 +62,11 @@
 		setDatatables("listTable", args);
 
 		$("#listTable").DataTable().columns.adjust().draw();
+
+
+		$("#listTable tr").on('click', function () {
+			console.log($(this).data("facility_tag_no"));
+			window.location.href = $(this).data("facility_tag_no");
+		});
 	});
 </script>
