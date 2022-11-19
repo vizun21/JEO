@@ -5,7 +5,6 @@ import com.jeo.common.domain.HMap;
 import com.jeo.webapp.accounting.acnt.dao.AcntDao;
 import com.jeo.webapp.accounting.tran.dao.TranDao;
 import com.jeo.webapp.bankda.exception.BankdaException;
-import com.jeo.webapp.bankda.service.BankdaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +23,7 @@ import java.util.Map;
 public class AcntService {
 	@Autowired AcntDao acntDao;
 	@Autowired TranDao tranDao;
-	@Autowired BankdaService bankdaService;
+//	@Autowired BankdaService bankdaService;
 
 	public <T> List<T> acntPage(HMap hmap) {
 		List<T> accountlist = acntDao.acntPage(hmap.getMap());
@@ -35,6 +34,7 @@ public class AcntService {
 			param.put(Define.ACNT_NUMB, accountMap.get(Define.ACNT_NUMB));
 
 			// 뱅크다 계좌 조회
+			/*
 			String result = bankdaService.acntInfo(param);
 			try {
 				InputSource is = new InputSource(new StringReader(result));
@@ -57,6 +57,7 @@ public class AcntService {
 			} catch (Exception e) {
 				throw new BankdaException(result);
 			}
+			*/
 		}
 		return accountlist;
 	}
@@ -70,10 +71,10 @@ public class AcntService {
 		acntDao.acntRegist(hmap.getMap());
 
 		// 뱅크다 계좌 등록
-		String result = bankdaService.acntRegist(hmap);
-		if (!result.equals(Define.OK)) {
-			throw new BankdaException(result);
-		}
+//		String result = bankdaService.acntRegist(hmap);
+//		if (!result.equals(Define.OK)) {
+//			throw new BankdaException(result);
+//		}
 	}
 
 	public <T> T acntItem(HMap hmap) {
@@ -85,10 +86,10 @@ public class AcntService {
 		acntDao.acntModify(hmap.getMap());
 
 		// 뱅크다 계좌 수정
-		String result = bankdaService.acntModify(hmap);
-		if (!result.equals(Define.OK)) {
-			throw new BankdaException(result);
-		}
+//		String result = bankdaService.acntModify(hmap);
+//		if (!result.equals(Define.OK)) {
+//			throw new BankdaException(result);
+//		}
 	}
 
 	@Transactional
@@ -105,10 +106,9 @@ public class AcntService {
 		acntDao.acntDelete(hmap.getMap());
 
 		// 뱅크다 계좌 삭제
-
-		String result = bankdaService.acntDelete(hmap);
-		if (!result.equals(Define.OK)) {
-			throw new BankdaException(result);
-		}
+//		String result = bankdaService.acntDelete(hmap);
+//		if (!result.equals(Define.OK)) {
+//			throw new BankdaException(result);
+//		}
 	}
 }

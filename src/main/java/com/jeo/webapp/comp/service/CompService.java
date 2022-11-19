@@ -6,7 +6,6 @@ import com.jeo.common.domain.HMap;
 import com.jeo.common.util.CommonUtils;
 import com.jeo.common.util.DateUtils;
 import com.jeo.webapp.bankda.exception.BankdaException;
-import com.jeo.webapp.bankda.service.BankdaService;
 import com.jeo.webapp.common.dao.CommonDao;
 import com.jeo.webapp.comp.dao.CompDao;
 import com.jeo.webapp.user.dao.UserDao;
@@ -24,7 +23,7 @@ public class CompService {
 	@Autowired CommonDao commonDao;
 	@Autowired UserDao userDao;
 	@Autowired UserService userService;
-	@Autowired BankdaService bankdaService;
+//	@Autowired BankdaService bankdaService;
 
 	@Transactional
 	public String compUserRegist(HMap hmap) {
@@ -33,10 +32,10 @@ public class CompService {
 		userService.ceoRegist(hmap);
 
 		// 뱅크다 유저(사업자) 등록 : erowm 정보 등록 후 뱅크다 사용자정보 등록
-		String result = bankdaService.compRegist(hmap);
-		if (!result.equals(Define.OK)) {
-			throw new BankdaException(result);
-		}
+//		String result = bankdaService.compRegist(hmap);
+//		if (!result.equals(Define.OK)) {
+//			throw new BankdaException(result);
+//		}
 
 		return Define.SUCCESS;
 	}
@@ -92,10 +91,10 @@ public class CompService {
 		compDao.compDelete(param.getMap());
 
 		// 뱅크다 유저(사업자) 삭제 : erowm 정보 삭제 후 뱅크다 사용자정보 삭제
-		String result = bankdaService.compDelete(param);
-		if (!result.equals(Define.OK)) {
-			throw new BankdaException(result);
-		}
+//		String result = bankdaService.compDelete(param);
+//		if (!result.equals(Define.OK)) {
+//			throw new BankdaException(result);
+//		}
 	}
 
 	public String genCompCode(HMap hmap) {

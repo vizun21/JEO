@@ -6,7 +6,6 @@ import com.jeo.common.domain.LoginDTO;
 import com.jeo.common.domain.LoginVO;
 import com.jeo.common.util.CommonUtils;
 import com.jeo.user.domain.User;
-import com.jeo.webapp.bankda.service.BankdaService;
 import com.jeo.webapp.common.dao.CommonDao;
 import com.jeo.webapp.comp.dao.CompDao;
 import com.jeo.webapp.user.dao.UserDao;
@@ -27,8 +26,6 @@ public class UserService {
 	CommonDao commonDao;
 	@Autowired
 	BCryptPasswordEncoder passwordEncoder;
-	@Autowired
-	BankdaService bankdaService;
 
 	public int userRegist(HMap hmap) {
 		// 사용자 등록
