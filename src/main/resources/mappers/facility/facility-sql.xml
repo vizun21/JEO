@@ -36,7 +36,19 @@
 			, MAJOR_REPAIR_INSTALLER
 			, FACILITY_REG_DATE
 			, FACILITY_MOD_DATE
-			, FACILITY_MOD_USE
+			, FACILITY_MOD_USER
+			, ELECTRIC_MOTOR_FORM
+			, ELECTRIC_MOTOR_RPM
+			, ELECTRIC_MOTOR_PRODUCTION_COMPANY
+			, ELECTRIC_MOTOR_VOLUME
+			, ELECTRIC_MOTOR_STARTING_METHOD
+			, ELECTRIC_MOTOR_POWER
+			, ELECTRIC_MOTOR_PRODUCTION_DATE
+			, MOTOR_BEARING_NO_1
+			, MOTOR_BEARING_NO_2
+			, PUMP_REDUCER_BEARING_NO_1
+			, PUMP_REDUCER_BEARING_NO_2
+			, FACILITY_IMAGE_PATH
 		) VALUES (
 			#{facility_tag_no}
 			, #{facility_name}
@@ -56,9 +68,21 @@
 			, #{major_repaircompletion_date}
 			, #{major_repair_content}
 			, #{major_repair_installer}
-			, #{facility_reg_date}
-			, #{facility_mod_date}
+			, NOW()
+			, NOW()
 			, #{facility_mod_user}
+			, #{electric_motor_form}
+			, #{electric_motor_rpm}
+			, #{electric_motor_production_company}
+			, #{electric_motor_volume}
+			, #{electric_motor_starting_method}
+			, #{electric_motor_power}
+			, #{electric_motor_production_date}
+			, #{motor_bearing_no_1}
+			, #{motor_bearing_no_2}
+			, #{pump_reducer_bearing_no_1}
+			, #{pump_reducer_bearing_no_2}
+			, #{facility_image_path}
 		)
 	</insert>
 </mapper>
