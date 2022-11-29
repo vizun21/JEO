@@ -23,4 +23,8 @@ public class FacilityService {
 	public int insert(Facility facility) {
 		return facilityDao.insert(facility);
 	}
+
+	public int update(Facility facility) {
+		return facilityDao.update(facility);
+	}
 }

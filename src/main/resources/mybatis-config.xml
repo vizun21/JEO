@@ -16,5 +16,6 @@
 		<typeAlias alias="ConstructionType" type="com.jeo.constructionType.domain.ConstructionType"/>
 		<typeAlias alias="Category" type="com.jeo.category.domain.Category"/>
 		<typeAlias alias="Facility" type="com.jeo.facility.domain.Facility"/>
+		<typeAlias alias="SubFacility" type="com.jeo.facility.domain.SubFacility"/>
 	</typeAliases>
 </configuration>

@@ -57,7 +57,7 @@
 <script>
 	$(function () {
 		var args = {
-			orderColumns: [[2, "asc"]]
+			orderColumns: [[1, "asc"]]
 		}
 		setDatatables("listTable", args);
 

@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <style>
 	table th {
 		word-break: keep-all;
@@ -65,7 +66,8 @@
 									<td>
 										<input type="text" class="form-control form-control-sm" name="facility_tag_no"
 											   maxlength="20" data-parsley-required="true" title="TAG NO."
-											   value="${facility.facility_tag_no}">
+											   value="${facility.facility_tag_no}"
+											   <c:if test="${not empty facility.facility_tag_no}">readonly="readonly"</c:if>>
 									</td>
 									<th>설치장소</th>
 									<td>
@@ -222,7 +224,7 @@
 								</tbody>
 							</table>
 
-							<table class="table-list table table-sm table-bordered">
+							<table id="subTable" class="table-list table table-sm table-bordered">
 								<colgroup>
 									<col width="40%"/>
 									<col width="5%"/>
@@ -235,9 +237,9 @@
 								<thead>
 								<tr>
 									<th>사진</th>
-									<th colspan="5">기타 설비 및 부속설비</th>
+									<th colspan="5">기타설비 및 부속설비</th>
 									<th>
-										<button class="btn btn-sm btn-primary">추가</button>
+										<button id="addRow" type="button" class="btn btn-sm btn-primary">추가</button>
 									</th>
 								</tr>
 								</thead>
@@ -261,7 +263,32 @@
 									<th>제작회사</th>
 									<th>비고</th>
 								</tr>
-								<tr>
+								<c:forEach var="subFacility" items="${subFacilities}" varStatus="status">
+									<tr id="sub_row_${status.index}">
+										<input type='hidden' name='subFacilities[${status.index}].sub_facility_no'
+											   value="${subFacility.sub_facility_no}">
+										<td>${status.index + 1}</td>
+										<td><input type='text' class='form-control form-control-sm'
+												   name='subFacilities[${status.index}].sub_facility_name'
+												   maxlength='50' title='품명' data-parsley-required='true'
+												   value="${subFacility.sub_facility_name}"></td>
+										<td><input type='text' class='form-control form-control-sm'
+												   name='subFacilities[${status.index}].sub_facility_spec'
+												   maxlength='50' value="${subFacility.sub_facility_spec}"></td>
+										<td><input type='text' class='form-control form-control-sm'
+												   name='subFacilities[${status.index}].sub_facility_quantity'
+												   maxlength='50' value="${subFacility.sub_facility_quantity}"></td>
+										<td><input type='text' class='form-control form-control-sm'
+												   name='subFacilities[${status.index}].sub_facility_production_company'
+												   maxlength='50'
+												   value="${subFacility.sub_facility_production_company}"></td>
+										<td><input type='text' class='form-control form-control-sm'
+												   name='subFacilities[${status.index}].sub_facility_note'
+												   maxlength='50' value="${subFacility.sub_facility_note}"></td>
+									</tr>
+								</c:forEach>
+								<c:forEach var="i" begin="${fn:length(subFacilities)}" end="7">
+								<tr id="sub_row_${i}">
 									<td></td>
 									<td></td>
 									<td></td>
@@ -269,65 +296,21 @@
 									<td></td>
 									<td></td>
 								</tr>
-								<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
+								</c:forEach>
 								</tbody>
 							</table>
 							<div class="row mt-2">
+						<c:choose>
+							<c:when test="${empty facility.facility_tag_no}">
+								<div class="offset-8"></div>
+								<div class="col-2">
+									<button type="button" class="btn btn-primary btn-block" onclick="window.location.href = '<c:url value="/facility/equipment/list"/>'">목록</button>
+								</div>
+								<div class="col-2">
+									<button type="submit" class="btn btn-primary btn-block">저장</button>
+								</div>
+							</c:when>
+							<c:otherwise>
 								<div class="offset-6"></div>
 								<div class="col-2">
 									<button type="button" class="btn btn-primary btn-block" onclick="window.location.href = '<c:url value="/facility/equipment/list"/>'">목록</button>
@@ -338,6 +321,8 @@
 								<div class="col-2">
 									<button type="button" class="btn btn-primary btn-block">수리등록</button>
 								</div>
+							</c:otherwise>
+						</c:choose>
 							</div>
 						</form>
 					</div>
@@ -348,6 +333,14 @@
 </div>
 
 <script>
+	$("input[name=facility_quantity], input[name=purchase_price]").on("keyup focusout", function () {
+		$(this).val($(this).val().number());
+	});
+
+	$("#subTable").on("keyup focusout", "input[name$=sub_facility_quantity]", function(event) {
+		$(this).val($(this).val().number());
+	});
+
 	$("#facility_image").change(function(){
 		if(this.files && this.files[0]) {
 			var id = $(this).attr("id");
@@ -357,6 +350,26 @@
 			}
 			reader.readAsDataURL(this.files[0]);
 		}
+	});
+
+	var sub_row_num = ${fn:length(subFacilities)};
+	$("#addRow").on("click", function () {
+		if (sub_row_num >= 8) {
+			alert("기타설비 및 부속설비는 최대 8개까지 추가가능합니다.");
+			return false;
+		}
+
+		$("#sub_row_" + sub_row_num).html(
+			"<input type='hidden' name='subFacilities[" + sub_row_num + "].sub_facility_no'>" +
+			"<td>" + (sub_row_num + 1) + "</td>" +
+			"<td><input type='text' class='form-control form-control-sm' name='subFacilities[" + sub_row_num + "].sub_facility_name' maxlength='50' title='품명' data-parsley-required='true'></td>" +
+			"<td><input type='text' class='form-control form-control-sm' name='subFacilities[" + sub_row_num + "].sub_facility_spec' maxlength='50'></td>" +
+			"<td><input type='text' class='form-control form-control-sm' name='subFacilities[" + sub_row_num + "].sub_facility_quantity' maxlength='50'></td>" +
+			"<td><input type='text' class='form-control form-control-sm' name='subFacilities[" + sub_row_num + "].sub_facility_production_company' maxlength='50'></td>" +
+			"<td><input type='text' class='form-control form-control-sm' name='subFacilities[" + sub_row_num + "].sub_facility_note' maxlength='50'></td>"
+		);
+
+		sub_row_num++;
 	});
 
 	function validate() {

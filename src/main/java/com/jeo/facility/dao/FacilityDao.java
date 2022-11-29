@@ -21,4 +21,8 @@ public class FacilityDao extends AbstractDao {
 	public int insert(Facility facility) {
 		return insert(namespace + ".insert", facility);
 	}
+
+	public int update(Facility facility) {
+		return update(namespace + ".update", facility);
+	}
 }

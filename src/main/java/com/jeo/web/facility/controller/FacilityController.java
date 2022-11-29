@@ -5,7 +5,9 @@ import com.jeo.category.service.CategoryService;
 import com.jeo.constructionType.domain.ConstructionType;
 import com.jeo.constructionType.service.ConstructionTypeService;
 import com.jeo.facility.domain.Facility;
+import com.jeo.facility.domain.SubFacility;
 import com.jeo.facility.service.FacilityService;
+import com.jeo.facility.service.SubFacilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +20,8 @@ import java.util.List;
 public class FacilityController {
 	@Autowired
 	FacilityService facilityService;
+	@Autowired
+	SubFacilityService subFacilityService;
 
 	@Autowired
 	ConstructionTypeService constructionTypeService;
@@ -48,6 +52,10 @@ public class FacilityController {
 
 		Facility facility = facilityService.selectFacility(facility_tag_no);
 		model.addAttribute("facility", facility);
+
+		List<SubFacility> subFacilities = subFacilityService.selectSubFacilityList(facility_tag_no);
+		model.addAttribute("subFacilities", subFacilities);
+
 		return "/facility/equipment";
 	}
 }
