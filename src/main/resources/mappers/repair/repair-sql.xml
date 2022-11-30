@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="repair">
+	<insert id="insert" parameterType="Repair">
+		INSERT INTO EO_REPAIR (
+			REPAIR_NO
+			, REPAIR_DATE
+			, FACILITY_TAG_NO
+			, REPAIR_CONTENT
+			, REPAIR_CAUSE
+			, REPAIR_COMPANY
+			, REPAIR_COMPANY_TEL
+			, REPAIR_PRICE
+			, REPAIR_MANAGER
+			, REPAIR_NOTE
+		) VALUES (
+			#{repair_no}
+			, #{repair_date}
+			, #{facility_tag_no}
+			, #{repair_content}
+			, #{repair_cause}
+			, #{repair_company}
+			, #{repair_company_tel}
+			, #{repair_price}
+			, #{repair_manager}
+			, #{repair_note}
+		)
+	</insert>
+
+	<select id="facilityRepairListByTagNo" parameterType="String" resultType="Repair">
+		SELECT *
+		FROM EO_REPAIR
+		WHERE FACILITY_TAG_NO = #{facility_tag_no}
+		ORDER BY REPAIR_NO ASC
+	</select>
+</mapper>
+

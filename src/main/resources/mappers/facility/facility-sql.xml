@@ -122,5 +122,12 @@
 			, FACILITY_IMAGE_PATH = #{facility_image_path}
 		WHERE FACILITY_TAG_NO = #{facility_tag_no}
 	</update>
+
+	<select id="findFacilitiesByTagNo" parameterType="String" resultType="Facility">
+		SELECT *
+		FROM EO_FACILITY
+		WHERE FACILITY_TAG_NO LIKE CONCAT('%', #{facility_tag_no}, '%')
+		ORDER BY FACILITY_TAG_NO
+	</select>
 </mapper>
 
