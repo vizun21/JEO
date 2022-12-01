@@ -20,15 +20,15 @@
 						<div class="card-body">
 							<table class="table-list table table-sm table-bordered table-hover mb-0">
 								<colgroup>
-									<col width="10%">
-									<col width="10%">
-									<col width="15%">
-									<col width="15%">
-									<col width="10%">
-									<col width="10%">
-									<col width="10%">
-									<col width="10%">
-									<col width="10%">
+									<col style="width: 10%;">
+									<col style="width: 10%;">
+									<col style="width: 15%;">
+									<col style="width: 15%;">
+									<col style="width: 10%;">
+									<col style="width: 10%;">
+									<col style="width: 10%;">
+									<col style="width: 10%;">
+									<col style="width: 10%;">
 								</colgroup>
 								<thead>
 								<tr>
@@ -135,11 +135,15 @@
 		initAutoComplete(this);
 	});
 
+	$("input[name=repair_price]").on("keyup focusout", function () {
+		$(this).val($(this).val().number());
+	});
+
 	function initAutoComplete(obj) {
 		$(obj).autocomplete({
 			minLength: ($(obj).data("parsley-length") ? $(obj).data("parsley-length")[0] : 1)	// bootstrap-select 적용 후 수정
 			, delay: 300
-			, search: function (event, ui) {
+			, search: function (event) {
 				if (event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 40) {
 					event.preventDefault();
 				}
@@ -166,9 +170,6 @@
 						response();
 					}
 				});
-			}
-			, focus: function (event, ui) {
-				return false;
 			}
 			, select: function (event, ui) {
 				$("[name=facility_tag_no]").val(ui.item.value);
@@ -200,7 +201,8 @@
 					var html = [];
 					html.push("");	// dtr-control 위치
 					html.push(item.repair_no);
-					html.push(item.repair_date.year + "-" + item.repair_date.monthValue + "-" + item.repair_date.dayOfMonth);
+					var repair_date = new Date(item.repair_date.year, item.repair_date.monthValue-1, item.repair_date.dayOfMonth + 1);
+					html.push(repair_date.toISOString().split('T')[0]);
 					html.push(item.repair_content);
 					html.push(item.repair_cause);
 					html.push(item.repair_company);
@@ -226,7 +228,8 @@
 
 	$(function () {
 		var args = {
-			orderColumns: [[1, "asc"]]
+			orderColumns: []
+			, ordering: false
 		}
 		setDatatables("listTable", args);
 		$("#listTable").DataTable().columns.adjust().draw();
