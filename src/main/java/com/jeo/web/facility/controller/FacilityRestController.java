@@ -68,12 +68,12 @@ public class FacilityRestController {
 		return "redirect:/facility/equipment/list";
 	}
 
-	@PostMapping(value = "/facility/equipment/{facility_tag_no}")
-	public ResponseEntity<List<Facility>> findFacilitiesByTagNoPOST(HMap hmap, @PathVariable("facility_tag_no") String facility_tag_no) {
+	@PostMapping(value = "/facility/equipment/{keyword}")
+	public ResponseEntity<List<Facility>> findFacilitiesByKeywordInTagNoOrNamePOST(HMap hmap, @PathVariable("keyword") String keyword) {
 		ResponseEntity<List<Facility>> entity;
 
 		try {
-			List<Facility> facilities = facilityService.findFacilitiesByTagNo(facility_tag_no);
+			List<Facility> facilities = facilityService.findFacilitiesByKeywordInTagNoOrName(keyword);
 
 			entity = new ResponseEntity<>(facilities, HttpStatus.OK);
 		} catch (Exception e) {
@@ -85,7 +85,7 @@ public class FacilityRestController {
 
 
 	@PostMapping("/facility/repair")
-	public String insertRepair(HMap hmap, Repair repair) throws IOException {
+	public String insertRepair(HMap hmap, Repair repair) {
 		repairService.insert(repair);
 
 		return "redirect:/facility/repair?facility_tag_no=" + repair.getFacility_tag_no();

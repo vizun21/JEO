@@ -123,10 +123,11 @@
 		WHERE FACILITY_TAG_NO = #{facility_tag_no}
 	</update>
 
-	<select id="findFacilitiesByTagNo" parameterType="String" resultType="Facility">
+	<select id="findFacilitiesByKeywordInTagNoOrName" parameterType="String" resultType="Facility">
 		SELECT *
 		FROM EO_FACILITY
-		WHERE FACILITY_TAG_NO LIKE CONCAT('%', #{facility_tag_no}, '%')
+		WHERE FACILITY_TAG_NO LIKE CONCAT('%', #{keyword}, '%')
+		   OR FACILITY_NAME LIKE CONCAT('%', #{keyword}, '%')
 		ORDER BY FACILITY_TAG_NO
 	</select>
 </mapper>

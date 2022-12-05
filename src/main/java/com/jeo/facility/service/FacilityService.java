@@ -28,7 +28,7 @@ public class FacilityService {
 		return facilityDao.update(facility);
 	}
 
-	public List<Facility> findFacilitiesByTagNo(String facility_tag_no) {
-		return facilityDao.findFacilitiesByTagNo(facility_tag_no);
+	public List<Facility> findFacilitiesByKeywordInTagNoOrName(String keyword) {
+		return facilityDao.findFacilitiesByKeywordInTagNoOrName(keyword);
 	}
 }

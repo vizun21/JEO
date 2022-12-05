@@ -26,7 +26,7 @@ public class FacilityDao extends AbstractDao {
 		return update(namespace + ".update", facility);
 	}
 
-	public List<Facility> findFacilitiesByTagNo(String facility_tag_no) {
-		return selectList(namespace + ".findFacilitiesByTagNo", facility_tag_no);
+	public List<Facility> findFacilitiesByKeywordInTagNoOrName(String keyword) {
+		return selectList(namespace + ".findFacilitiesByKeywordInTagNoOrName", keyword);
 	}
 }

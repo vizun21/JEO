@@ -11,9 +11,7 @@
 									<h5 class="mb-0">수리내역</h5>
 								</div>
 								<div class="offset-4"></div>
-								<div class="col-2">
-									<button type="submit" class="btn btn-sm btn-primary btn-block">등록</button>
-								</div>
+								<div class="col-2"></div>
 							</div>
 
 						</div>
@@ -21,19 +19,36 @@
 							<table class="table-list table table-sm table-bordered table-hover mb-0">
 								<colgroup>
 									<col style="width: 10%;">
-									<col style="width: 10%;">
-									<col style="width: 15%;">
-									<col style="width: 15%;">
+									<col style="width: 20%;">
+									<col style="width: 20%;">
 									<col style="width: 10%;">
 									<col style="width: 10%;">
 									<col style="width: 10%;">
 									<col style="width: 10%;">
 									<col style="width: 10%;">
 								</colgroup>
-								<thead>
+								<tr>
+									<th colspan="2">설비명</th>
+									<th colspan="2">TAG NO.</th>
+									<th colspan="2"></th>
+									<td colspan="2" rowspan="2">
+										<button type="submit" class="btn btn-sm btn-primary btn-block" style="height: 100%;">등록</button>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<input type="text" class="form-control form-control-sm" id="keyword2" name="facility_name">
+									</td>
+									<td colspan="2">
+										<input type="hidden" name="facility_tag_no" data-parsley-required="true" title="TAG NO.">
+										<input type="text" class="form-control form-control-sm" id="keyword"
+											   maxlength="20" data-parsley-required="true" title="TAG NO.">
+									</td>
+									<td colspan="2">
+									</td>
+								</tr>
 								<tr>
 									<th>수리일자</th>
-									<th>TAG NO.</th>
 									<th>수리내역</th>
 									<th>고장원인</th>
 									<th>수리업체</th>
@@ -42,17 +57,10 @@
 									<th>담당자</th>
 									<th>비고</th>
 								</tr>
-								</thead>
-								<tbody>
 								<tr>
 									<td>
 										<input type="text" class="datepicker form-control form-control-sm"
 											   name="repair_date" data-parsley-required="true" title="수리일자" readonly>
-									</td>
-									<td>
-										<input type="hidden" name="facility_tag_no" data-parsley-required="true" title="TAG NO.">
-										<input type="text" class="form-control form-control-sm" id="facility_tag_no_keyword"
-											   maxlength="20" data-parsley-required="true" title="TAG NO.">
 									</td>
 									<td>
 										<input type="text" class="form-control form-control-sm" name="repair_content"
@@ -83,7 +91,6 @@
 											   maxlength="50" title="비고">
 									</td>
 								</tr>
-								</tbody>
 							</table>
 						</div>
 					</form>
@@ -131,8 +138,12 @@
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script>
-	$.each($("#facility_tag_no_keyword"), function () {
+	$.each($("#keyword"), function () {
 		initAutoComplete(this);
+	});
+
+	$.each($("#keyword2"), function () {
+		initAutoComplete2(this);
 	});
 
 	$("input[name=repair_price]").on("keyup focusout", function () {
@@ -159,8 +170,9 @@
 						setTimeout(function () {
 							response($.map(data, function (item) {
 								return {
-									label: item.facility_tag_no
+									label: '[' + item.facility_tag_no + '] ' + item.facility_name
 									, value: item.facility_tag_no
+									, facility_name: item.facility_name
 								}
 							}));
 						}, 100);
@@ -173,6 +185,50 @@
 			}
 			, select: function (event, ui) {
 				$("[name=facility_tag_no]").val(ui.item.value);
+				$("#keyword2").val(ui.item.facility_name);
+
+				/* 수리내역목록 가져오기 */
+				getRepairList();
+			}
+		});
+	}
+
+	function initAutoComplete2(obj) {
+		$(obj).autocomplete({
+			minLength: ($(obj).data("parsley-length") ? $(obj).data("parsley-length")[0] : 1)	// bootstrap-select 적용 후 수정
+			, delay: 300
+			, search: function (event) {
+				if (event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 40) {
+					event.preventDefault();
+				}
+			}
+			, source: function (request, response) {
+				$.ajax({
+					type: "POST",
+					url: "/facility/equipment/" + encodeURIComponent($.trim(request.term).replace(/\./g, "%2E").replace(/\//g, "%2F")),
+					cache: false,
+					dataType: "json",
+					success: function (data) {
+						// loading 종료 신호보내기 위해..
+						setTimeout(function () {
+							response($.map(data, function (item) {
+								return {
+									label: '[' + item.facility_tag_no + '] ' + item.facility_name
+									, value: item.facility_name
+									, facility_tag_no: item.facility_tag_no
+								}
+							}));
+						}, 100);
+					},
+					error: function (xhr, status, message) {
+						alertAjaxError(xhr, status, message);
+						response();
+					}
+				});
+			}
+			, select: function (event, ui) {
+				$("[name=facility_tag_no]").val(ui.item.facility_tag_no);
+				$("#keyword").val(ui.item.facility_tag_no);
 
 				/* 수리내역목록 가져오기 */
 				getRepairList();
