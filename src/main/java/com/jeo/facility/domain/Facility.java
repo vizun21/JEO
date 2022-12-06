@@ -17,7 +17,9 @@ public class Facility {
 	private String facility_tag_no;
 	private String facility_name;
 	private Integer construction_code;
+	private String construction_name;
 	private Integer category_code;
+	private String category_name;
 	private Integer facility_quantity;
 	private Integer purchase_price;
 	private String emplacement;

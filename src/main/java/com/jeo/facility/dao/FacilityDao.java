@@ -2,6 +2,7 @@ package com.jeo.facility.dao;
 
 import com.jeo.common.dao.AbstractDao;
 import com.jeo.facility.domain.Facility;
+import com.jeo.facility.dto.FacilityPageCondition;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,5 +29,9 @@ public class FacilityDao extends AbstractDao {
 
 	public List<Facility> findFacilitiesByKeywordInTagNoOrName(String keyword) {
 		return selectList(namespace + ".findFacilitiesByKeywordInTagNoOrName", keyword);
+	}
+
+	public List<Facility> selectFacilityList(FacilityPageCondition condition) {
+		return selectList(namespace + ".selectList", condition);
 	}
 }

@@ -2,9 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="facility">
-	<select id="selectList" resultType="Facility">
-		SELECT *
-		FROM EO_FACILITY
+	<select id="selectList" parameterType="hmap" resultType="Facility">
+		SELECT
+			FACILITY.*
+			, CONSTRUCTION_NAME
+			, CATEGORY_NAME
+		FROM EO_FACILITY FACILITY
+		JOIN EO_CONSTRUCTION_TYPE USING (CONSTRUCTION_CODE)
+		JOIN EO_CATEGORY USING (CATEGORY_CODE)
+		<where>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(facility_tag_no)">
+				AND FACILITY_TAG_NO LIKE CONCAT('%', #{facility_tag_no}, '%')
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(facility_name)">
+				AND FACILITY_NAME LIKE CONCAT('%', #{facility_name}, '%')
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(construction_code)">
+				AND CONSTRUCTION_CODE = #{construction_code}
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(category_code)">
+				AND CATEGORY_CODE = #{category_code}
+			</if>
+		</where>
 		ORDER BY FACILITY_TAG_NO
 	</select>
 

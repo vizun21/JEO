@@ -20,6 +20,7 @@
     <decorator name="menuLayout" page="menuLayout.jsp">
 		<pattern>/comp/**</pattern>
 		<pattern>/facility/**</pattern>
+		<pattern>/facility-list/**</pattern>
 	</decorator>
 
     <decorator name="businessSelectLayout" page="businessSelectLayout.jsp">

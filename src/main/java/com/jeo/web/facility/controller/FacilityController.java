@@ -84,4 +84,13 @@ public class FacilityController {
 		}
 		return entity;
 	}
+
+	@GetMapping(value = "/facility-list/equipment")
+	public void facilityEquipmentListGET(Model model) {
+		List<ConstructionType> constructionTypes = constructionTypeService.selectConstructionTypeList();
+		model.addAttribute("constructionTypes", constructionTypes);
+		List<Category> categories = categoryService.selectCategoryList();
+		model.addAttribute("categories", categories);
+	}
+
 }

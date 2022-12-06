@@ -6,6 +6,7 @@ import com.jeo.common.util.CommonUtils;
 import com.jeo.facility.domain.Facility;
 import com.jeo.facility.domain.SubFacility;
 import com.jeo.facility.domain.SubFacilityList;
+import com.jeo.facility.dto.FacilityPageCondition;
 import com.jeo.facility.service.FacilityService;
 import com.jeo.facility.service.SubFacilityService;
 import com.jeo.repair.domain.Repair;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
@@ -85,9 +87,24 @@ public class FacilityRestController {
 
 
 	@PostMapping("/facility/repair")
-	public String insertRepair(HMap hmap, Repair repair) {
+	public String insertRepair(Repair repair) {
 		repairService.insert(repair);
 
 		return "redirect:/facility/repair?facility_tag_no=" + repair.getFacility_tag_no();
+	}
+
+	@PostMapping(value = "/facility-list/equipment/page")
+	public ResponseEntity<List<Facility>> facilityRepairListByTagNoGET(@ModelAttribute FacilityPageCondition condition) {
+		ResponseEntity<List<Facility>> entity;
+
+		try {
+			List<Facility> repairList = facilityService.selectFacilityList(condition);
+
+			entity = new ResponseEntity<>(repairList, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
 	}
 }
