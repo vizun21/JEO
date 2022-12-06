@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
 <div class="content">
 	<div class="container-fluid">
 		<div class="row">
@@ -32,13 +34,13 @@
 									</thead>
 									<tbody>
 									<c:forEach var="result" items="${resultList}" varStatus="status">
-										<tr data-facility_tag_no="${result.facility_tag_no}">
+										<tr data-facility_tag_no="${result.facility_tag_no}" style="cursor: pointer;">
 											<td></td>
-											<td>${status.count}</td>
+											<td>${fn:length(resultList) - status.index}</td>
 											<td>${result.facility_name}</td>
-											<td>${result.construction_name}</td>
-											<td>${result.category_name}</td>
-											<td>${result.facility_tag_no}</td>
+											<td class="text-nowrap">${result.construction_name}</td>
+											<td class="text-nowrap">${result.category_name}</td>
+											<td class="text-nowrap">${result.facility_tag_no}</td>
 											<td>${result.emplacement}</td>
 											<td>${result.facility_quantity}</td>
 										</tr>
@@ -57,12 +59,11 @@
 <script>
 	$(function () {
 		var args = {
-			orderColumns: [[1, "asc"]]
+			orderColumns: []
 		}
 		setDatatables("listTable", args);
 
 		$("#listTable").DataTable().columns.adjust().draw();
-
 
 		$("#listTable tr").on('click', function () {
 			console.log($(this).data("facility_tag_no"));

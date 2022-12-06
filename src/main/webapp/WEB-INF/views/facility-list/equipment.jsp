@@ -130,7 +130,7 @@
 				$.each(data, function(index, item) {
 					var html = [];
 					html.push("");	// dtr-control 위치
-					html.push(index + 1);
+					html.push(data.length - index);
 					html.push(item.facility_name);
 					html.push(item.construction_name);
 					html.push(item.category_name);
@@ -138,7 +138,9 @@
 					html.push(item.emplacement);
 					html.push(item.facility_quantity);
 
-					$("#listTable").DataTable().row.add(html).node();
+					var rowNode = $("#listTable").DataTable().row.add(html).node();
+					$(rowNode).attr("data-facility_tag_no", item.facility_tag_no);
+					$(rowNode).css("cursor", "pointer");
 				});
 
 				$("#listTable").DataTable().draw(false);
@@ -154,16 +156,18 @@
 
 	$(function () {
 		var args = {
-			orderColumns: [[1, "asc"]]
+			orderColumns: []
 		}
 		setDatatables("listTable", args);
 
 		$("#listTable").DataTable().columns.adjust().draw();
 
-
-		$("#listTable tr").on('click', function () {
-			console.log($(this).data("facility_tag_no"));
-			window.location.href = $(this).data("facility_tag_no");
+		$("#listTable tbody").on("click", "tr", function () {
+			let facility_tag_no = $(this).data("facility_tag_no");
+			console.log(facility_tag_no);
+			if (facility_tag_no !== undefined) {
+				window.location.href = "<c:url value="/facility/equipment"></c:url>/" + facility_tag_no;
+			}
 		});
 	});
 </script>
