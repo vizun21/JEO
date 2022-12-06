@@ -48,11 +48,7 @@ public class FacilityRestController {
 		}
 
 		/* 설비등록 */
-		if (CommonUtils.isEmpty(facility.getFacility_tag_no())) {
-			facilityService.insert(facility);
-		} else {
-			facilityService.update(facility);
-		}
+		facilityService.insert(facility);
 
 		/* 기타설비 및 부속설비 등록 */
 		if (subFacilityList.getSubFacilities() != null) {
