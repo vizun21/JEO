@@ -36,4 +36,8 @@
 	<decorator name="hwpctrlLayout" page="hwpctrlLayout.jsp">
 		<pattern>/print/hwpctrl/**</pattern>
 	</decorator>
+
+	<decorator name="printHtmlLayout" page="printHtmlLayout.jsp">
+		<pattern>/print/html/**</pattern>
+	</decorator>
 </decorators>

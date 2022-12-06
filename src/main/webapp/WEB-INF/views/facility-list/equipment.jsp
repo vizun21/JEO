@@ -103,6 +103,15 @@
 </div>
 
 <script>
+	$("#btnPrint").on("click", function () {
+		var url = "<c:url value='/print/html/equipment-list'/>"
+			+ "?construction_code=" + $("#construction_code").val()
+			+ "&category_code=" + $("#category_code").val()
+			+ "&facility_tag_no=" + $("#facility_tag_no").val()
+			+ "&facility_name=" + $("#facility_name").val();
+		window.open(url, '_blank');
+	});
+
 	function getPage() {
 		$(".overlay").show();
 
