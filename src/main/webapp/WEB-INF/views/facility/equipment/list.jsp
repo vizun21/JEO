@@ -36,8 +36,8 @@
 											<td></td>
 											<td>${status.count}</td>
 											<td>${result.facility_name}</td>
-											<td>${result.construction_code}</td>
-											<td>${result.category_code}</td>
+											<td>${result.construction_name}</td>
+											<td>${result.category_name}</td>
 											<td>${result.facility_tag_no}</td>
 											<td>${result.emplacement}</td>
 											<td>${result.facility_quantity}</td>
