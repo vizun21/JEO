@@ -1,13 +1,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
 <c:forEach var="facility" items="${facilities}" varStatus="status">
-	<c:if test="${status.index % 18 eq 0}">
+	<c:if test="${status.index % 24 eq 0}">
 		<div class="page">
 			<div class="subpage">
 				<table class="table table-sm table-bordered">
 					<thead>
 					<tr>
 						<th class="title" colspan="5">설비이력목록</th>
-						<th colspan="2">설비이력목록</th>
+						<c:set var="today"><fmt:formatDate value="<%=new java.util.Date()%>" pattern="yyyy-MM-dd" /></c:set>
+						<th class="print-date" colspan="2">출력일자 : ${today}</th>
 					</tr>
 					<tr>
 						<th>NO</th>
@@ -22,7 +26,7 @@
 					<tbody>
 		</c:if>
 					<tr>
-						<td>${status.index + 1}</td>
+						<td>${fn:length(facilities) - status.index}</td>
 						<td>${facility.facility_name}</td>
 						<td class="text-nowrap">${facility.construction_name}</td>
 						<td class="text-nowrap">${facility.category_name}</td>
@@ -30,7 +34,7 @@
 						<td>${facility.emplacement}</td>
 						<td>${facility.facility_quantity}</td>
 					</tr>
-		<c:if test="${status.index % 18 eq 17}">
+		<c:if test="${status.index % 24 eq 23}">
 					</tbody>
 				</table>
 			</div>

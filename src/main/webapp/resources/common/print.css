@@ -4,7 +4,7 @@ body {
 	margin: 0;
 	padding: 0;
 	background-color: #FAFAFA;
-	font: 12pt "Tahoma";
+	font: 8pt "맑은 고딕";
 }
 * {
 	box-sizing: border-box;
@@ -75,9 +75,16 @@ table thead th {
 table thead th, table tbody td {
 	text-align: center;
 	vertical-align: middle;
+	border-right: 0px;
 }
 
 table thead th.title {
 	text-align: left;
-	height: 35px;
+	padding: 5px;
+}
+
+table thead th.print-date {
+	text-align: right;
+	border-left: 0px;
+	padding: 5px;
 }
