@@ -12,7 +12,7 @@ body {
 }
 .page {
 	width: 297mm;
-	min-height: 210mm;
+	min-height: 209mm;
 	padding: 20mm;
 	margin: 10mm auto;
 	border: 1px #D3D3D3 solid;
@@ -21,7 +21,7 @@ body {
 }
 .subpage {
 	/*border: 5px red solid;*/
-	height: 169mm;
+	height: 169mm;  /* 170mm로 설정 시 다음페이지로 넘어가는 문제발생 */
 	/*outline: 2cm #FFEAEA solid;*/
 }
 
@@ -32,7 +32,7 @@ body {
 @media print {
 	html, body {
 		width: 297mm;
-		height: 210mm;
+		height: 209mm;  /* 210mm로 설정 시 다음페이지로 넘어가는 문제발생 */
 	}
 
 	.page {
@@ -66,7 +66,7 @@ body {
 table {
 	border: #4e555b solid 1px!important;
 	/*page-break-after: always;*/
-	margin-bottom: 0px!important;
+	margin-bottom: 0!important;
 }
 
 table thead th, table tbody th {
@@ -84,12 +84,12 @@ table thead th, table tbody td, table tbody th {
 
 table thead th.title {
 	text-align: left;
-	border-right: 0px;
+	border-right: 0;
 	padding: 5px;
 }
 
 table thead th.print-date {
 	text-align: right;
-	border-left: 0px;
+	border-left: 0;
 	padding: 5px;
 }
