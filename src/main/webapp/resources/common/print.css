@@ -43,11 +43,11 @@ body {
 		border-radius: initial;
 		background: initial;
 		box-shadow: initial;
-		page-break-after: always;
+		/*page-break-after: always;*/
 	}
 
 	table {
-		page-break-after: always;
+		/*page-break-after: always;*/
 	}
 
 	.button-box {
@@ -65,21 +65,26 @@ body {
 
 table {
 	border: #4e555b solid 1px!important;
-	page-break-after: always;
+	/*page-break-after: always;*/
+	margin-bottom: 0px!important;
 }
 
-table thead th {
+table thead th, table tbody th {
 	white-space: nowrap;
 }
 
-table thead th, table tbody td {
+tbody, td, tfoot, th, thead, tr {
+	height: 30px;
+}
+
+table thead th, table tbody td, table tbody th {
 	text-align: center;
 	vertical-align: middle;
-	border-right: 0px;
 }
 
 table thead th.title {
 	text-align: left;
+	border-right: 0px;
 	padding: 5px;
 }
 

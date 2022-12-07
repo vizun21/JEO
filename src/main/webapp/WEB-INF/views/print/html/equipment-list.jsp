@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <c:forEach var="facility" items="${facilities}" varStatus="status">
-	<c:if test="${status.index % 24 eq 0}">
+	<c:if test="${status.index % 19 eq 0}">
 		<div class="page">
 			<div class="subpage">
 				<table class="table table-sm table-bordered">
@@ -34,7 +34,7 @@
 						<td>${facility.emplacement}</td>
 						<td>${facility.facility_quantity}</td>
 					</tr>
-		<c:if test="${status.index % 24 eq 23}">
+		<c:if test="${status.index % 19 eq 18}">
 					</tbody>
 				</table>
 			</div>

@@ -304,22 +304,27 @@
 							<c:when test="${empty facility.facility_tag_no}">
 								<div class="offset-8"></div>
 								<div class="col-2">
-									<button type="button" class="btn btn-primary btn-block" onclick="window.location.href = '<c:url value="/facility/equipment/list"/>'">목록</button>
+									<button type="button" class="btn btn-primary btn-block" onclick="history.back();">이전</button>
 								</div>
 								<div class="col-2">
 									<button type="submit" class="btn btn-primary btn-block">저장</button>
 								</div>
 							</c:when>
 							<c:otherwise>
-								<div class="offset-6"></div>
+								<div class="offset-4"></div>
 								<div class="col-2">
-									<button type="button" class="btn btn-primary btn-block" onclick="window.location.href = '<c:url value="/facility/equipment/list"/>'">목록</button>
+									<button type="button" class="btn btn-primary btn-block" onclick="history.back();">이전</button>
 								</div>
 								<div class="col-2">
 									<button type="submit" class="btn btn-primary btn-block">저장</button>
 								</div>
 								<div class="col-2">
-									<button type="button" class="btn btn-primary btn-block">수리등록</button>
+									<button type="button" class="btn btn-primary btn-block">수리내역등록</button>
+								</div>
+								<div class="col-2">
+									<button type="button" class="btn btn-primary btn-block" id="btnPrint">
+										<i class="fas fa-print"></i> 인쇄
+									</button>
 								</div>
 							</c:otherwise>
 						</c:choose>
@@ -350,6 +355,11 @@
 			}
 			reader.readAsDataURL(this.files[0]);
 		}
+	});
+
+	$("#btnPrint").on("click", function () {
+		var url = "<c:url value='/print/html/equipment-card/${facility.facility_tag_no}/'/>";
+		window.open(url, '_blank');
 	});
 
 	var sub_row_num = ${fn:length(subFacilities)};

@@ -103,6 +103,38 @@
 			, #{pump_reducer_bearing_no_2}
 			, #{facility_image_path}
 		)
+		ON DUPLICATE KEY UPDATE
+			FACILITY_NAME = #{facility_name}
+			, CONSTRUCTION_CODE = #{construction_code}
+			, CATEGORY_CODE = #{category_code}
+			, FACILITY_QUANTITY = #{facility_quantity}
+			, PURCHASE_PRICE = #{purchase_price}
+			, EMPLACEMENT = #{emplacement}
+			, PRODUCTION_COMPANY = #{production_company}
+			, FORM = #{form}
+			, INSTALLER = #{installer}
+			, SPECIFICATION = #{specification}
+			, INSTALLATION_PURPOSE = #{installation_purpose}
+			, MANUFACTURE_DATE = #{manufacture_date}
+			, COMPLETION_DATE = #{completion_date}
+			, DURABLE = #{durable}
+			, MAJOR_REPAIRCOMPLETION_DATE = #{major_repaircompletion_date}
+			, MAJOR_REPAIR_CONTENT = #{major_repair_content}
+			, MAJOR_REPAIR_INSTALLER = #{major_repair_installer}
+			, FACILITY_MOD_DATE = NOW()
+			, FACILITY_MOD_USER = #{facility_mod_user}
+			, ELECTRIC_MOTOR_FORM = #{electric_motor_form}
+			, ELECTRIC_MOTOR_RPM = #{electric_motor_rpm}
+			, ELECTRIC_MOTOR_PRODUCTION_COMPANY = #{electric_motor_production_company}
+			, ELECTRIC_MOTOR_VOLUME = #{electric_motor_volume}
+			, ELECTRIC_MOTOR_STARTING_METHOD = #{electric_motor_starting_method}
+			, ELECTRIC_MOTOR_POWER = #{electric_motor_power}
+			, ELECTRIC_MOTOR_PRODUCTION_DATE = #{electric_motor_production_date}
+			, MOTOR_BEARING_NO_1 = #{motor_bearing_no_1}
+			, MOTOR_BEARING_NO_2 = #{motor_bearing_no_2}
+			, PUMP_REDUCER_BEARING_NO_1 = #{pump_reducer_bearing_no_1}
+			, PUMP_REDUCER_BEARING_NO_2 = #{pump_reducer_bearing_no_2}
+			, FACILITY_IMAGE_PATH = #{facility_image_path}
 	</insert>
 
 	<update id="update" parameterType="Facility">
