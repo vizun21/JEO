@@ -2,6 +2,7 @@ package com.jeo.web.facility.controller;
 
 import com.jeo.category.domain.Category;
 import com.jeo.category.service.CategoryService;
+import com.jeo.common.util.CommonUtils;
 import com.jeo.constructionType.domain.ConstructionType;
 import com.jeo.constructionType.service.ConstructionTypeService;
 import com.jeo.facility.domain.Facility;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -67,7 +69,10 @@ public class FacilityController {
 	}
 
 	@GetMapping(value = "/facility/repair")
-	public void facilityRepairGET(Model model) {
+	public void facilityRepairGET(Model model, @RequestParam(value = "facility_tag_no", required = false) String facility_tag_no) {
+		if (CommonUtils.isNotEmpty(facility_tag_no)) {
+			model.addAttribute("facility", facilityService.selectFacility(facility_tag_no));
+		}
 	}
 
 	@GetMapping(value = "/facility/repairList/{facility_tag_no}")

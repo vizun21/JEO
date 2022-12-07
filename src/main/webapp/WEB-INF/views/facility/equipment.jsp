@@ -319,7 +319,7 @@
 									<button type="submit" class="btn btn-primary btn-block">저장</button>
 								</div>
 								<div class="col-2">
-									<button type="button" class="btn btn-primary btn-block">수리내역등록</button>
+									<button type="button" class="btn btn-primary btn-block" id="btnRepair">수리내역등록</button>
 								</div>
 								<div class="col-2">
 									<button type="button" class="btn btn-primary btn-block" id="btnPrint">
@@ -342,7 +342,7 @@
 		$(this).val($(this).val().number());
 	});
 
-	$("#subTable").on("keyup focusout", "input[name$=sub_facility_quantity]", function(event) {
+	$("#subTable").on("keyup focusout", "input[name$=sub_facility_quantity]", function() {
 		$(this).val($(this).val().number());
 	});
 
@@ -358,8 +358,13 @@
 	});
 
 	$("#btnPrint").on("click", function () {
-		var url = "<c:url value='/print/html/equipment-card/${facility.facility_tag_no}/'/>";
+		let url = "<c:url value='/print/html/equipment-card/${facility.facility_tag_no}/'/>";
 		window.open(url, '_blank');
+	});
+
+	$("#btnRepair").on("click", function () {
+		let url = "<c:url value='/facility/repair'/>?facility_tag_no=${facility.facility_tag_no}";
+		window.location.href = url;
 	});
 
 	var sub_row_num = ${fn:length(subFacilities)};

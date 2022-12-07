@@ -32,7 +32,7 @@
 		SELECT *
 		FROM EO_REPAIR
 		WHERE FACILITY_TAG_NO = #{facility_tag_no}
-		ORDER BY REPAIR_NO DESC
+		ORDER BY REPAIR_DATE DESC, REPAIR_NO DESC
 	</select>
 </mapper>
 

@@ -37,12 +37,12 @@
 								</tr>
 								<tr>
 									<td colspan="2">
-										<input type="text" class="form-control form-control-sm" id="keyword2" name="facility_name">
+										<input type="text" class="form-control form-control-sm" id="keyword2" name="facility_name" value="${facility.facility_name}">
 									</td>
 									<td colspan="2">
-										<input type="hidden" name="facility_tag_no" data-parsley-required="true" title="TAG NO.">
+										<input type="hidden" name="facility_tag_no" data-parsley-required="true" title="TAG NO." value="${facility.facility_tag_no}">
 										<input type="text" class="form-control form-control-sm" id="keyword"
-											   maxlength="20" data-parsley-required="true" title="TAG NO.">
+											   maxlength="20" data-parsley-required="true" title="TAG NO." value="${facility.facility_tag_no}">
 									</td>
 									<td colspan="2">
 									</td>
@@ -76,11 +76,11 @@
 									</td>
 									<td>
 										<input type="text" class="form-control form-control-sm" name="repair_company_tel"
-											   maxlength="50" title="수리업체TEL">
+											   maxlength="20" title="수리업체TEL">
 									</td>
 									<td>
 										<input type="text" class="form-control form-control-sm" name="repair_price"
-											   maxlength="50" data-parsley-required="true" title="수리금액">
+											   data-parsley-required="true" title="수리금액">
 									</td>
 									<td>
 										<input type="text" class="form-control form-control-sm" name="repair_manager"
@@ -253,7 +253,6 @@
 				}
 
 				$.each(data, function(index, item) {
-					console.log(item);
 					var html = [];
 					html.push("");	// dtr-control 위치
 					html.push(item.repair_no);
@@ -289,5 +288,10 @@
 		}
 		setDatatables("listTable", args);
 		$("#listTable").DataTable().columns.adjust().draw();
+
+		/* 설비선택해서 수리내역화면으로 넘어온 경우 목록조회 */
+		<c:if test="${not empty facility}">
+		getRepairList();
+		</c:if>
 	});
 </script>
