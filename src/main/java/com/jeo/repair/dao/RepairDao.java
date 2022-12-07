@@ -1,6 +1,7 @@
 package com.jeo.repair.dao;
 
 import com.jeo.common.dao.AbstractDao;
+import com.jeo.facility.dto.RepairPageCondition;
 import com.jeo.repair.domain.Repair;
 import org.springframework.stereotype.Repository;
 
@@ -16,5 +17,9 @@ public class RepairDao extends AbstractDao {
 
 	public List<Repair> facilityRepairListByTagNo(String facility_tag_no) {
 		return selectList(namespace + ".facilityRepairListByTagNo", facility_tag_no);
+	}
+
+	public List<Repair> selectRepairList(RepairPageCondition condition) {
+		return selectList(namespace + ".selectRepairList", condition);
 	}
 }

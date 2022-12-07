@@ -1,5 +1,6 @@
 package com.jeo.repair.service;
 
+import com.jeo.facility.dto.RepairPageCondition;
 import com.jeo.repair.dao.RepairDao;
 import com.jeo.repair.domain.Repair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +19,9 @@ public class RepairService {
 
 	public List<Repair> facilityRepairListByTagNo(String facility_tag_no) {
 		return repairDao.facilityRepairListByTagNo(facility_tag_no);
+	}
+
+	public List<Repair> selectRepairList(RepairPageCondition condition) {
+		return repairDao.selectRepairList(condition);
 	}
 }

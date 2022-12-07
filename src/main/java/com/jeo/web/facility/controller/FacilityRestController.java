@@ -7,6 +7,7 @@ import com.jeo.facility.domain.Facility;
 import com.jeo.facility.domain.SubFacility;
 import com.jeo.facility.domain.SubFacilityList;
 import com.jeo.facility.dto.FacilityPageCondition;
+import com.jeo.facility.dto.RepairPageCondition;
 import com.jeo.facility.service.FacilityService;
 import com.jeo.facility.service.SubFacilityService;
 import com.jeo.repair.domain.Repair;
@@ -90,11 +91,26 @@ public class FacilityRestController {
 	}
 
 	@PostMapping(value = "/facility-list/equipment/page")
-	public ResponseEntity<List<Facility>> facilityRepairListByTagNoGET(@ModelAttribute FacilityPageCondition condition) {
+	public ResponseEntity<List<Facility>> facilityListEquipmentPageGET(@ModelAttribute FacilityPageCondition condition) {
 		ResponseEntity<List<Facility>> entity;
 
 		try {
 			List<Facility> repairList = facilityService.selectFacilityList(condition);
+
+			entity = new ResponseEntity<>(repairList, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+
+	@PostMapping(value = "/facility-list/repair/page")
+	public ResponseEntity<List<Repair>> facilityListRepairPageGET(@ModelAttribute RepairPageCondition condition) {
+		ResponseEntity<List<Repair>> entity;
+
+		try {
+			List<Repair> repairList = repairService.selectRepairList(condition);
 
 			entity = new ResponseEntity<>(repairList, HttpStatus.OK);
 		} catch (Exception e) {

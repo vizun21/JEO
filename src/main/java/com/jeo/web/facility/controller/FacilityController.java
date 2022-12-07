@@ -98,4 +98,8 @@ public class FacilityController {
 		model.addAttribute("categories", categories);
 	}
 
+	@GetMapping(value = "/facility-list/repair")
+	public void facilityRepairListGET(Model model) {
+	}
+
 }

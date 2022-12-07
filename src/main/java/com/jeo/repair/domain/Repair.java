@@ -17,6 +17,7 @@ public class Repair {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate repair_date;
 	private String facility_tag_no;
+	private String facility_name;
 	private String repair_content;
 	private String repair_cause;
 	private String repair_company;

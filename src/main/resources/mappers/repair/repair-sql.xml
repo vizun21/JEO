@@ -34,5 +34,28 @@
 		WHERE FACILITY_TAG_NO = #{facility_tag_no}
 		ORDER BY REPAIR_DATE DESC, REPAIR_NO DESC
 	</select>
+
+	<select id="selectRepairList" parameterType="hmap" resultType="Repair">
+		SELECT
+			REPAIR.*,
+			FACILITY_NAME
+		FROM EO_REPAIR REPAIR
+				 JOIN EO_FACILITY USING (FACILITY_TAG_NO)
+		<where>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(repair_date)">
+				AND REPAIR_DATE = #{repair_date}
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(facility_tag_no)">
+				AND FACILITY_TAG_NO = #{facility_tag_no}
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(repair_company)">
+				AND REPAIR_COMPANY LIKE CONCAT('%', #{repair_company}, '%')
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(repair_manager)">
+				AND REPAIR_MANAGER LIKE CONCAT('%', #{repair_manager}, '%')
+			</if>
+		</where>
+		ORDER BY REPAIR_DATE DESC, REPAIR_NO DESC
+	</select>
 </mapper>
 
