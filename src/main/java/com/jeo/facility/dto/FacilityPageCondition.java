@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class FacilityPageCondition {
-	private String facility_tag_no;
-	private String facility_name;
+	private String facility_tag_no_keyword;
+	private String facility_name_keyword;
 	private Integer construction_code;
 	private Integer category_code;
 }

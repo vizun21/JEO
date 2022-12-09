@@ -102,4 +102,12 @@ public class FacilityController {
 	public void facilityRepairListGET(Model model) {
 	}
 
+	@GetMapping(value = "/facility/report")
+	public void printReportGET(Model model) {
+		List<ConstructionType> constructionTypes = constructionTypeService.selectConstructionTypeList();
+		model.addAttribute("constructionTypes", constructionTypes);
+		List<Category> categories = categoryService.selectCategoryList();
+		model.addAttribute("categories", categories);
+	}
+
 }

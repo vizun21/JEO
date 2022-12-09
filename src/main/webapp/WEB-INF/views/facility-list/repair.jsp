@@ -70,7 +70,7 @@
 									</thead>
 									<tbody>
 									<c:forEach var="result" items="${resultList}" varStatus="status">
-										<tr data-facility_tag_no="${result.facility_tag_no}">
+										<tr>
 											<td></td>
 											<td>${status.count}</td>
 											<td>${result.facility_name}</td>
@@ -143,9 +143,7 @@
 					html.push(item.repair_manager);
 					html.push(item.repair_note);
 
-					var rowNode = $("#listTable").DataTable().row.add(html).node();
-					$(rowNode).attr("data-facility_tag_no", item.facility_tag_no);
-					$(rowNode).css("cursor", "pointer");
+					$("#listTable").DataTable().row.add(html).node();
 				});
 
 				$("#listTable").DataTable().draw(false);

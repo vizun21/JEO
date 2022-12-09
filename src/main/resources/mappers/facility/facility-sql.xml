@@ -11,11 +11,11 @@
 		JOIN EO_CONSTRUCTION_TYPE USING (CONSTRUCTION_CODE)
 		JOIN EO_CATEGORY USING (CATEGORY_CODE)
 		<where>
-			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(facility_tag_no)">
-				AND FACILITY_TAG_NO LIKE CONCAT('%', #{facility_tag_no}, '%')
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(facility_tag_no_keyword)">
+				AND FACILITY_TAG_NO LIKE CONCAT('%', #{facility_tag_no_keyword}, '%')
 			</if>
-			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(facility_name)">
-				AND FACILITY_NAME LIKE CONCAT('%', #{facility_name}, '%')
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(facility_name_keyword)">
+				AND FACILITY_NAME LIKE CONCAT('%', #{facility_name_keyword}, '%')
 			</if>
 			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(construction_code)">
 				AND CONSTRUCTION_CODE = #{construction_code}

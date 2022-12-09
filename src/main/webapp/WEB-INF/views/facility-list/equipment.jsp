@@ -26,14 +26,14 @@
 				<div class="col-2">
 					<div class="form-group">
 						<div class="input-group input-group-md">
-							<input type="search" class="form-control" id="facility_tag_no" name="facility_tag_no" placeholder="TAG NO.">
+							<input type="search" class="form-control" id="facility_tag_no_keyword" name="facility_tag_no_keyword" placeholder="TAG NO.">
 						</div>
 					</div>
 				</div>
 				<div class="col-2">
 					<div class="form-group">
 						<div class="input-group input-group-md">
-							<input type="search" class="form-control" id="facility_name" name="facility_name" placeholder="설비명">
+							<input type="search" class="form-control" id="facility_name_keyword" name="facility_name_keyword" placeholder="설비명">
 						</div>
 					</div>
 				</div>
@@ -107,8 +107,8 @@
 		var url = "<c:url value='/print/html/equipment-list'/>"
 			+ "?construction_code=" + $("#construction_code").val()
 			+ "&category_code=" + $("#category_code").val()
-			+ "&facility_tag_no=" + $("#facility_tag_no").val()
-			+ "&facility_name=" + $("#facility_name").val();
+			+ "&facility_tag_no_keyword=" + $("#facility_tag_no_keyword").val()
+			+ "&facility_name_keyword=" + $("#facility_name_keyword").val();
 		window.open(url, '_blank');
 	});
 

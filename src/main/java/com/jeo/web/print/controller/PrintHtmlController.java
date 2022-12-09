@@ -42,4 +42,11 @@ public class PrintHtmlController {
 		model.addAttribute("repairs", repairService.selectRepairList(condition));
 	}
 
+	@GetMapping(value = "/print/html/report1")
+	public void printReport1GET(Model model, @ModelAttribute RepairPageCondition condition) {
+		model.addAttribute("facility", facilityService.selectFacility(condition.getFacility_tag_no()));
+		model.addAttribute("subFacilities", subFacilityService.selectSubFacilityList(condition.getFacility_tag_no()));
+		model.addAttribute("repairs", repairService.selectRepairList(condition));
+	}
+
 }
