@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <div class="content">
@@ -8,7 +9,7 @@
 				<div class="card">
 					<div class="card-header"><h5 class="mb-0">문서출력</h5></div>
 					<div class="card-body">
-						<form id="searchForm">
+						<form id="printForm">
 							<table class="table-list table table-sm table-bordered">
 								<colgroup>
 									<col/>
@@ -68,13 +69,13 @@
 								</tr>
 								<tr>
 									<td colspan="5">
-										<input type="checkbox" id="print_equipment_card" name="print_equipment_card" checked="checked">
+										<input type="checkbox" id="print_equipment_card" name="print_equipment_card" checked>
 										<label for="print_equipment_card" class="my-1">설비이력카드</label>
 									</td>
 								</tr>
 								<tr>
 									<td colspan="5">
-										<input type="checkbox" id="print_repair_list" name="print_repair_list" checked="checked">
+										<input type="checkbox" id="print_repair_list" name="print_repair_list" checked>
 										<label for="print_repair_list" class="my-1">수리내역목록</label>
 									</td>
 								</tr>
@@ -91,46 +92,50 @@
 				<div class="card">
 					<div class="card-header"><h5 class="mb-0">보고서출력</h5></div>
 					<div class="card-body">
-						<table class="table-list table table-sm table-bordered">
-							<colgroup>
-								<col/>
-								<col/>
-								<col/>
-								<col width="10%"/>
-							</colgroup>
-							<tr>
-								<th>일자선택</th>
-								<td>
-									<input type="text" class="datepicker form-control" name="start_date" readonly>
-								</td>
-								<td>
-									<input type="text" class="datepicker form-control" name="end_date" readonly>
-								</td>
-								<th rowspan="4">
-									<button type="button" class="btn btn-md btn-primary btn-block" id="btnPrint2">
-										<i class="fas fa-print"></i> 인쇄
-									</button>
-								</th>
-							</tr>
-							<tr>
-								<td colspan="3">
-									<input type="checkbox" id="report-cover" name="report-cover">
-									<label for="report-cover" class="my-1">보고서표지</label>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="3">
-									<input type="checkbox" id="facility-spec-list" name="facility-spec-list">
-									<label for="facility-spec-list" class="my-1">설비명세목록</label>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="3">
-									<input type="checkbox" id="repair-list2" name="repair-list2">
-									<label for="repair-list2" class="my-1">수리내역목록</label>
-								</td>
-							</tr>
-						</table>
+						<form id="printForm2">
+							<table class="table-list table table-sm table-bordered">
+								<colgroup>
+									<col/>
+									<col/>
+									<col/>
+									<col width="10%"/>
+								</colgroup>
+								<tr>
+									<th>일자선택</th>
+									<td>
+										<input type="text" class="datepicker form-control" id="start_date" name="start_date"
+											   value="${start_date}" data-parsley-required="true" readonly>
+									</td>
+									<td>
+										<input type="text" class="datepicker form-control" id="end_date" name="end_date"
+											   value="${end_date}" data-parsley-required="true" readonly>
+									</td>
+									<th rowspan="4">
+										<button type="button" class="btn btn-md btn-primary btn-block" id="btnPrint2">
+											<i class="fas fa-print"></i> 인쇄
+										</button>
+									</th>
+								</tr>
+								<tr>
+									<td colspan="3">
+										<input type="checkbox" id="print_report_cover" name="print_report_cover" checked>
+										<label for="print_report_cover" class="my-1">보고서표지</label>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3">
+										<input type="checkbox" id="print_facility_spec" name="print_facility_spec" checked>
+										<label for="print_facility_spec" class="my-1">설비명세목록</label>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3">
+										<input type="checkbox" id="print_repair_list2" name="print_repair_list2" checked>
+										<label for="print_repair_list2" class="my-1">수리내역목록</label>
+									</td>
+								</tr>
+							</table>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -145,13 +150,25 @@
 	});
 
 	$("#btnPrint").on("click", function () {
-		if (!parsleyFormValidate("searchForm")) return false;
+		if (!parsleyFormValidate("printForm")) return false;
 
 		var url = "<c:url value='/print/html/report1'/>"
 			+ "?repair_date=" + $("#repair_date").val()
 			+ "&facility_tag_no=" + $("#facility_tag_no").val()
 			+ "&print_equipment_card=" + $("#print_equipment_card").is(":checked")
 			+ "&print_repair_list=" + $("#print_repair_list").is(":checked");
+		window.open(url, '_blank');
+	});
+
+	$("#btnPrint2").on("click", function () {
+		if (!parsleyFormValidate("printForm2")) return false;
+
+		var url = "<c:url value='/print/html/report2'/>"
+			+ "?start_date=" + $("#start_date").val()
+			+ "&end_date=" + $("#end_date").val()
+			+ "&print_report_cover=" + $("#print_report_cover").is(":checked")
+			+ "&print_facility_spec=" + $("#print_facility_spec").is(":checked")
+			+ "&print_repair_list2=" + $("#print_repair_list2").is(":checked");
 		window.open(url, '_blank');
 	});
 

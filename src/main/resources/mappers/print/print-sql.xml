@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="print">
+	<insert id="insert" parameterType="hmap">
+		INSERT INTO EO_PRINT (
+			PRINT_DATE,
+			PRINT_NO
+		)
+		VALUES (
+			#{print_date},
+		    1
+		)
+		ON DUPLICATE KEY UPDATE
+			PRINT_NO = PRINT_NO + 1
+
+		<selectKey keyProperty="print_no" resultType="java.lang.Integer" order="AFTER">
+			SELECT PRINT_NO
+			FROM EO_PRINT
+			WHERE PRINT_DATE = #{print_date}
+		</selectKey>
+	</insert>
+</mapper>
+

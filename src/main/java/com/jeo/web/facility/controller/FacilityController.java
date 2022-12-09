@@ -3,6 +3,7 @@ package com.jeo.web.facility.controller;
 import com.jeo.category.domain.Category;
 import com.jeo.category.service.CategoryService;
 import com.jeo.common.util.CommonUtils;
+import com.jeo.common.util.DateUtils;
 import com.jeo.constructionType.domain.ConstructionType;
 import com.jeo.constructionType.service.ConstructionTypeService;
 import com.jeo.facility.domain.Facility;
@@ -108,6 +109,9 @@ public class FacilityController {
 		model.addAttribute("constructionTypes", constructionTypes);
 		List<Category> categories = categoryService.selectCategoryList();
 		model.addAttribute("categories", categories);
+
+		model.addAttribute("start_date", DateUtils.getFirstDate());
+		model.addAttribute("end_date", DateUtils.getLastDate());
 	}
 
 }

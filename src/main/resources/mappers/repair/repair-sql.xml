@@ -54,6 +54,12 @@
 			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(repair_manager)">
 				AND REPAIR_MANAGER LIKE CONCAT('%', #{repair_manager}, '%')
 			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(start_date)">
+				AND REPAIR_DATE >= #{start_date}
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(end_date)">
+				AND REPAIR_DATE <![CDATA[<=]]> #{end_date}
+			</if>
 		</where>
 		ORDER BY REPAIR_DATE DESC, REPAIR_NO DESC
 	</select>

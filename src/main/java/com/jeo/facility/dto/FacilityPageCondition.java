@@ -14,4 +14,6 @@ public class FacilityPageCondition {
 	private String facility_name_keyword;
 	private Integer construction_code;
 	private Integer category_code;
+	private String start_date;
+	private String end_date;
 }

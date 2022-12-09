@@ -1,4 +1,4 @@
-package com.jeo.facility.dto;
+package com.jeo.report.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RepairPageCondition {
-	private String repair_date;
-	private String facility_tag_no;
-	private String repair_company;
-	private String repair_manager;
+public class ReportCondition {
 	private String start_date;
 	private String end_date;
 }

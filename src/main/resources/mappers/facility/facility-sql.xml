@@ -23,6 +23,12 @@
 			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(category_code)">
 				AND CATEGORY_CODE = #{category_code}
 			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(start_date)">
+				AND MAJOR_REPAIRCOMPLETION_DATE >= #{start_date}
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(end_date)">
+				AND MAJOR_REPAIRCOMPLETION_DATE <![CDATA[<=]]> #{end_date}
+			</if>
 		</where>
 		ORDER BY FACILITY_TAG_NO
 	</select>
