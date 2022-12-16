@@ -24,7 +24,7 @@
 					</tr>
 					</thead>
 					<tbody>
-		</c:if>
+	</c:if>
 					<tr>
 						<td>${fn:length(facilities) - status.index}</td>
 						<td>${facility.facility_name}</td>
@@ -34,7 +34,7 @@
 						<td>${facility.emplacement}</td>
 						<td>${facility.facility_quantity}</td>
 					</tr>
-		<c:if test="${status.index % 19 eq 18}">
+	<c:if test="${(status.index % 19 ne 18 and status.index + 1 == fn:length(facilities)) or status.index % 19 eq 18}">
 					</tbody>
 				</table>
 			</div>

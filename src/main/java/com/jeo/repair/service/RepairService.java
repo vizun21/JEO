@@ -1,5 +1,6 @@
 package com.jeo.repair.service;
 
+import com.jeo.facility.domain.FacilityRepairHistory;
 import com.jeo.facility.dto.RepairPageCondition;
 import com.jeo.repair.dao.RepairDao;
 import com.jeo.repair.domain.Repair;
@@ -23,5 +24,9 @@ public class RepairService {
 
 	public List<Repair> selectRepairList(RepairPageCondition condition) {
 		return repairDao.selectRepairList(condition);
+	}
+
+	public List<FacilityRepairHistory> selectFacilityRepairHistory(RepairPageCondition condition) {
+		return repairDao.selectFacilityRepairHistory(condition);
 	}
 }

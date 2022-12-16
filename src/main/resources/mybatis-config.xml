@@ -18,5 +18,6 @@
 		<typeAlias alias="Facility" type="com.jeo.facility.domain.Facility"/>
 		<typeAlias alias="SubFacility" type="com.jeo.facility.domain.SubFacility"/>
 		<typeAlias alias="Repair" type="com.jeo.repair.domain.Repair"/>
+		<typeAlias alias="FacilityRepairHistory" type="com.jeo.facility.domain.FacilityRepairHistory"/>
 	</typeAliases>
 </configuration>

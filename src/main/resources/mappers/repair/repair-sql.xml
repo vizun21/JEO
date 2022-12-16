@@ -63,5 +63,49 @@
 		</where>
 		ORDER BY REPAIR_DATE DESC, REPAIR_NO DESC
 	</select>
+
+	<resultMap id="facilityRepairHistoryMap" type="FacilityRepairHistory">
+		<id property="facility_tag_no" column="facility_tag_no"/>
+		<result property="facility_name" column="facility_name"/>
+		<collection property="repairs" ofType="hashmap" javaType="list">
+			<result property="repair_no" column="repair_no"/>
+			<result property="repair_date" column="repair_date"/>
+			<result property="repair_content" column="repair_content"/>
+			<result property="repair_cause" column="repair_cause"/>
+			<result property="repair_company" column="repair_company"/>
+			<result property="repair_company_tel" column="repair_company_tel"/>
+			<result property="repair_price" column="repair_price"/>
+			<result property="repair_manager" column="repair_manager"/>
+			<result property="repair_note" column="repair_note"/>
+		</collection>
+	</resultMap>
+	<select id="selectFacilityRepairHistory" parameterType="hmap" resultMap="facilityRepairHistoryMap">
+		SELECT
+			REPAIR.*,
+			FACILITY_NAME
+		FROM EO_REPAIR REPAIR
+				 JOIN EO_FACILITY USING (FACILITY_TAG_NO)
+		<where>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(repair_date)">
+				AND REPAIR_DATE = #{repair_date}
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(facility_tag_no)">
+				AND FACILITY_TAG_NO = #{facility_tag_no}
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(repair_company)">
+				AND REPAIR_COMPANY LIKE CONCAT('%', #{repair_company}, '%')
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(repair_manager)">
+				AND REPAIR_MANAGER LIKE CONCAT('%', #{repair_manager}, '%')
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(start_date)">
+				AND REPAIR_DATE >= #{start_date}
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(end_date)">
+				AND REPAIR_DATE <![CDATA[<=]]> #{end_date}
+			</if>
+		</where>
+		ORDER BY REPAIR_DATE DESC, REPAIR_NO DESC
+	</select>
 </mapper>
 

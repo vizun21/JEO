@@ -1,6 +1,7 @@
 package com.jeo.repair.dao;
 
 import com.jeo.common.dao.AbstractDao;
+import com.jeo.facility.domain.FacilityRepairHistory;
 import com.jeo.facility.dto.RepairPageCondition;
 import com.jeo.repair.domain.Repair;
 import org.springframework.stereotype.Repository;
@@ -21,5 +22,9 @@ public class RepairDao extends AbstractDao {
 
 	public List<Repair> selectRepairList(RepairPageCondition condition) {
 		return selectList(namespace + ".selectRepairList", condition);
+	}
+
+	public List<FacilityRepairHistory> selectFacilityRepairHistory(RepairPageCondition condition) {
+		return selectList(namespace + ".selectFacilityRepairHistory", condition);
 	}
 }

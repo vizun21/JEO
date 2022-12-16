@@ -1,6 +1,7 @@
 package com.jeo.web.print.controller;
 
 import com.jeo.common.util.DateUtils;
+import com.jeo.facility.domain.FacilityRepairHistory;
 import com.jeo.report.dto.Report;
 import com.jeo.report.dto.ReportCondition;
 import com.jeo.facility.dto.FacilityPageCondition;
@@ -15,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 @Controller
 public class PrintHtmlController {
@@ -70,11 +73,12 @@ public class PrintHtmlController {
 						.start_date(condition.getStart_date())
 						.end_date(condition.getEnd_date())
 						.build()));
-		model.addAttribute("repairs", repairService.selectRepairList(
+		List<FacilityRepairHistory> facilityRepairHistory = repairService.selectFacilityRepairHistory(
 				RepairPageCondition.builder()
 						.start_date(condition.getStart_date())
 						.end_date(condition.getEnd_date())
-						.build()));
+						.build());
+		model.addAttribute("facilityRepairHistory", facilityRepairHistory);
 	}
 
 }

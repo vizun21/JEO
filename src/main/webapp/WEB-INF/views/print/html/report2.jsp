@@ -95,7 +95,7 @@
 						<td>${facility.emplacement}</td>
 						<td>${facility.facility_quantity}</td>
 					</tr>
-		<c:if test="${(fn:length(facilities) < 19 and status.index + 1 == fn:length(facilities)) or status.index % 19 eq 18}">
+		<c:if test="${(status.index % 19 ne 18 and status.index + 1 == fn:length(facilities)) or status.index % 19 eq 18}">
 					</tbody>
 					</table>
 				</div>
@@ -105,14 +105,15 @@
 </c:if>
 
 <c:if test='${param.print_repair_list2}'>
-<c:forEach var="repair" items="${repairs}" varStatus="status">
-<c:if test="${status.index % 18 eq 0}">
+<c:forEach var="facilityRepair" items="${facilityRepairHistory}">
+<c:forEach var="repair" items="${facilityRepair.repairs}" varStatus="repairStatus">
+<c:if test="${repairStatus.index % 18 eq 0}">
 <div class="page">
 	<div class="subpage">
 		<table class="table table-sm table-bordered">
 			<thead>
 			<tr>
-				<th class="title" colspan="9">설비명 : ${facility.facility_name} / TAG NO. : ${facility.facility_tag_no}</th>
+				<th class="title" colspan="9">설비명 : ${facilityRepair.facility_name} / TAG NO. : ${facilityRepair.facility_tag_no}</th>
 			</tr>
 			<tr>
 				<th class="title" colspan="5">수리내역목록</th>
@@ -144,11 +145,12 @@
 				<td>${repair.repair_manager}</td>
 				<td>${repair.repair_note}</td>
 			</tr>
-<c:if test="${status.index % 18 eq 17}">
+<c:if test="${(repairStatus.index % 18 ne 17 and repairStatus.index + 1 == fn:length(facilityRepair.repairs)) or repairStatus.index % 18 eq 17}">
 			</tbody>
 		</table>
 	</div>
 </div>
 </c:if>
+</c:forEach>
 </c:forEach>
 </c:if>
