@@ -14,7 +14,7 @@
 	<div class="card">
 		<div class="card-body register-card-body">
 			<div class="register-logo">
-				<b>${resultInfo}</b>
+				<b>비밀번호 확인질문 답변이<br>일치하지 않습니다.</b>
 			</div>
 			<div class="input-group">
 				<button type="button" class="btn btn-info btn-block" onclick="javascript:fncGoAfterPage();">뒤로가기</button>

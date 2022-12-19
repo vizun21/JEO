@@ -24,6 +24,7 @@
 			<mvc:exclude-mapping path="/user/login**"/>
 			<mvc:exclude-mapping path="/user/logout"/>
 			<mvc:exclude-mapping path="/user/search**"/>
+			<mvc:exclude-mapping path="/user/change**"/>
 			<mvc:exclude-mapping path="/resources/**"/>
 			<bean id="authInterceptor" class="com.jeo.common.interceptor.AuthInterceptor"/>
 		</mvc:interceptor>
