@@ -13,11 +13,11 @@
     </decorator>
 
     <decorator name="defaultLayout" page="defaultLayout.jsp">
-		<pattern>/my**</pattern>
 		<pattern>/admin/**</pattern>
 	</decorator>
 
     <decorator name="menuLayout" page="menuLayout.jsp">
+		<pattern>/my**</pattern>
 		<pattern>/comp/**</pattern>
 		<pattern>/facility/**</pattern>
 		<pattern>/facility-list/**</pattern>

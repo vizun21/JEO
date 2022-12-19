@@ -29,6 +29,7 @@
 			<bean id="authInterceptor" class="com.jeo.common.interceptor.AuthInterceptor"/>
 		</mvc:interceptor>
 		<mvc:interceptor>
+			<mvc:mapping path="/my**"/>
 			<mvc:mapping path="/home"/>
 			<mvc:mapping path="/accounting/**"/>
 			<mvc:mapping path="/business/**"/>
