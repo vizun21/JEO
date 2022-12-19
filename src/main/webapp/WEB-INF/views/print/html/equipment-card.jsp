@@ -16,13 +16,18 @@
 	.sub-table .end-col {
 		border-right: white solid 0px !important;
 	}
+
+    .imgLayout4-3 {
+        width: 377.5px;
+        height: 283.1px;
+    }
 </style>
 <div class="page">
 	<div class="subpage">
 		<table class="table table-sm table-bordered">
 			<thead>
 			<tr>
-				<th colspan="7">설비이력카드</th>
+				<th colspan="7" class="title text-center">설비이력카드</th>
 				<th>사업소명</th>
 				<th>전주환경사업소</th>
 			</tr>
@@ -124,9 +129,8 @@
 										<img id="facility_image_preview" src="" width="100%" class="mb-2">
 									</c:when>
 									<c:otherwise>
-										<img id="facility_image_preview"
-											 src="/preview?fileName=${facility.facility_image_path}" width="100%"
-											 class="mb-2">
+										<img id="facility_image_preview" class="imgLayout4-3"
+											 src="/preview?fileName=${facility.facility_image_path}" width="100%">
 									</c:otherwise>
 								</c:choose>
 							</td>

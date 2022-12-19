@@ -13,7 +13,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="/"><b>전주환경사업소 시설관리시스템</b></a>
+        <a href="/"><b>전주환경사업소 설비관리시스템</b></a>
     </div>
 
     <div class="card">

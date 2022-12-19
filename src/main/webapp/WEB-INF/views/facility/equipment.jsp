@@ -4,6 +4,11 @@
 	table th {
 		word-break: keep-all;
 	}
+
+    .imgLayout4-3 {
+		width: 432.8px;
+		height: 324.6px;
+	}
 </style>
 <div class="content">
 	<div class="container-fluid">
@@ -251,7 +256,7 @@
 												<img id="facility_image_preview" src="" width="100%" class="mb-2">
 											</c:when>
 											<c:otherwise>
-												<img id="facility_image_preview" src="/preview?fileName=${facility.facility_image_path}" width="100%" class="mb-2">
+												<img id="facility_image_preview" src="/preview?fileName=${facility.facility_image_path}" width="100%" class="mb-2 imgLayout4-3">
 											</c:otherwise>
 										</c:choose>
 										<input type="file" id="facility_image" name="facility_image" accept="image/jpeg, image/png">

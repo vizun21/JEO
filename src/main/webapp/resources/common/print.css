@@ -18,6 +18,7 @@ body {
 	border: 1px #D3D3D3 solid;
 	border-radius: 5px;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    background-color: white;
 }
 .subpage {
 	/*border: 5px red solid;*/
