@@ -3,6 +3,7 @@ package com.jeo.webapp.admin.system.code.service;
 import com.jeo.common.config.Define;
 import com.jeo.common.domain.HMap;
 import com.jeo.common.util.CommonUtils;
+import com.jeo.position.domain.CodeDetail;
 import com.jeo.webapp.admin.system.code.dao.CodeDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,10 @@ public class CodeService {
 
 	public int codeDetailRegist(HMap hmap) {
 		return codeDao.codeDetailRegist(hmap.getMap());
+	}
+
+	public int codeDetailRegist(CodeDetail codeDetail) {
+		return codeDao.codeDetailRegist(codeDetail);
 	}
 
 	@Transactional
