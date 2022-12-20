@@ -6,8 +6,8 @@
 	}
 
     .imgLayout4-3 {
-		width: 432.8px;
-		height: 324.6px;
+		width: 457.2px;
+		height: 342.9px;
 	}
 </style>
 <div class="content">
@@ -231,13 +231,13 @@
 
 							<table id="subTable" class="table-list table table-sm table-bordered">
 								<colgroup>
-									<col width="40%"/>
+									<col width="30%"/>
 									<col width="5%"/>
 									<col width="15%"/>
 									<col width="15%"/>
 									<col width="5%"/>
 									<col width="15%"/>
-									<col width="5%"/>
+									<col width="15%"/>
 								</colgroup>
 								<thead>
 								<tr>
