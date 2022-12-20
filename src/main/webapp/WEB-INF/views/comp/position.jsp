@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.jeo.common.config.TypeVal" %>
+
 <div class="content">
 	<div class="container-fluid">
 		<div class="row">
@@ -14,9 +16,11 @@
 							</div>
 							<div class="col-md-2" id="listTable_colvis"></div>
 							<div class="col-md-5">
+								<c:if test="${loginVO.user_level == TypeVal.LEVEL_COMP_ADMIN}">
 								<div class="float-right">
 									<button type="button" class="btn btn-sm btn-info" id="btnAdd"><i class="fas fa-plus"></i> 추가</button>
 								</div>
+								</c:if>
 							</div>
 						</div>
 						<div class="row">
@@ -25,16 +29,16 @@
 									<thead>
 									<tr>
 										<th class="no_toggle"></th>	<%-- dtr-control 위치 --%>
-										<th>연번</th>
+										<th>순서</th>
 										<th>직책코드</th>
 										<th>직책</th>
 									</tr>
 									</thead>
 									<tbody>
-									<c:forEach var="result" items="${resultList}" varStatus="status">
+									<c:forEach var="result" items="${resultList}">
 										<tr>
 											<td></td>
-											<td>${status.count}</td>
+											<td>${result.cddt_seq}</td>
 											<td>${result.cddt_val}</td>
 											<td>${result.cddt_name}</td>
 										</tr>

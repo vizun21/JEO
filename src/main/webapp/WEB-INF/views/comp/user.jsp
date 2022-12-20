@@ -1,3 +1,6 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.jeo.common.config.TypeVal" %>
+
 <div class="content">
 	<div class="container-fluid">
 		<div class="row">
@@ -34,9 +37,11 @@
 							</div>
 							<div class="col-md-2" id="listTable_colvis"></div>
 							<div class="col-md-5">
+								<c:if test="${loginVO.user_level == TypeVal.LEVEL_COMP_ADMIN}">
 								<div class="float-right">
 									<button type="button" class="btn btn-sm btn-info" id="btnRetirement"><i class="fas fa-check"></i> 퇴직</button>
 								</div>
+								</c:if>
 							</div>
 						</div>
 						<div class="row">
