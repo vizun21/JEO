@@ -17,13 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class FacilityRestController {
@@ -65,6 +64,51 @@ public class FacilityRestController {
 		}
 
 		return "redirect:/facility/equipment/list";
+	}
+
+	@PostMapping("/facility/equipment/modify")
+	public String update(HMap hmap, MultipartFile facility_image, Facility facility, SubFacilityList subFacilityList) throws IOException {
+		facility.setFacility_mod_user(hmap.getString(Define.USER_ID));
+
+		/* 이미지 업로드 및 업로드 경로받아오기 */
+		if (facility_image.getSize() != 0) {
+			facility.setFacility_image_path(uploadImageService.fileUpload(facility_image));
+		}
+
+		/* 설비정보 업데이트 */
+		facilityService.update(facility);
+
+		/* 기타설비 및 부속설비 등록 */
+		if (subFacilityList.getSubFacilities() != null) {
+			for (SubFacility subFacility : subFacilityList.getSubFacilities()) {
+				subFacility.setFacility_tag_no(facility.getFacility_tag_no());
+
+				if (CommonUtils.isEmpty(subFacility.getSub_facility_no())) {
+					subFacilityService.insert(subFacility);
+				} else {
+					subFacilityService.update(subFacility);
+				}
+			}
+		}
+
+		return "redirect:/facility/equipment/list";
+	}
+
+	@RequestMapping(value = "/facility/equipment/overlapCheck", method = RequestMethod.POST)
+	public ResponseEntity<Boolean> overlapCheckPOST(HMap hmap, @RequestBody Map<String, Object> map) {
+		ResponseEntity<Boolean> entity = null;
+		try {
+			hmap.set(map);
+
+			Facility facility = facilityService.selectFacility(hmap.getString("facility_tag_no"));
+			boolean overlap = facility != null;
+
+			entity = new ResponseEntity<>(overlap, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
 	}
 
 	@PostMapping(value = "/facility/equipment/{keyword}")

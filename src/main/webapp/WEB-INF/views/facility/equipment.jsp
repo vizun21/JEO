@@ -1,5 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<c:choose>
+	<c:when test="${empty facility.facility_tag_no}">
+		<c:set var="action"><c:url value="/facility/equipment"/></c:set>
+	</c:when>
+	<c:otherwise>
+		<c:set var="action"><c:url value="/facility/equipment/modify"/></c:set>
+	</c:otherwise>
+</c:choose>
+
 <style>
 	table th {
 		word-break: keep-all;
@@ -16,7 +26,7 @@
 			<div class="col-12">
 				<div class="card">
 					<div class="card-body">
-						<form id="facilityForm" action="<c:url value="/facility/equipment"/>" method="post"
+						<form id="facilityForm" action="${action}" method="post"
 							  onsubmit="return validate();" enctype="multipart/form-data">
 							<table id="listTable" class="table-list table table-sm table-bordered mb-3">
 								<colgroup>
@@ -69,10 +79,12 @@
 								<tr>
 									<th colspan="2"><span class="required">*</span> TAG NO.</th>
 									<td>
-										<input type="text" class="form-control form-control-sm" name="facility_tag_no"
-											   maxlength="20" data-parsley-required="true" title="TAG NO."
+										<input type="text" class="form-control form-control-sm"
+											   name="facility_tag_no" id="facility_tag_no" title="TAG NO."
+											   maxlength="20" data-parsley-required="true"
 											   value="${facility.facility_tag_no}"
 											   <c:if test="${not empty facility.facility_tag_no}">readonly="readonly"</c:if>>
+										<small class="checkResult font-italic"></small>
 									</td>
 									<th>설치장소</th>
 									<td>
@@ -343,6 +355,12 @@
 </div>
 
 <script>
+	<c:if test="${empty facility.facility_tag_no}">
+	$("#facility_tag_no").on("keyup focusout", function () {
+		overlapCheck($(this));
+	});
+	</c:if>
+
 	$("input[name=facility_quantity], input[name=purchase_price]").on("keyup focusout", function () {
 		$(this).val($(this).val().number());
 	});
@@ -394,9 +412,32 @@
 
 	function validate() {
 		if (!parsleyFormValidate("facilityForm")) return false;
+		if (!checkResultValidate("facilityForm", "checkResult")) return false;
 	}
 
-	$(function () {
+	function overlapCheck(obj) {
+		var minLength = obj.data("parsley-length") ? 1 : 0;
+		if (obj.val().length < minLength) return false;
 
-	});
+		$.ajax({
+			type: "POST"
+			, url: "/facility/equipment/overlapCheck"
+			, dataType: "json"
+			, contentType: "application/json; charset=utf-8"
+			, data: JSON.stringify({
+				facility_tag_no: obj.val()
+			})
+			, success: function (data) {
+				if (data) {
+					obj.next(".checkResult")
+						.html("중복된 " + obj.prop("title") + "입니다.")
+				} else {
+					obj.next(".checkResult").html("");
+				}
+			}
+			, error: function (request, status, error) {
+				alertAjaxError(request, status, error);
+			}
+		});
+	}
 </script>
