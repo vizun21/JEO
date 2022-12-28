@@ -256,7 +256,7 @@
 									<th>사진</th>
 									<th colspan="5">기타설비 및 부속설비</th>
 									<th>
-										<button id="addRow" type="button" class="btn btn-sm btn-primary">추가</button>
+										<button id="addRow" type="button" class="btn btn-sm btn-primary btn-block">추가</button>
 									</th>
 								</tr>
 								</thead>
@@ -336,7 +336,7 @@
 									<button type="submit" class="btn btn-primary btn-block">저장</button>
 								</div>
 								<div class="col-2">
-									<button type="button" class="btn btn-primary btn-block" id="btnRepair">수리내역등록</button>
+									<button type="button" class="btn btn-primary btn-block" id="btnRepair">수리내역관리</button>
 								</div>
 								<div class="col-2">
 									<button type="button" class="btn btn-primary btn-block" id="btnPrint">
