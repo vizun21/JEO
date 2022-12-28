@@ -130,5 +130,6 @@
 
 	function checkForm() {
 		if (!parsleyFormValidate("categoryForm")) return false;
+		if (!checkResultValidate("categoryForm", "checkResult")) return false;
 	}
 </script>
