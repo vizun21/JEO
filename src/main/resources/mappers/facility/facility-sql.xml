@@ -11,6 +11,9 @@
 		JOIN EO_CONSTRUCTION_TYPE USING (CONSTRUCTION_CODE)
 		JOIN EO_CATEGORY USING (CATEGORY_CODE)
 		<where>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(keyword)">
+				AND (FACILITY_TAG_NO LIKE CONCAT('%', #{keyword}, '%') OR FACILITY_NAME LIKE CONCAT('%', #{keyword}, '%'))
+			</if>
 			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(facility_tag_no_keyword)">
 				AND FACILITY_TAG_NO LIKE CONCAT('%', #{facility_tag_no_keyword}, '%')
 			</if>

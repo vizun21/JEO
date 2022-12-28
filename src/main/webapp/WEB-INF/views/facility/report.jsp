@@ -58,8 +58,8 @@
 									</td>
 									<td>
 										<input type="hidden" id="facility_tag_no" name="facility_tag_no">
-										<input class="form-control" id="facility_tag_no_keyword" title="TAG NO."
-											   name="facility_tag_no_keyword" data-parsley-required="true"
+										<input class="form-control" id="keyword" title="TAG NO."
+											   name="keyword" data-parsley-required="true"
 											   placeholder="TAG NO. 및 설비명으로 검색">
 									</td>
 									<td>
@@ -145,7 +145,7 @@
 </div>
 
 <script>
-	$.each($("#facility_tag_no_keyword"), function () {
+	$.each($("#keyword"), function () {
 		initAutoComplete(this);
 	});
 
@@ -187,7 +187,7 @@
 					url: "/facility-list/equipment/page",
 					cache: false,
 					dataType: "json",
-					data: $("#searchForm").serialize(),
+					data: $("#printForm").serialize(),
 					success: function (data) {
 						// loading 종료 신호보내기 위해..
 						setTimeout(function () {
