@@ -68,11 +68,16 @@ public class FacilityRestController {
 
 	@PostMapping("/facility/equipment/modify")
 	public String update(HMap hmap, MultipartFile facility_image, Facility facility, SubFacilityList subFacilityList) throws IOException {
+
+		Facility origin = facilityService.selectFacility(facility.getFacility_tag_no());
+
 		facility.setFacility_mod_user(hmap.getString(Define.USER_ID));
 
 		/* 이미지 업로드 및 업로드 경로받아오기 */
 		if (facility_image.getSize() != 0) {
 			facility.setFacility_image_path(uploadImageService.fileUpload(facility_image));
+		} else {
+			facility.setFacility_image_path(origin.getFacility_image_path());
 		}
 
 		/* 설비정보 업데이트 */

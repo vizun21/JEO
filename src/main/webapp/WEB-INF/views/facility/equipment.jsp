@@ -61,7 +61,7 @@
 												data-parsley-required="true" title="공종">
 											<c:forEach var="constructionType" items="${constructionTypes}"
 													   varStatus="status">
-												<option value="${constructionType.construction_code}">${constructionType.construction_name}</option>
+												<option value="${constructionType.construction_code}" <c:if test="${facility.construction_code == constructionType.construction_code}">selected</c:if>>${constructionType.construction_name}</option>
 											</c:forEach>
 										</select>
 									</td>
@@ -71,7 +71,7 @@
 												data-parsley-required="true" title="구분">
 											<c:forEach var="category" items="${categories}"
 													   varStatus="status">
-												<option value="${category.category_code}">${category.category_name}</option>
+												<option value="${category.category_code}" <c:if test="${facility.category_code == category.category_code}">selected</c:if>>${category.category_name}</option>
 											</c:forEach>
 										</select>
 									</td>
