@@ -1,4 +1,4 @@
-package com.jeo.web.facility.controller;
+package com.jeo.facility.controller;
 
 import com.jeo.common.config.Define;
 import com.jeo.common.domain.HMap;
@@ -37,6 +37,21 @@ public class FacilityRestController {
 
 	@Autowired
 	RepairService repairService;
+
+	@PostMapping(value = "/facilities")
+	public ResponseEntity<List<Facility>> facilitiesPOST(@ModelAttribute FacilityPageCondition condition) {
+		ResponseEntity<List<Facility>> entity;
+
+		try {
+			List<Facility> facilities = facilityService.selectFacilityList(condition);
+			entity = new ResponseEntity<>(facilities, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		return entity;
+	}
 
 	@PostMapping("/facility/equipment")
 	public String insert(HMap hmap, MultipartFile facility_image, Facility facility, SubFacilityList subFacilityList) throws IOException {

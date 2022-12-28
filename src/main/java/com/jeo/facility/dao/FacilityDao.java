@@ -32,6 +32,6 @@ public class FacilityDao extends AbstractDao {
 	}
 
 	public List<Facility> selectFacilityList(FacilityPageCondition condition) {
-		return selectList(namespace + ".selectList", condition);
+		return selectList(namespace + ".selectFacilityList", condition);
 	}
 }

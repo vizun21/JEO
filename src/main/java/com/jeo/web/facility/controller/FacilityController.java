@@ -41,8 +41,10 @@ public class FacilityController {
 
 	@GetMapping(value = "/facility/equipment/list")
 	public void facilityGET(Model model) {
-		List<Facility> resultList = facilityService.selectFacilityList();
-		model.addAttribute("resultList", resultList);
+		List<ConstructionType> constructionTypes = constructionTypeService.selectConstructionTypeList();
+		model.addAttribute("constructionTypes", constructionTypes);
+		List<Category> categories = categoryService.selectCategoryList();
+		model.addAttribute("categories", categories);
 	}
 
 	@GetMapping(value = "/facility/equipment")
