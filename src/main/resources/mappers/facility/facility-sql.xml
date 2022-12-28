@@ -37,8 +37,13 @@
 	</select>
 
 	<select id="select" parameterType="String" resultType="Facility">
-		SELECT *
-		FROM EO_FACILITY
+		SELECT
+			FACILITY.*
+			 , CONSTRUCTION_NAME
+			 , CATEGORY_NAME
+		FROM EO_FACILITY FACILITY
+				 JOIN EO_CONSTRUCTION_TYPE USING (CONSTRUCTION_CODE)
+				 JOIN EO_CATEGORY USING (CATEGORY_CODE)
 		WHERE FACILITY_TAG_NO = #{facility_tag_no}
 	</select>
 
