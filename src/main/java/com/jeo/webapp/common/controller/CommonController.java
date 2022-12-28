@@ -15,7 +15,7 @@ public class CommonController {
 	public String rootGet(Model model) {
 		LoginVO loginVO = (LoginVO) SessionUtils.getAttribute(Define.loginVO);
 		if (loginVO.getUser_level() == TypeVal.LEVEL_SYSTEM_ADMIN)
-			return "redirect:/admin/user/transform";
+			return "redirect:/admin/system/page/list";
 		else if (loginVO.getUser_level() == TypeVal.LEVEL_ADMIN)
 			return "redirect:/admin/user/transform";
 		else if (loginVO.getUser_level() == TypeVal.LEVEL_COMP_ADMIN) {
@@ -24,7 +24,7 @@ public class CommonController {
 			return "redirect:/facility/equipment/list";
 		}
 
-		return "/error";
+		return "redirect:/error/wrongApproach";
 	}
 
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
