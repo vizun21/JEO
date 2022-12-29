@@ -103,7 +103,12 @@
 					<div class="card-header"><h5 class="mb-0">수리내역목록</h5></div>
 					<div class="card-body">
 						<div class="row">
-							<div class="offset-5"></div>
+							<div class="col-md-5">
+								<div class="float-left">
+									<button type="button" class="btn btn-sm btn-default" onclick='datatablesButtonTrigger({tableID:"listTable", extend:"excel"});'><i class="far fa-file-excel"></i> 엑셀</button>
+									<button type="button" class="btn btn-sm btn-default" onclick='datatablesButtonTrigger({tableID:"listTable", extend:"print"});'><i class="fas fa-print"></i> 인쇄</button>
+								</div>
+							</div>
 							<div class="col-md-2" id="listTable_colvis"></div>
 							<div class="col-md-5"></div>
 						</div>
@@ -255,7 +260,7 @@
 				$.each(data, function(index, item) {
 					var html = [];
 					html.push("");	// dtr-control 위치
-					html.push(item.repair_no);
+					html.push(data.length - index);
 					var repair_date = new Date(item.repair_date.year, item.repair_date.monthValue-1, item.repair_date.dayOfMonth + 1);
 					html.push(repair_date.toISOString().split('T')[0]);
 					html.push(item.repair_content);
