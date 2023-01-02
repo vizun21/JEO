@@ -40,5 +40,10 @@
 		  , SUB_FACILITY_NOTE = #{sub_facility_note}
 		WHERE SUB_FACILITY_NO = #{sub_facility_no}
 	</update>
+
+	<delete id="deleteSubFacility">
+		DELETE FROM EO_SUB_FACILITY
+		WHERE FACILITY_TAG_NO = #{facility_tag_no}
+	</delete>
 </mapper>
 

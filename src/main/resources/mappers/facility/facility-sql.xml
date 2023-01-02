@@ -163,5 +163,10 @@
 		   OR FACILITY_NAME LIKE CONCAT('%', #{keyword}, '%')
 		ORDER BY FACILITY_TAG_NO
 	</select>
+
+	<delete id="deleteFacility">
+		DELETE FROM EO_FACILITY
+		WHERE FACILITY_TAG_NO = #{facility_tag_no}
+	</delete>
 </mapper>
 

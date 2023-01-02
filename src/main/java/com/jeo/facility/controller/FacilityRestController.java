@@ -53,6 +53,24 @@ public class FacilityRestController {
 		return entity;
 	}
 
+	@DeleteMapping(value = "/facilities")
+	public ResponseEntity<String> facilitiesDELETE(HMap hmap, @RequestBody Map<String, Object> map) {
+		ResponseEntity<String> entity;
+
+		try {
+			hmap.set(map);
+			List<String> facility_list = hmap.getList("facility_list");
+			for (String facility_tag_no : facility_list) {
+				facilityService.deleteFacility(facility_tag_no);
+			}
+			entity = new ResponseEntity<>(Define.SUCCESS, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+
 	@PostMapping("/facility/equipment")
 	public String insert(HMap hmap, MultipartFile facility_image, Facility facility, SubFacilityList subFacilityList) throws IOException {
 		facility.setFacility_mod_user(hmap.getString(Define.USER_ID));

@@ -1,6 +1,7 @@
 package com.jeo.facility.service;
 
 import com.jeo.facility.dao.FacilityDao;
+import com.jeo.facility.dao.SubFacilityDao;
 import com.jeo.facility.domain.Facility;
 import com.jeo.facility.dto.FacilityPageCondition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,9 @@ import java.util.List;
 public class FacilityService {
 	@Autowired
 	FacilityDao facilityDao;
+
+	@Autowired
+	SubFacilityDao subFacilityDao;
 
 	public List<Facility> selectFacilityList() {
 		return facilityDao.selectFacilityList();
@@ -35,5 +39,10 @@ public class FacilityService {
 
 	public List<Facility> selectFacilityList(FacilityPageCondition condition) {
 		return facilityDao.selectFacilityList(condition);
+	}
+
+	public int deleteFacility(String facility_tag_no) {
+		subFacilityDao.deleteSubFacility(facility_tag_no);
+		return facilityDao.deleteFacility(facility_tag_no);
 	}
 }

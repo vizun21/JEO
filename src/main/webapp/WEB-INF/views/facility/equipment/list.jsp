@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ page import="com.jeo.common.config.TypeVal" %>
 
 <div class="content">
 	<div class="container-fluid">
@@ -64,7 +65,13 @@
 								</div>
 							</div>
 							<div class="col-md-2" id="listTable_colvis"></div>
-							<div class="col-md-5"></div>
+							<div class="col-md-5">
+								<div class="float-right">
+									<c:if test="${loginVO.user_level == TypeVal.LEVEL_COMP_ADMIN}">
+									<button type="button" class="btn btn-sm btn-danger" id="btnDelete"><i class="fas fa-trash-alt"></i> 삭제</button>
+									</c:if>
+								</div>
+							</div>
 						</div>
 						<div class="row">
 							<div class="col-12">
@@ -72,6 +79,7 @@
 									<thead>
 									<tr>
 										<th class="no_toggle"></th>	<%-- dtr-control 위치 --%>
+										<th class="no_toggle"><input type="checkbox" name="tb_check_all"></th>
 										<th>NO</th>
 										<th>설비명</th>
 										<th>공종</th>
@@ -96,7 +104,7 @@
 <script>
 	$(function () {
 		var args = {
-			orderColumns: []
+			excludeOrderColumns: [1]
 		}
 		setDatatables("listTable", args);
 
@@ -112,8 +120,9 @@
 		window.open(url, '_blank');
 	});
 
-	$("#listTable tbody").on("click", "tr", function () {
-		let facility_tag_no = $(this).data("facility_tag_no");
+	$("#listTable tbody").on("click", "td:not(:nth-child(2))", function () {
+		console.log($(this));
+		let facility_tag_no = $(this).parent().data("facility_tag_no");
 		if (facility_tag_no !== undefined) {
 			window.location.href = "<c:url value="/facility/equipment"></c:url>/" + facility_tag_no;
 		}
@@ -135,6 +144,7 @@
 				$.each(data, function(index, item) {
 					var html = [];
 					html.push("");	// dtr-control 위치
+					html.push("<input type='checkbox' name='tb_check_list'>");
 					html.push(data.length - index);
 					html.push(item.facility_name);
 					html.push(item.construction_name);
@@ -158,4 +168,40 @@
 			}
 		});
 	}
+
+	$("#btnDelete").on("click", function () {
+		var checked_list = $("#listTable input:checkbox[name=tb_check_list]:checked");
+		// 설비 선택체크
+		if (checked_list.length == 0) {
+			alert("선택된 설비가 없습니다.");
+			return false;
+		}
+		if (!confirm("삭제하시겠습니까?")) return false;
+
+		var facility_list = [];
+		$.each(checked_list, function () {
+			var facility_tag_no = $(this).closest("tr").data("facility_tag_no");
+			facility_list.push(facility_tag_no);
+		});
+
+		$.ajax({
+			type: "DELETE"
+			, url: "/facilities"
+			, headers: {"Content-Type": "application/json"}
+			, dataType: "text"
+			, data: JSON.stringify({
+				facility_list: facility_list
+			})
+			, success: function (data) {
+				if (data == 'success') {
+					getPage();
+				} else {
+					alert(data);
+				}
+			}
+			, error: function (request, status, error) {
+				alertAjaxError(request, status, error);
+			}
+		});
+	});
 </script>

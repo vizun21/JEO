@@ -34,4 +34,8 @@ public class FacilityDao extends AbstractDao {
 	public List<Facility> selectFacilityList(FacilityPageCondition condition) {
 		return selectList(namespace + ".selectFacilityList", condition);
 	}
+
+	public int deleteFacility(String facility_tag_no) {
+		return delete(namespace + ".deleteFacility", facility_tag_no);
+	}
 }
