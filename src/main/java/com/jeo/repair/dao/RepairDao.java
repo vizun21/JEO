@@ -35,4 +35,8 @@ public class RepairDao extends AbstractDao {
 	public int updateRepair(Repair repair) {
 		return update(namespace + ".updateRepair", repair);
 	}
+
+	public int deleteRepair(String repair_no) {
+		return delete(namespace + ".deleteRepair", repair_no);
+	}
 }

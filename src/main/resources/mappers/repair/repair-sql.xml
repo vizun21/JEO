@@ -133,5 +133,10 @@
 		  , REPAIR_NOTE = #{repair_note}
 		WHERE REPAIR_NO = #{repair_no}
 	</update>
+
+	<delete id="deleteRepair">
+		DELETE FROM EO_REPAIR
+		WHERE REPAIR_NO = #{repair_no}
+	</delete>
 </mapper>
 

@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.jeo.common.config.TypeVal" %>
+
 <div class="content">
 	<div class="container-fluid">
 		<div class="row">
@@ -32,7 +34,7 @@
 									<th colspan="3">설비명</th>
 									<th colspan="2">TAG NO.</th>
 									<td colspan="2" rowspan="2">
-										<button type="button" class="btn btn-sm btn-primary btn-block" style="height: 100%;" onclick="history.back();">이전화면</button>
+										<button type="button" class="btn btn-sm btn-primary btn-block" style="height: 100%;" onclick="goFacilityInfo();">이전화면</button>
 									</td>
 									<td colspan="2" rowspan="2">
 										<button type="submit" class="btn btn-sm btn-primary btn-block" style="height: 100%;">등록</button>
@@ -116,7 +118,13 @@
 								</div>
 							</div>
 							<div class="col-md-2" id="listTable_colvis"></div>
-							<div class="col-md-5"></div>
+							<div class="col-md-5">
+								<div class="float-right">
+									<c:if test="${loginVO.user_level == TypeVal.LEVEL_COMP_ADMIN}">
+										<button type="button" class="btn btn-sm btn-danger" id="btnDelete"><i class="fas fa-trash-alt"></i> 삭제</button>
+									</c:if>
+								</div>
+							</div>
 						</div>
 						<div class="row">
 							<div class="col-12">
@@ -124,6 +132,7 @@
 									<thead>
 									<tr>
 										<th class="no_toggle"></th>	<%-- dtr-control 위치 --%>
+										<th class="no_toggle"><input type="checkbox" name="tb_check_all"></th>
 										<th>NO</th>
 										<th>수리일자</th>
 										<th>수리구분</th>
@@ -266,6 +275,46 @@
 		getItem(repair_no);
 	});
 
+	$("#btnDelete").on("click", function () {
+		var checked_list = $("#listTable input:checkbox[name=tb_check_list]:checked");
+		// 수리내역 선택체크
+		if (checked_list.length == 0) {
+			alert("선택된 수리내역이 없습니다.");
+			return false;
+		}
+		if (!confirm("삭제하시겠습니까?")) return false;
+
+		var repair_list = [];
+		$.each(checked_list, function () {
+			var repair_no = $(this).closest("tr").data("repair_no");
+			repair_list.push(repair_no);
+		});
+
+		$.ajax({
+			type: "DELETE"
+			, url: "/repairs"
+			, headers: {"Content-Type": "application/json"}
+			, dataType: "text"
+			, data: JSON.stringify({
+				repair_list: repair_list
+			})
+			, success: function (data) {
+				if (data == 'success') {
+					getRepairList();
+				} else {
+					alert(data);
+				}
+			}
+			, error: function (request, status, error) {
+				alertAjaxError(request, status, error);
+			}
+		});
+	});
+
+	function goFacilityInfo() {
+		location.href = "<c:url value='/facility/equipment'/>/" + $("[name=facility_tag_no]").val();
+	}
+
 	function getItem(repair_no) {
 		initDataTable("modifyForm");
 		$("#formModal").modal("show");
@@ -392,6 +441,7 @@
 				$.each(data, function(index, item) {
 					var html = [];
 					html.push("");	// dtr-control 위치
+					html.push("<input type='checkbox' name='tb_check_list'>");
 					html.push(data.length - index);
 					var repair_date = new Date(item.repair_date.year, item.repair_date.monthValue-1, item.repair_date.dayOfMonth + 1);
 					html.push(repair_date.toISOString().split('T')[0]);

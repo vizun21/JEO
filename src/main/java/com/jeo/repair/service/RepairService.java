@@ -37,4 +37,8 @@ public class RepairService {
 	public int updateRepair(Repair repair) {
 		return repairDao.updateRepair(repair);
 	}
+
+	public int deleteRepair(String repair_no) {
+		return repairDao.deleteRepair(repair_no);
+	}
 }
