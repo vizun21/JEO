@@ -101,6 +101,99 @@
 	</div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="formModal" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-md" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="formModalLabel">계좌정보</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<i class="fas fa-times"></i>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div id="modifyDescription" class="mb-3" style="display: none;">
+					<span class="red" style="font-size: 9pt;">※은행 및 계좌번호는 수정이 불가능합니다.<br>※은행 및 계좌번호를 수정하시려면 계좌를 삭제 후 다시 등록을 해주세요.</span>
+				</div>
+				<form id="submitForm">
+					<table id="dataTable" class="table-form table table-sm table-bordered">
+						<colgroup>
+							<col width="40%">
+							<col width="60%">
+						</colgroup>
+						<tr>
+							<th>은행<span class="required">*</span></th>
+							<td>
+								<input type="hidden" id="frm_acnt_code">
+								<select class="select2 form-control-sm" style="width: 100%;" id="frm_bank_code" name="frm_bank_code" title="은행" data-parsley-required="true">
+									<option value="">[은행선택]</option>
+									<c:forEach var="bank" items="${bank_list}">
+										<option value="${bank.bank_code}" data-bank_web_yn="${bank.bank_web_yn}">${bank.bank_name}</option>
+									</c:forEach>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th>계좌명(별칭)<span class="required">*</span></th>
+							<td>
+								<input type="text" class="form-control form-control-sm" id="frm_acnt_name" name="frm_acnt_name" title="계좌명(별칭)"
+									   data-parsley-required="true" data-parsley-maxlength="20">
+							</td>
+						</tr>
+						<tr>
+							<th>계좌번호<span class="required">*</span></th>
+							<td>
+								<input type="text" class="form-control form-control-sm" id="frm_acnt_numb" name="frm_acnt_numb" title="계좌번호"
+									   data-parsley-required="true" data-parsley-maxlength="64" placeholder="'-' 없이 입력">
+								<small class="checkResult font-italic"></small>
+							</td>
+						</tr>
+						<tr id="tr_acnt_pw">
+							<th>계좌비밀번호<span class="required">*</span></th>
+							<td>
+								<input type="password" class="form-control form-control-sm" id="frm_acnt_pw" name="frm_acnt_pw" title="계좌비밀번호"
+									   data-parsley-required="true" data-parsley-maxlength="64">
+							</td>
+						</tr>
+						<tr id="tr_acnt_pw_modify">
+							<th>계좌비밀번호 변경<br><small>(변경시에만 입력)</small></th>
+							<td>
+								<input type="password" class="form-control form-control-sm" id="frm_acnt_pw_modify" name="frm_acnt_pw_modify" title="계좌비밀번호 변경"
+									   data-parsley-maxlength="64">
+							</td>
+						</tr>
+						<tr class="acnt_web" style="display: none;">
+							<th>간편조회ID<span class="required">*</span></th>
+							<td>
+								<input type="text" class="form-control form-control-sm" id="frm_acnt_web_id" name="frm_acnt_web_id" title="간편조회ID"
+									   data-parsley-required="true" data-parsley-maxlength="30">
+							</td>
+						</tr>
+						<tr class="acnt_web" style="display: none;">
+							<th>간편조회PW<span class="required">*</span></th>
+							<td>
+								<input type="password" class="form-control form-control-sm" id="frm_acnt_web_pw" name="frm_acnt_web_pw" title="간편조회PW"
+									   data-parsley-required="true" data-parsley-maxlength="45">
+							</td>
+						</tr>
+						<tr>
+							<th>비고</th>
+							<td>
+								<input type="text" class="form-control form-control-sm" id="frm_acnt_note" name="frm_acnt_note" title="비고"
+									   data-parsley-maxlength="100">
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-info" id="btnRegist">저장</button>
+				<button type="button" class="btn btn-info" id="btnModify">수정</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script>
 	$(function () {
 		var args = {
@@ -121,7 +214,6 @@
 	});
 
 	$("#listTable tbody").on("click", "td:not(:nth-child(2))", function () {
-		console.log($(this));
 		let facility_tag_no = $(this).parent().data("facility_tag_no");
 		if (facility_tag_no !== undefined) {
 			window.location.href = "<c:url value="/facility/equipment"></c:url>/" + facility_tag_no;

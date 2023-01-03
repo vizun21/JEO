@@ -19,8 +19,9 @@
 							<table class="table-list table table-sm table-bordered table-hover mb-0">
 								<colgroup>
 									<col style="width: 10%;">
-									<col style="width: 20%;">
-									<col style="width: 20%;">
+									<col style="width: 10%;">
+									<col style="width: 15%;">
+									<col style="width: 15%;">
 									<col style="width: 10%;">
 									<col style="width: 10%;">
 									<col style="width: 10%;">
@@ -28,15 +29,17 @@
 									<col style="width: 10%;">
 								</colgroup>
 								<tr>
-									<th colspan="2">설비명</th>
+									<th colspan="3">설비명</th>
 									<th colspan="2">TAG NO.</th>
-									<th colspan="2"></th>
+									<td colspan="2" rowspan="2">
+										<button type="button" class="btn btn-sm btn-primary btn-block" style="height: 100%;" onclick="history.back();">이전화면</button>
+									</td>
 									<td colspan="2" rowspan="2">
 										<button type="submit" class="btn btn-sm btn-primary btn-block" style="height: 100%;">등록</button>
 									</td>
 								</tr>
 								<tr>
-									<td colspan="2">
+									<td colspan="3">
 										<input type="text" class="form-control form-control-sm" id="keyword2" name="facility_name" value="${facility.facility_name}">
 									</td>
 									<td colspan="2">
@@ -44,11 +47,10 @@
 										<input type="text" class="form-control form-control-sm" id="keyword"
 											   maxlength="20" data-parsley-required="true" title="TAG NO." value="${facility.facility_tag_no}">
 									</td>
-									<td colspan="2">
-									</td>
 								</tr>
 								<tr>
 									<th>수리일자</th>
+									<th>수리구분</th>
 									<th>수리내역</th>
 									<th>고장원인</th>
 									<th>수리업체</th>
@@ -61,6 +63,10 @@
 									<td>
 										<input type="text" class="datepicker form-control form-control-sm"
 											   name="repair_date" data-parsley-required="true" title="수리일자" readonly>
+									</td>
+									<td>
+										<input type="text" class="form-control form-control-sm" name="repair_type"
+											   maxlength="5" title="수리구분">
 									</td>
 									<td>
 										<input type="text" class="form-control form-control-sm" name="repair_content"
@@ -120,6 +126,7 @@
 										<th class="no_toggle"></th>	<%-- dtr-control 위치 --%>
 										<th>NO</th>
 										<th>수리일자</th>
+										<th>수리구분</th>
 										<th>수리내역</th>
 										<th>고장원인</th>
 										<th>수리업체</th>
@@ -141,6 +148,104 @@
 	</div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="formModal" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="formModalLabel">수리내역</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<i class="fas fa-times"></i>
+				</button>
+			</div>
+			<form id="modifyForm" action="/facility/repair/modify" method="post">
+
+				<div class="modal-body">
+					<table class="table-form table table-sm table-bordered">
+						<colgroup>
+							<col width="20%">
+							<col width="30%">
+							<col width="20%">
+							<col width="30%">
+						</colgroup>
+						<tr>
+							<th>설비명</th>
+							<td>
+								<input type="hidden" name="repair_no">
+								<input type="text" class="form-control form-control-sm" name="facility_name" readonly>
+							</td>
+							<th>TAG NO.<span class="required">*</span></th>
+							<td>
+								<input type="text" class="form-control form-control-sm" name="facility_tag_no" readonly>
+							</td>
+						</tr>
+						<tr>
+							<th>수리일자<span class="required">*</span></th>
+							<td>
+								<input type="text" class="datepicker form-control form-control-sm"
+									   name="repair_date" data-parsley-required="true" title="수리일자" readonly>
+							</td>
+							<th>수리구분</th>
+							<td>
+								<input type="text" class="form-control form-control-sm" name="repair_type"
+									   maxlength="5" title="수리구분">
+							</td>
+						</tr>
+						<tr>
+							<th>수리내역<span class="required">*</span></th>
+							<td colspan="3">
+								<input type="text" class="form-control form-control-sm" name="repair_content"
+									   maxlength="50" data-parsley-required="true" title="수리내역">
+							</td>
+						</tr>
+						<tr>
+							<th>고장원인<span class="required">*</span></th>
+							<td colspan="3">
+								<input type="text" class="form-control form-control-sm" name="repair_cause"
+									   maxlength="50" data-parsley-required="true" title="고장원인">
+							</td>
+						</tr>
+						<tr>
+							<th>수리업체</th>
+							<td>
+								<input type="text" class="form-control form-control-sm" name="repair_company"
+									   maxlength="50" title="수리업체">
+							</td>
+							<th>수리업체TEL</th>
+							<td>
+								<input type="text" class="form-control form-control-sm" name="repair_company_tel"
+									   maxlength="20" title="수리업체TEL">
+							</td>
+						</tr>
+						<tr>
+							<th>수리금액<span class="required">*</span></th>
+							<td>
+								<input type="text" class="form-control form-control-sm" name="repair_price"
+									   data-parsley-required="true" title="수리금액">
+							</td>
+							<th>담당자</th>
+							<td>
+								<input type="text" class="form-control form-control-sm" name="repair_manager"
+									   maxlength="50" title="담당자">
+							</td>
+						</tr>
+						<tr>
+							<th>비고</th>
+							<td colspan="3">
+								<input type="text" class="form-control form-control-sm" name="repair_note"
+									   maxlength="50" title="비고">
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-info">수정</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script>
 	$.each($("#keyword"), function () {
@@ -154,6 +259,33 @@
 	$("input[name=repair_price]").on("keyup focusout", function () {
 		$(this).val($(this).val().number());
 	});
+
+	$("#listTable tbody").on("click", "td:not(:nth-child(2))", function () {
+		let repair_no = $(this).parent().data("repair_no");
+		console.log(repair_no);
+		getItem(repair_no);
+	});
+
+	function getItem(repair_no) {
+		initDataTable("modifyForm");
+		$("#formModal").modal("show");
+
+		$.ajax({
+			type: "GET"
+			, url: "/facility/repair/" + repair_no
+			, headers: {"Content-Type": "application/json"}
+			, dataType: "json"
+			, success: function (data) {
+				console.log(data);
+				setFormValue("modifyForm", data);
+				var repair_date = new Date(data.repair_date.year, data.repair_date.monthValue-1, data.repair_date.dayOfMonth + 1);
+				$("#modifyForm input[name=repair_date]").val(repair_date.toISOString().split('T')[0]);
+			}
+			, error: function (request, status, error) {
+				alertAjaxError(request, status, error);
+			}
+		});
+	}
 
 	function initAutoComplete(obj) {
 		$(obj).autocomplete({
@@ -263,6 +395,7 @@
 					html.push(data.length - index);
 					var repair_date = new Date(item.repair_date.year, item.repair_date.monthValue-1, item.repair_date.dayOfMonth + 1);
 					html.push(repair_date.toISOString().split('T')[0]);
+					html.push(item.repair_type);
 					html.push(item.repair_content);
 					html.push(item.repair_cause);
 					html.push(item.repair_company);
@@ -273,6 +406,7 @@
 
 					var rowNode = $("#listTable").DataTable().row.add(html).node();
 					$(rowNode).attr("data-repair_no", item.repair_no);
+					$(rowNode).css("cursor", "pointer");
 				});
 
 				$("#listTable").DataTable().draw(false);

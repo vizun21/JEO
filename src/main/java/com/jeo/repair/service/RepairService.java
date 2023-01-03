@@ -18,6 +18,10 @@ public class RepairService {
 		return repairDao.insert(repair);
 	}
 
+	public Repair selectRepair(String repair_no) {
+		return repairDao.selectRepair(repair_no);
+	}
+
 	public List<Repair> facilityRepairListByTagNo(String facility_tag_no) {
 		return repairDao.facilityRepairListByTagNo(facility_tag_no);
 	}
@@ -28,5 +32,9 @@ public class RepairService {
 
 	public List<FacilityRepairHistory> selectFacilityRepairHistory(RepairPageCondition condition) {
 		return repairDao.selectFacilityRepairHistory(condition);
+	}
+
+	public int updateRepair(Repair repair) {
+		return repairDao.updateRepair(repair);
 	}
 }

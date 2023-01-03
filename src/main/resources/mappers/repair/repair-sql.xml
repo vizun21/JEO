@@ -6,6 +6,7 @@
 		INSERT INTO EO_REPAIR (
 			REPAIR_NO
 			, REPAIR_DATE
+			, REPAIR_TYPE
 			, FACILITY_TAG_NO
 			, REPAIR_CONTENT
 			, REPAIR_CAUSE
@@ -17,6 +18,7 @@
 		) VALUES (
 			#{repair_no}
 			, #{repair_date}
+			, #{repair_type}
 			, #{facility_tag_no}
 			, #{repair_content}
 			, #{repair_cause}
@@ -27,6 +29,15 @@
 			, #{repair_note}
 		)
 	</insert>
+
+	<select id="selectRepair" parameterType="String" resultType="Repair">
+		SELECT
+			REPAIR.*,
+			FACILITY.FACILITY_NAME
+		FROM EO_REPAIR REPAIR
+				 JOIN EO_FACILITY FACILITY USING (FACILITY_TAG_NO)
+		WHERE REPAIR_NO = #{repair_no}
+	</select>
 
 	<select id="facilityRepairListByTagNo" parameterType="String" resultType="Repair">
 		SELECT *
@@ -107,5 +118,20 @@
 		</where>
 		ORDER BY REPAIR_DATE DESC, REPAIR_NO DESC
 	</select>
+
+	<update id="updateRepair" parameterType="Facility">
+		UPDATE EO_REPAIR
+		SET
+			REPAIR_DATE = #{repair_date}
+		  , REPAIR_TYPE = #{repair_type}
+		  , REPAIR_CONTENT = #{repair_content}
+		  , REPAIR_CAUSE = #{repair_cause}
+		  , REPAIR_COMPANY = #{repair_company}
+		  , REPAIR_COMPANY_TEL = #{repair_company_tel}
+		  , REPAIR_PRICE = #{repair_price}
+		  , REPAIR_MANAGER = #{repair_manager}
+		  , REPAIR_NOTE = #{repair_note}
+		WHERE REPAIR_NO = #{repair_no}
+	</update>
 </mapper>
 

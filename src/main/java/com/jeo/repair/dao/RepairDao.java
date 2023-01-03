@@ -16,6 +16,10 @@ public class RepairDao extends AbstractDao {
 		return insert(namespace + ".insert", repair);
 	}
 
+	public Repair selectRepair(String repair_no) {
+		return selectOne(namespace + ".selectRepair", repair_no);
+	}
+
 	public List<Repair> facilityRepairListByTagNo(String facility_tag_no) {
 		return selectList(namespace + ".facilityRepairListByTagNo", facility_tag_no);
 	}
@@ -26,5 +30,9 @@ public class RepairDao extends AbstractDao {
 
 	public List<FacilityRepairHistory> selectFacilityRepairHistory(RepairPageCondition condition) {
 		return selectList(namespace + ".selectFacilityRepairHistory", condition);
+	}
+
+	public int updateRepair(Repair repair) {
+		return update(namespace + ".updateRepair", repair);
 	}
 }
