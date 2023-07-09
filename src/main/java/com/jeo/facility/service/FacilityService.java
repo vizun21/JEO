@@ -4,6 +4,8 @@ import com.jeo.facility.dao.FacilityDao;
 import com.jeo.facility.dao.SubFacilityDao;
 import com.jeo.facility.domain.Facility;
 import com.jeo.facility.dto.FacilityPageCondition;
+import com.jeo.repair.dao.RepairDao;
+import com.jeo.repair.service.RepairService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,9 @@ public class FacilityService {
 
 	@Autowired
 	SubFacilityDao subFacilityDao;
+
+	@Autowired
+	RepairDao repairDao;
 
 	public List<Facility> selectFacilityList() {
 		return facilityDao.selectFacilityList();
@@ -43,6 +48,7 @@ public class FacilityService {
 
 	public int deleteFacility(String facility_tag_no) {
 		subFacilityDao.deleteSubFacility(facility_tag_no);
+		repairDao.deleteRepairs(facility_tag_no);
 		return facilityDao.deleteFacility(facility_tag_no);
 	}
 }
