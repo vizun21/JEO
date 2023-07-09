@@ -39,9 +39,9 @@ public class UserJoinRestController {
 
 		hmap.put(Define.COMP_CODE, "CP202208240001");	// 전주환경사업소 COMP_CODE로 고정
 
-		// 직책이 팀장, 부장, 과장인 경우에는 관리자로 설정
+		// 직책이 팀장인 경우만 관리자로 설정
 		String position = hmap.getString(Define.USER_POSITION);
-		if (position.equals("TJ") || position.equals("BJ") || position.equals("GJ")) {
+		if (position.equals("TJ")) {
 			hmap.put(Define.USER_LEVEL, TypeVal.LEVEL_COMP_ADMIN);
 		} else {
 			hmap.put(Define.USER_LEVEL, TypeVal.LEVEL_COMP_USER);

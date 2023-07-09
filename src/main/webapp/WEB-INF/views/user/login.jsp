@@ -13,12 +13,12 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="/"><b>전주환경사업소 시설관리시스템</b></a>
+        <a href="/"><b>전주환경사업소 설비관리시스템</b></a>
     </div>
 
     <div class="card">
         <div class="card-body login-card-body">
-			<form id="loginForm" action="<c:url value='/user/login'/>" method="post">
+			<form id="loginForm" action="<c:url value='/user/login'/>" method="post" onsubmit="return checkForm();">
                 <div class="input-group mb-3">
                     <input type="id" class="form-control" id="user_id" name="user_id" placeholder="사원번호" title="사원번호"
 						   data-parsley-required="true">
@@ -70,6 +70,10 @@
 		alert("<c:out value='${loginErrorMessage}'/>");
 		</c:if>
 	});
+
+	function checkForm() {
+		if (!parsleyFormValidate("loginForm")) return false;
+	}
 </script>
 
 </body>

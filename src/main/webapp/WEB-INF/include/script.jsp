@@ -153,6 +153,36 @@
 		});
 	}
 
+	function setFormValue(formID, data) {
+		$.each(data, function(key, value) {
+			var target = $("#" + formID + " input[name=" + key + "]");
+			if (target.length > 0) {	// tag id 체크
+				if (target.is("span")) {	// span 체크
+					if (key.indexOf("_price") != -1) {
+						target.html(value.comma());
+					} else {
+						target.html(value);
+					}
+				} else if (target.is("input")) {	// input 체크
+					if (target.attr("type") === "file") {
+						var imgID = target.attr("id") + "_image";
+						$("#" + imgID).attr("src", "/preview?fileName=" + value);
+					} else {
+						target.val(value);
+					}
+				} else if (target.is("select")) {	// select 체크
+					target.val(value).trigger("change");
+				}
+			} else {
+				var radio = $("#" + formID + " input:radio[name=" + key + "]");
+				if (radio.length > 0) {	// radio 체크
+					$("#" + formID + " input:radio[name ='" + key + "']:input[value='" + value + "']").prop("checked", true).trigger("change");
+				}
+
+			}
+		});
+	}
+
 	function setSelectValue(data) {
 		$.each(data, function(key, value) {
 			var target = $("#select_" + key);

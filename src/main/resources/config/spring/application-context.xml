@@ -50,18 +50,6 @@
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
 
-	<bean id="bankdaAccount" class="com.jeo.common.config.BankdaAccount">
-		<property name="SERVICE_TYPE" value="#{settings['bankdaAccount.SERVICE_TYPE']}"/>
-		<property name="PARTNER_ID" value="#{settings['bankdaAccount.PARTNER_ID']}"/>
-		<property name="PARTNER_PW" value="#{settings['bankdaAccount.PARTNER_PW']}"/>
-		<property name="PARTNER_NAME" value="#{settings['bankdaAccount.PARTNER_NAME']}"/>
-	</bean>
-
-	<bean id="childcareAccount" class="com.jeo.common.config.ChildcareAccount">
-		<property name="COMMON_URL" value="#{settings['childcareAccount.COMMON_URL']}"/>
-		<property name="C_AUTH_KEY" value="#{settings['childcareAccount.C_AUTH_KEY']}"/>
-	</bean>
-
 	<beans:bean class="java.lang.String" id="resourcePath">
 		<beans:constructor-arg value="#{settings['resourcePath']}"/>
 	</beans:bean>

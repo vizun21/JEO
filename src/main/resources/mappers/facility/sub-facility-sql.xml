@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sub.facility">
+	<select id="selectList" parameterType="String" resultType="SubFacility">
+		SELECT *
+		FROM EO_SUB_FACILITY
+		WHERE FACILITY_TAG_NO = #{facility_tag_no}
+	</select>
+
+	<insert id="insert" parameterType="SubFacility">
+		INSERT INTO EO_SUB_FACILITY
+		(
+			FACILITY_TAG_NO
+			, SUB_FACILITY_NO
+			, SUB_FACILITY_NAME
+			, SUB_FACILITY_SPEC
+			, SUB_FACILITY_QUANTITY
+			, SUB_FACILITY_PRODUCTION_COMPANY
+			, SUB_FACILITY_NOTE
+		)
+		VALUES(
+			#{facility_tag_no}
+			, #{sub_facility_no}
+			, #{sub_facility_name}
+			, #{sub_facility_spec}
+			, #{sub_facility_quantity}
+			, #{sub_facility_production_company}
+			, #{sub_facility_note}
+		)
+	</insert>
+
+	<update id="update" parameterType="SubFacility">
+		UPDATE EO_SUB_FACILITY
+		SET
+			SUB_FACILITY_NAME = #{sub_facility_name}
+		  , SUB_FACILITY_SPEC = #{sub_facility_spec}
+		  , SUB_FACILITY_QUANTITY = #{sub_facility_quantity}
+		  , SUB_FACILITY_PRODUCTION_COMPANY = #{sub_facility_production_company}
+		  , SUB_FACILITY_NOTE = #{sub_facility_note}
+		WHERE SUB_FACILITY_NO = #{sub_facility_no}
+	</update>
+
+	<delete id="deleteSubFacility">
+		DELETE FROM EO_SUB_FACILITY
+		WHERE FACILITY_TAG_NO = #{facility_tag_no}
+	</delete>
+</mapper>
+

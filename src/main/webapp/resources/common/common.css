@@ -59,6 +59,7 @@
 }
 .table thead th, .table tbody th, .table tfoot th, .table-list tbody td {
     text-align: center;
+    height: 33px;
 }
 .table thead th, .table tbody th, .table tfoot th, .table tbody td {
     vertical-align: middle;

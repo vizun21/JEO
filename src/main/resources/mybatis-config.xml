@@ -15,5 +15,9 @@
 		<typeAlias alias="User" type="com.jeo.user.domain.User"/>
 		<typeAlias alias="ConstructionType" type="com.jeo.constructionType.domain.ConstructionType"/>
 		<typeAlias alias="Category" type="com.jeo.category.domain.Category"/>
+		<typeAlias alias="Facility" type="com.jeo.facility.domain.Facility"/>
+		<typeAlias alias="SubFacility" type="com.jeo.facility.domain.SubFacility"/>
+		<typeAlias alias="Repair" type="com.jeo.repair.domain.Repair"/>
+		<typeAlias alias="FacilityRepairHistory" type="com.jeo.facility.domain.FacilityRepairHistory"/>
 	</typeAliases>
 </configuration>

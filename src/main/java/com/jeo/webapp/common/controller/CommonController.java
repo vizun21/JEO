@@ -15,16 +15,16 @@ public class CommonController {
 	public String rootGet(Model model) {
 		LoginVO loginVO = (LoginVO) SessionUtils.getAttribute(Define.loginVO);
 		if (loginVO.getUser_level() == TypeVal.LEVEL_SYSTEM_ADMIN)
-			return "redirect:/admin/user/transform";
+			return "redirect:/admin/system/page/list";
 		else if (loginVO.getUser_level() == TypeVal.LEVEL_ADMIN)
 			return "redirect:/admin/user/transform";
 		else if (loginVO.getUser_level() == TypeVal.LEVEL_COMP_ADMIN) {
 			return "redirect:/comp/user";
 		} else if (loginVO.getUser_level() == TypeVal.LEVEL_COMP_USER) {
-			return "redirect:/facility";    // 시설물관리(구현예정)
+			return "redirect:/facility/equipment/list";
 		}
 
-		return "/error";
+		return "redirect:/error/wrongApproach";
 	}
 
 	@RequestMapping(value = "/home", method = RequestMethod.GET)

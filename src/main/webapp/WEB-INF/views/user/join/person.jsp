@@ -110,28 +110,6 @@
 						</div>
 					</div>
 				</div>
-
-				<hr>
-
-				<div class="form-group">
-					<label>약관동의</label>
-					<div class="input-group mb-3">
-						<div class="icheck-info">
-							<input type="checkbox" id="agreeTerms1" name="terms1" value="agree" title="이용약관 동의" data-parsley-required="true">
-							<label for="agreeTerms1">
-								<a data-toggle="modal" data-target="#agreeTermsModal1">이용약관 동의</a>
-							</label>
-						</div>
-					</div>
-					<div class="input-group mb-3">
-						<div class="icheck-info">
-							<input type="checkbox" id="agreeTerms2" name="terms2" value="agree" title="개인정보 수집 및 이용 동의" data-parsley-required="true">
-							<label for="agreeTerms2">
-								<a data-toggle="modal" data-target="#agreeTermsModal2">개인정보 수집 및 이용 동의</a>
-							</label>
-						</div>
-					</div>
-				</div>
 				<div class="input-group">
 					<button type="button" class="btn btn-info btn-block" id="joinRegist">가입하기</button>
 				</div>

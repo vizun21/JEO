@@ -140,7 +140,7 @@
 						<tr>
 							<th>코드값</th>
 							<td>
-								<input type="text" class="form-control form-control-sm" id="frm_cddt_val" name="frm_code_id" title="코드값"
+								<input type="text" class="form-control form-control-sm" id="frm_cddt_val" title="코드값"
 									   data-parsley-required="true" data-parsley-maxlength="2">
 								<small class="checkResult font-italic"></small>
 							</td>
@@ -148,7 +148,7 @@
 						<tr>
 							<th>코드이름</th>
 							<td>
-								<input type="text" class="form-control form-control-sm" id="frm_cddt_name" name="frm_code_name" title="코드이름"
+								<input type="text" class="form-control form-control-sm" id="frm_cddt_name" title="코드이름"
 									   data-parsley-required="true" data-parsley-maxlength="20">
 								<small class="checkResult font-italic"></small>
 							</td>

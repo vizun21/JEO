@@ -80,10 +80,10 @@
 									</td>
 								</tr>
 								<tr>
-									<th>이메일<span class="required">*</span></th>
+									<th>이메일</th>
 									<td>
 										<input type="email" class="form-control form-control-sm" id="frm_user_email" name="frm_user_email" placeholder="이메일" title="이메일"
-											   data-parsley-required="true" data-parsley-maxlength="320">
+											   data-parsley-maxlength="320">
 									</td>
 								</tr>
 								<tr>

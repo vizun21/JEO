@@ -24,15 +24,19 @@
 			<mvc:exclude-mapping path="/user/login**"/>
 			<mvc:exclude-mapping path="/user/logout"/>
 			<mvc:exclude-mapping path="/user/search**"/>
+			<mvc:exclude-mapping path="/user/change**"/>
 			<mvc:exclude-mapping path="/resources/**"/>
 			<bean id="authInterceptor" class="com.jeo.common.interceptor.AuthInterceptor"/>
 		</mvc:interceptor>
 		<mvc:interceptor>
+			<mvc:mapping path="/my**"/>
 			<mvc:mapping path="/home"/>
 			<mvc:mapping path="/accounting/**"/>
 			<mvc:mapping path="/business/**"/>
 			<mvc:mapping path="/admin/**"/>
 			<mvc:mapping path="/comp/**"/>
+			<mvc:mapping path="/facility/**"/>
+			<mvc:mapping path="/facility-list/**"/>
 			<bean id="menuInterceptor" class="com.jeo.common.interceptor.MenuInterceptor"/>
 		</mvc:interceptor>
 <!--		<mvc:interceptor>-->

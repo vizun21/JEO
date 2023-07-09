@@ -1,6 +1,7 @@
 package com.jeo.webapp.admin.system.code.dao;
 
 import com.jeo.common.dao.AbstractDao;
+import com.jeo.position.domain.CodeDetail;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,6 +29,10 @@ public class CodeDao extends AbstractDao {
 
 	public int codeDetailRegist(Map<String, Object> map) {
 		return insert(namespace + ".codeDetailRegist", map);
+	}
+
+	public int codeDetailRegist(CodeDetail codeDetail) {
+		return insert(namespace + ".codeDetailRegist", codeDetail);
 	}
 
 	public int codeDetailSort(Map<String, Object> map) {

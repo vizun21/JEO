@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="repair">
+	<insert id="insert" parameterType="Repair">
+		INSERT INTO EO_REPAIR (
+			REPAIR_NO
+			, REPAIR_DATE
+			, REPAIR_TYPE
+			, FACILITY_TAG_NO
+			, REPAIR_CONTENT
+			, REPAIR_CAUSE
+			, REPAIR_COMPANY
+			, REPAIR_COMPANY_TEL
+			, REPAIR_PRICE
+			, REPAIR_MANAGER
+			, REPAIR_NOTE
+		) VALUES (
+			#{repair_no}
+			, #{repair_date}
+			, #{repair_type}
+			, #{facility_tag_no}
+			, #{repair_content}
+			, #{repair_cause}
+			, #{repair_company}
+			, #{repair_company_tel}
+			, #{repair_price}
+			, #{repair_manager}
+			, #{repair_note}
+		)
+	</insert>
+
+	<select id="selectRepair" parameterType="String" resultType="Repair">
+		SELECT
+			REPAIR.*,
+			FACILITY.FACILITY_NAME
+		FROM EO_REPAIR REPAIR
+				 JOIN EO_FACILITY FACILITY USING (FACILITY_TAG_NO)
+		WHERE REPAIR_NO = #{repair_no}
+	</select>
+
+	<select id="facilityRepairListByTagNo" parameterType="String" resultType="Repair">
+		SELECT *
+		FROM EO_REPAIR
+		WHERE FACILITY_TAG_NO = #{facility_tag_no}
+		ORDER BY REPAIR_DATE DESC, REPAIR_NO DESC
+	</select>
+
+	<select id="selectRepairList" parameterType="hmap" resultType="Repair">
+		SELECT
+			REPAIR.*,
+			FACILITY_NAME
+		FROM EO_REPAIR REPAIR
+				 JOIN EO_FACILITY USING (FACILITY_TAG_NO)
+		<where>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(repair_date)">
+				AND REPAIR_DATE = #{repair_date}
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(facility_tag_no)">
+				AND FACILITY_TAG_NO = #{facility_tag_no}
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(repair_company)">
+				AND REPAIR_COMPANY LIKE CONCAT('%', #{repair_company}, '%')
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(repair_manager)">
+				AND REPAIR_MANAGER LIKE CONCAT('%', #{repair_manager}, '%')
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(start_date)">
+				AND REPAIR_DATE >= #{start_date}
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(end_date)">
+				AND REPAIR_DATE <![CDATA[<=]]> #{end_date}
+			</if>
+		</where>
+		ORDER BY REPAIR_DATE DESC, REPAIR_NO DESC
+	</select>
+
+	<resultMap id="facilityRepairHistoryMap" type="FacilityRepairHistory">
+		<id property="facility_tag_no" column="facility_tag_no"/>
+		<result property="facility_name" column="facility_name"/>
+		<collection property="repairs" ofType="hashmap" javaType="list">
+			<result property="repair_no" column="repair_no"/>
+			<result property="repair_date" column="repair_date"/>
+			<result property="repair_content" column="repair_content"/>
+			<result property="repair_cause" column="repair_cause"/>
+			<result property="repair_company" column="repair_company"/>
+			<result property="repair_company_tel" column="repair_company_tel"/>
+			<result property="repair_price" column="repair_price"/>
+			<result property="repair_manager" column="repair_manager"/>
+			<result property="repair_note" column="repair_note"/>
+		</collection>
+	</resultMap>
+	<select id="selectFacilityRepairHistory" parameterType="hmap" resultMap="facilityRepairHistoryMap">
+		SELECT
+			REPAIR.*,
+			FACILITY_NAME
+		FROM EO_REPAIR REPAIR
+				 JOIN EO_FACILITY USING (FACILITY_TAG_NO)
+		<where>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(repair_date)">
+				AND REPAIR_DATE = #{repair_date}
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(facility_tag_no)">
+				AND FACILITY_TAG_NO = #{facility_tag_no}
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(repair_company)">
+				AND REPAIR_COMPANY LIKE CONCAT('%', #{repair_company}, '%')
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(repair_manager)">
+				AND REPAIR_MANAGER LIKE CONCAT('%', #{repair_manager}, '%')
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(start_date)">
+				AND REPAIR_DATE >= #{start_date}
+			</if>
+			<if test="@com.jeo.common.util.CommonUtils@isNotEmpty(end_date)">
+				AND REPAIR_DATE <![CDATA[<=]]> #{end_date}
+			</if>
+		</where>
+		ORDER BY REPAIR_DATE DESC, REPAIR_NO DESC
+	</select>
+
+	<update id="updateRepair" parameterType="Facility">
+		UPDATE EO_REPAIR
+		SET
+			REPAIR_DATE = #{repair_date}
+		  , REPAIR_TYPE = #{repair_type}
+		  , REPAIR_CONTENT = #{repair_content}
+		  , REPAIR_CAUSE = #{repair_cause}
+		  , REPAIR_COMPANY = #{repair_company}
+		  , REPAIR_COMPANY_TEL = #{repair_company_tel}
+		  , REPAIR_PRICE = #{repair_price}
+		  , REPAIR_MANAGER = #{repair_manager}
+		  , REPAIR_NOTE = #{repair_note}
+		WHERE REPAIR_NO = #{repair_no}
+	</update>
+
+	<delete id="deleteRepair">
+		DELETE FROM EO_REPAIR
+		WHERE REPAIR_NO = #{repair_no}
+	</delete>
+</mapper>
+
