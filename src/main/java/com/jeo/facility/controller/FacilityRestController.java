@@ -3,6 +3,7 @@ package com.jeo.facility.controller;
 import com.jeo.common.config.Define;
 import com.jeo.common.domain.HMap;
 import com.jeo.common.util.CommonUtils;
+import com.jeo.facility.domain.DeleteSubFacilityList;
 import com.jeo.facility.domain.Facility;
 import com.jeo.facility.domain.SubFacility;
 import com.jeo.facility.domain.SubFacilityList;
@@ -100,7 +101,8 @@ public class FacilityRestController {
 	}
 
 	@PostMapping("/facility/equipment/modify")
-	public String update(HMap hmap, MultipartFile facility_image, Facility facility, SubFacilityList subFacilityList) throws IOException {
+	public String update(HMap hmap, MultipartFile facility_image, Facility facility,
+						 SubFacilityList subFacilityList, DeleteSubFacilityList deleteSubFacilityList) throws IOException {
 
 		Facility origin = facilityService.selectFacility(facility.getFacility_tag_no());
 
@@ -117,6 +119,11 @@ public class FacilityRestController {
 		facilityService.update(facility);
 
 		/* 기타설비 및 부속설비 등록 */
+		if (deleteSubFacilityList.getDeleteSubFacilities() != null) {
+			for (SubFacility subFacility : deleteSubFacilityList.getDeleteSubFacilities()) {
+				subFacilityService.delete(subFacility);
+			}
+		}
 		if (subFacilityList.getSubFacilities() != null) {
 			for (SubFacility subFacility : subFacilityList.getSubFacilities()) {
 				subFacility.setFacility_tag_no(facility.getFacility_tag_no());

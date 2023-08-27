@@ -25,4 +25,8 @@ public class SubFacilityDao extends AbstractDao {
 	public int deleteSubFacility(String facility_tag_no) {
 		return delete(namespace + ".deleteSubFacility", facility_tag_no);
 	}
+
+	public int delete(SubFacility subFacility) {
+		return delete(namespace + ".delete", subFacility);
+	}
 }

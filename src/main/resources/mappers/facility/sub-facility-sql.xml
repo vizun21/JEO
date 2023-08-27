@@ -45,5 +45,10 @@
 		DELETE FROM EO_SUB_FACILITY
 		WHERE FACILITY_TAG_NO = #{facility_tag_no}
 	</delete>
+
+	<delete id="delete" parameterType="SubFacility">
+		DELETE FROM EO_SUB_FACILITY
+		WHERE SUB_FACILITY_NO = #{sub_facility_no}
+	</delete>
 </mapper>
 

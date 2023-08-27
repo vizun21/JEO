@@ -23,4 +23,8 @@ public class SubFacilityService {
 	public int update(SubFacility subFacility) {
 		return subFacilityDao.update(subFacility);
 	}
+
+	public int delete(SubFacility subFacility) {
+		return subFacilityDao.delete(subFacility);
+	}
 }

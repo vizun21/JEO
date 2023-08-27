@@ -255,7 +255,7 @@
 								<tr>
 									<th>사진</th>
 									<th colspan="5">기타설비 및 부속설비</th>
-									<th>
+									<th colspan="2">
 										<button id="addRow" type="button" class="btn btn-sm btn-primary btn-block">추가</button>
 									</th>
 								</tr>
@@ -279,8 +279,10 @@
 									<th>수량</th>
 									<th>제작회사</th>
 									<th>비고</th>
+									<th>삭제</th>
 								</tr>
 								<c:forEach var="subFacility" items="${subFacilities}" varStatus="status">
+									<c:set var="isLast" value="${fn:length(subFacilities) - status.index}" />
 									<tr id="sub_row_${status.index}">
 										<input type='hidden' name='subFacilities[${status.index}].sub_facility_no'
 											   value="${subFacility.sub_facility_no}">
@@ -302,10 +304,16 @@
 										<td><input type='text' class='form-control form-control-sm'
 												   name='subFacilities[${status.index}].sub_facility_note'
 												   maxlength='50' value="${subFacility.sub_facility_note}"></td>
+										<td>
+											<button id="deleteRow" type="button" class="btn btn-sm btn-danger btn-block btn-delete"
+													onclick="deleteSubRow(${status.index});"
+													<c:if test="${fn:length(subFacilities)-1 ne status.index}">disabled="true"</c:if>>삭제</button>
+										</td>
 									</tr>
 								</c:forEach>
 								<c:forEach var="i" begin="${fn:length(subFacilities)}" end="7">
 								<tr id="sub_row_${i}">
+									<td></td>
 									<td></td>
 									<td></td>
 									<td></td>
@@ -345,6 +353,8 @@
 								</div>
 							</c:otherwise>
 						</c:choose>
+							</div>
+							<div id="deleteSubFacilityList">
 							</div>
 						</form>
 					</div>
@@ -404,11 +414,32 @@
 			"<td><input type='text' class='form-control form-control-sm' name='subFacilities[" + sub_row_num + "].sub_facility_spec' maxlength='50'></td>" +
 			"<td><input type='text' class='form-control form-control-sm' name='subFacilities[" + sub_row_num + "].sub_facility_quantity' maxlength='50'></td>" +
 			"<td><input type='text' class='form-control form-control-sm' name='subFacilities[" + sub_row_num + "].sub_facility_production_company' maxlength='50'></td>" +
-			"<td><input type='text' class='form-control form-control-sm' name='subFacilities[" + sub_row_num + "].sub_facility_note' maxlength='50'></td>"
+			"<td><input type='text' class='form-control form-control-sm' name='subFacilities[" + sub_row_num + "].sub_facility_note' maxlength='50'></td>" +
+			"<td><button type='button' class='btn btn-sm btn-danger btn-block btn-delete' onclick='deleteSubRow(" + sub_row_num + ");'>삭제</button></td>"
 		);
+
+		for (var i = 0; i < sub_row_num; i++) {
+			$("#subTable tbody tr#sub_row_" + i + " td button.btn-delete").attr("disabled", true);
+		}
 
 		sub_row_num++;
 	});
+
+	let delete_sub_facility_num = 0;
+	function deleteSubRow(row_num) {
+		/* 삭제할 부속설비 목록 데이터 세팅 */
+		let sub_facility_no = $("#subTable tbody tr#sub_row_" + row_num + " input[name^=subFacilities]").val();
+		if (sub_facility_no) {
+			let html = "<input type='hidden' name='deleteSubFacilities[" + delete_sub_facility_num + "].sub_facility_no' value='" + sub_facility_no + "'>";
+			$("#deleteSubFacilityList").append(html);
+			delete_sub_facility_num++;
+		}
+
+		/* 데이터 삭제 및 삭제버튼 상태변경 */
+		$("#subTable tbody tr#sub_row_" + row_num).html("<td></td><td></td><td></td><td></td><td></td><td></td><td></td>");
+		$("#subTable tbody tr#sub_row_" + (row_num - 1) + " td button.btn-delete").attr("disabled", false);
+		sub_row_num--;
+	}
 
 	function validate() {
 		if (!parsleyFormValidate("facilityForm")) return false;
