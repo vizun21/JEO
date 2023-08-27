@@ -312,7 +312,7 @@
 	});
 
 	function goFacilityInfo() {
-		location.href = "<c:url value='/facility/equipment'/>/" + $("[name=facility_tag_no]").val();
+		location.href = "<c:url value='/facility/equipment/modify'/>?facility_tag_no=" + $("[name=facility_tag_no]").val();
 	}
 
 	function getItem(repair_no) {
@@ -431,7 +431,7 @@
 
 		$.ajax({
 			type: "GET"
-			, url: "/facility/repairList/" + $("[name=facility_tag_no]").val()
+			, url: "/facility/repairList?facility_tag_no=" + $("[name=facility_tag_no]").val()
 			, dataType: "json"
 			, success: function (data) {
 				if($.fn.DataTable.isDataTable("#listTable")) {

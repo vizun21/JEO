@@ -55,8 +55,8 @@ public class FacilityController {
 		model.addAttribute("categories", categories);
 	}
 
-	@GetMapping(value = "/facility/equipment/{facility_tag_no}")
-	public String facilityEquipmentGET(Model model, @PathVariable("facility_tag_no") String facility_tag_no) {
+	@GetMapping(value = "/facility/equipment/modify")
+	public String facilityEquipmentGET(Model model, @RequestParam("facility_tag_no") String facility_tag_no) {
 		List<ConstructionType> constructionTypes = constructionTypeService.selectConstructionTypeList();
 		model.addAttribute("constructionTypes", constructionTypes);
 		List<Category> categories = categoryService.selectCategoryList();
@@ -78,8 +78,8 @@ public class FacilityController {
 		}
 	}
 
-	@GetMapping(value = "/facility/repairList/{facility_tag_no}")
-	public ResponseEntity<List<Repair>> facilityRepairListByTagNoGET(Model model, @PathVariable("facility_tag_no") String facility_tag_no) {
+	@GetMapping(value = "/facility/repairList")
+	public ResponseEntity<List<Repair>> facilityRepairListByTagNoGET(Model model, @RequestParam("facility_tag_no") String facility_tag_no) {
 		ResponseEntity<List<Repair>> entity;
 
 		try {

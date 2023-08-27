@@ -391,7 +391,7 @@
 	});
 
 	$("#btnPrint").on("click", function () {
-		let url = "<c:url value='/print/html/equipment-card/${facility.facility_tag_no}/'/>";
+		let url = "<c:url value='/print/html/equipment-card'/>?facility_tag_no=${facility.facility_tag_no}";
 		window.open(url, '_blank');
 	});
 

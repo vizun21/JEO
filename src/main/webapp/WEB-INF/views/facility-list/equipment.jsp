@@ -163,7 +163,7 @@
 		$("#listTable tbody").on("click", "tr", function () {
 			let facility_tag_no = $(this).data("facility_tag_no");
 			if (facility_tag_no !== undefined) {
-				window.location.href = "<c:url value="/facility/equipment"></c:url>/" + facility_tag_no;
+				window.location.href = "<c:url value="/facility/equipment/modify"></c:url>?facility_tag_no=" + facility_tag_no;
 			}
 		});
 	});

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -39,8 +39,8 @@ public class PrintHtmlController {
 		model.addAttribute("facilities", facilityService.selectFacilityList(condition));
 	}
 
-	@GetMapping(value = "/print/html/equipment-card/{facility_tag_no}")
-	public String printEquipmentCardGET(Model model, @PathVariable("facility_tag_no") String facility_tag_no) {
+	@GetMapping(value = "/print/html/equipment-card")
+	public String printEquipmentCardGET(Model model, @RequestParam("facility_tag_no") String facility_tag_no) {
 		model.addAttribute("facility", facilityService.selectFacility(facility_tag_no));
 		model.addAttribute("subFacilities", subFacilityService.selectSubFacilityList(facility_tag_no));
 		return "/print/html/equipment-card";
