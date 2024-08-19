@@ -237,7 +237,7 @@
 					var html = [];
 					html.push("");	// dtr-control 위치
 					html.push("<input type='checkbox' name='tb_check_list'>");
-					html.push(data.length - index);
+					html.push(index + 1);
 					html.push(item.facility_name);
 					html.push(item.construction_name);
 					html.push(item.category_name);
