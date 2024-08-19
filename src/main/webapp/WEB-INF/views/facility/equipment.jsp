@@ -52,7 +52,7 @@
 									<th colspan="2"><span class="required">*</span> 설비명</th>
 									<td colspan="3">
 										<input type="text" class="form-control form-control-sm" name="facility_name"
-											   maxlength="20" data-parsley-required="true" title="설비명"
+											   maxlength="50" data-parsley-required="true" title="설비명"
 											   value="${facility.facility_name}">
 									</td>
 									<th><span class="required">*</span> 공종</th>
