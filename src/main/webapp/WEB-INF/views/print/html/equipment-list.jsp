@@ -26,7 +26,7 @@
 					<tbody>
 	</c:if>
 					<tr>
-						<td>${fn:length(facilities) - status.index}</td>
+						<td>${status.index + 1}</td>
 						<td>${facility.facility_name}</td>
 						<td class="text-nowrap">${facility.construction_name}</td>
 						<td class="text-nowrap">${facility.category_name}</td>

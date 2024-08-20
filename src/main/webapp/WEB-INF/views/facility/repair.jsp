@@ -114,7 +114,6 @@
 							<div class="col-md-5">
 								<div class="float-left">
 									<button type="button" class="btn btn-sm btn-default" onclick='datatablesButtonTrigger({tableID:"listTable", extend:"excel"});'><i class="far fa-file-excel"></i> 엑셀</button>
-									<button type="button" class="btn btn-sm btn-default" onclick='datatablesButtonTrigger({tableID:"listTable", extend:"print"});'><i class="fas fa-print"></i> 인쇄</button>
 								</div>
 							</div>
 							<div class="col-md-2" id="listTable_colvis"></div>
